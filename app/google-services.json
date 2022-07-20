@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "643190472355",
+    "project_id": "wellness-studio-4ba27",
+    "storage_bucket": "wellness-studio-4ba27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643190472355:android:e6314e0cf07291a958c916",
+        "android_client_info": {
+          "package_name": "edu.neu.madcourse.wellness_studio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643190472355-j3sbp9n18oo366vd681vc3s8r33qphs7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsJaewYb9oJ4ztnsljsrYfjbP3U-C4iHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643190472355-j3sbp9n18oo366vd681vc3s8r33qphs7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
