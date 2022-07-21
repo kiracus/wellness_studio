@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Wellness_Studio</string>
+
+<!--    wakeup_sleep_goal_layout-->
+    <string name="wakeup_sleep_goal_title_TV">WAKEUP SLEEP GOAL</string>
+    <string name="todo">TODO</string>
+    <string name="total_sleep_hours_TV">TOTAL SLEEP HOURS:</string>
+    <string name="hours_display_TV">-</string>
 </resources>
