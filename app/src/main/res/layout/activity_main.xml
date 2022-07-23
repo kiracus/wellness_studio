@@ -20,7 +20,7 @@
             android:layout_margin="20dp"
             android:layout_gravity="center"
             android:textSize="20sp"
-            android:text="Hello, User!" />
+            android:text="Hello, there!" />
 
         <ImageButton
             android:id="@+id/imageButton_profile"

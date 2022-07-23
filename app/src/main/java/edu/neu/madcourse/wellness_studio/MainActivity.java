@@ -7,17 +7,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, profileBtn;
     Button exerciseGoBtn, sleepGoBtn;
+    TextView greetingTV;
+
+    String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // TODO: check if new user
+        // check if user_info.nickname is null or empty
+        // if yes
+        // show Greeting activity, ask for nickname
+
+        // if no
+        // get nickname from user_info.nickname
+
+        // test info here
+        nickname = "testUser";
+
+        // get VI components
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
         sleepBtn = findViewById(R.id.imageButton_sleep);
@@ -25,7 +41,12 @@ public class MainActivity extends AppCompatActivity {
         profileBtn = findViewById(R.id.imageButton_profile);
         exerciseGoBtn = findViewById(R.id.button1);
         sleepGoBtn = findViewById(R.id.button2);
+        greetingTV = findViewById(R.id.greeting_TV);
 
+        // set greeting message in header
+        greetingTV.setText(nickname);
+
+        // set click listeners for buttons
         exerciseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
