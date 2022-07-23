@@ -29,6 +29,9 @@
             android:name=".LightExercises"
             android:exported="false" />
         <activity
+            android:name=".friendsList.FriendsList"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
