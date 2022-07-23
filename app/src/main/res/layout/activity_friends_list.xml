@@ -42,32 +42,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="128dp"
         android:clickable="true"
         android:contentDescription="add friend"
         android:focusable="true"
         app:backgroundTint="@color/black"
-        app:tint="@color/white"
-        app:srcCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.878"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_circle_outline_24"
+        app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendsListRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="378dp"
+        android:layout_height="390dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:scrollbars="vertical"
         android:paddingTop="20dp"
         android:paddingBottom="70dp"
-        app:layout_constraintVertical_bias="0.072"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friendListHeading" />
+        app:layout_constraintTop_toBottomOf="@id/friendListHeading"
+        app:layout_constraintVertical_bias="0.072" />
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="match_parent"
