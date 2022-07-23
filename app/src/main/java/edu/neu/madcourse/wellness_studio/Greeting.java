@@ -2,6 +2,7 @@ package edu.neu.madcourse.wellness_studio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,10 @@ public class Greeting extends AppCompatActivity {
                 if (checkValidNickname(nicknameInput)) {
                     // TODO save nickname in user class or db
 
+                    // start main activity and finish current activity
+                    startActivity(new Intent(Greeting.this, MainActivity.class));
+                    finish();
+
                 } else {
                     Utils.postToast("Please enter a valid username.", Greeting.this);
                 };
@@ -42,6 +47,7 @@ public class Greeting extends AppCompatActivity {
         });
     }
 
+    // check if a string only contains alphabet and digit
     private boolean checkValidNickname(String s) {
         if (s == null || s.equals("")) {
             return false;
