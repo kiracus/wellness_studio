@@ -95,14 +95,7 @@ public class MainActivity extends AppCompatActivity {
         profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Profile_Test_With_Local_DB_Example.class));
-            }
-        });
-
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Profile_Test_With_Local_DB_Example.class));
+                startActivity(new Intent(MainActivity.this, Profile_With_Local_DB_Example.class));
             }
         });
     }

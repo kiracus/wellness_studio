@@ -6,4 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".Profile_With_Local_DB_Example">
 
+    <TextView
+        android:id="@+id/textViewInProfileTest2"
+        android:layout_width="251dp"
+        android:layout_height="392dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.237"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.79" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
