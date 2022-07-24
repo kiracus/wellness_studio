@@ -9,4 +9,10 @@
     <string name="wakeup_alarm_text">WAKE UP</string>
     <string name="sleep_alarm_text">SLEEP</string>
     <string name="alarm_on_TV">ALARM ON</string>
+
+
+    <string name="change_alarm_tv">CHANGE</string>
+    <string name="save_change_TV">SAVE</string>
+    <string name="sleep_time_TV">SLEEP TIME</string>
+    <string name="wakeup_time_TV">WAKEUP TIME</string>
 </resources>
