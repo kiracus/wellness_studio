@@ -17,7 +17,7 @@
             android:name=".Greeting"
             android:exported="false" />
         <activity
-            android:name=".Profile"
+            android:name=".Profile_Test_With_Local_DB_Example"
             android:exported="false" />
         <activity
             android:name=".Leaderboard"
