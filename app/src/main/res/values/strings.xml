@@ -15,4 +15,7 @@
     <string name="save_change_TV">SAVE</string>
     <string name="sleep_time_TV">SLEEP TIME</string>
     <string name="wakeup_time_TV">WAKEUP TIME</string>
+
+    <string name="sleep_reminder_title">SLEEP REMINDER SETTINGS</string>
+    <string name="allow_sensor_use_TV">ALLOW SENSOR USE</string>
 </resources>
