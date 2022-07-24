@@ -6,4 +6,7 @@
     <string name="todo">TODO</string>
     <string name="total_sleep_hours_TV">TOTAL SLEEP HOURS:</string>
     <string name="hours_display_TV">-</string>
+    <string name="wakeup_alarm_text">WAKE UP</string>
+    <string name="sleep_alarm_text">SLEEP</string>
+    <string name="alarm_on_TV">ALARM ON</string>
 </resources>
