@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // TODO: check if new user
         // check if user_info.nickname is null or empty
         // if yes
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // get nickname from user_info.nickname
 
         // test info here
+
         nickname = "testUser";
 
         // get VI components
