@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.132" />
+        app:layout_constraintVertical_bias="0.049" />
 
     <ImageView
         android:id="@+id/friendIcon"
@@ -33,7 +33,7 @@
         app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toEndOf="@id/friendListHeading"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117"
+        app:layout_constraintVertical_bias="0.038"
         app:srcCompat="@drawable/ic_groups_fill0_wght400_grad0_opsz48" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,15 +49,15 @@
         app:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.878"
+        app:layout_constraintHorizontal_bias="0.912"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendsListRecyclerView"
-        android:layout_width="378dp"
-        android:layout_height="390dp"
+        android:layout_width="379dp"
+        android:layout_height="447dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:paddingTop="20dp"
