@@ -1,4 +1,4 @@
-package localDatabase;
+package localDatabase.userInfo;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -10,9 +10,8 @@ import java.util.List;
 
 @Dao
 public interface UserDao {
-    @Query("SELECT * FROM User")
+    @Query("SELECT * FROM UserInfoTable")
     List<User> getAllUser();
-
 
     @Insert
     void insertUser(User ...users);

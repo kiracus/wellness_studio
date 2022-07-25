@@ -1,16 +1,14 @@
 package edu.neu.madcourse.wellness_studio;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
 import localDatabase.AppDatabase;
-import localDatabase.User;
+import localDatabase.userInfo.User;
 
 public class Profile_With_Local_DB_Example extends AppCompatActivity {
     public TextView testTextView;
