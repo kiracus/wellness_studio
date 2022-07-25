@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.Leaderboard;
-import edu.neu.madcourse.wellness_studio.LightExercises;
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 
