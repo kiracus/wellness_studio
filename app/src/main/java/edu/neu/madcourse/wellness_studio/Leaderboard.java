@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 
 import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class Leaderboard extends AppCompatActivity {
 
