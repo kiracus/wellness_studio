@@ -2,12 +2,15 @@ package edu.neu.madcourse.wellness_studio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,10 +20,12 @@ public class MainActivity extends AppCompatActivity {
 
     String nickname;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // TODO: check if new user
         // check if user_info.nickname is null or empty
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         // get nickname from user_info.nickname
 
         // test info here
+
         nickname = "testUser";
 
         // get VI components
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         greetingTV = findViewById(R.id.greeting_TV);
 
         // set greeting message in header
-        greetingTV.setText(nickname);
+        greetingTV.setText("Hello, " + nickname + " !");
 
         // for test only, home now directs to greeting TODO: home button does nothing
         homeBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         profileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Profile.class));
+                startActivity(new Intent(MainActivity.this, Profile_With_Local_DB_Example.class));
             }
         });
     }
