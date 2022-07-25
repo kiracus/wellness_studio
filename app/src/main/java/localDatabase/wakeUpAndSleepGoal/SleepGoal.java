@@ -1,4 +1,4 @@
-package localDatabase;
+package localDatabase.wakeUpAndSleepGoal;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

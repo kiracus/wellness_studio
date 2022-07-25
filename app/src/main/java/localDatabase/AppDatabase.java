@@ -7,6 +7,12 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import localDatabase.lightExercise.LightExercise;
+import localDatabase.lightExercise.LightExerciseDao;
+import localDatabase.userInfo.User;
+import localDatabase.userInfo.UserDao;
+import localDatabase.wakeUpAndSleepGoal.SleepGoal;
+import localDatabase.wakeUpAndSleepGoal.SleepGoalDao;
 import localDatabase.utils.DateConverter;
 import localDatabase.utils.TimeConverter;
 

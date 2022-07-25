@@ -1,4 +1,4 @@
-package localDatabase;
+package localDatabase.userInfo;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

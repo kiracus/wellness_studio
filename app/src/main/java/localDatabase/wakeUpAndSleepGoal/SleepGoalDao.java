@@ -1,4 +1,4 @@
-package localDatabase;
+package localDatabase.wakeUpAndSleepGoal;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

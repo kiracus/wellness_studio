@@ -9,8 +9,8 @@ import java.sql.Date;
 import java.util.List;
 
 import localDatabase.AppDatabase;
-import localDatabase.Enums.ExerciseStatus;
-import localDatabase.LightExercise;
+import localDatabase.enums.ExerciseStatus;
+import localDatabase.lightExercise.LightExercise;
 
 public class LightExercises extends AppCompatActivity {
     AppDatabase appDatabase;

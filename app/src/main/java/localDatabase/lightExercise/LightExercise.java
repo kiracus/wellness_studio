@@ -1,4 +1,4 @@
-package localDatabase;
+package localDatabase.lightExercise;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -9,8 +9,8 @@ import androidx.room.TypeConverters;
 import java.sql.Date;
 import java.sql.Time;
 
-import localDatabase.Enums.ExerciseSet;
-import localDatabase.Enums.ExerciseStatus;
+import localDatabase.enums.ExerciseSet;
+import localDatabase.enums.ExerciseStatus;
 import localDatabase.utils.DateConverter;
 import localDatabase.utils.TimeConverter;
 

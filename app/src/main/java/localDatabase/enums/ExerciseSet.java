@@ -1,4 +1,4 @@
-package localDatabase.Enums;
+package localDatabase.enums;
 
 public enum ExerciseSet {
     ARM,
