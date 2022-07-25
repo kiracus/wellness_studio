@@ -2,6 +2,7 @@ package edu.neu.madcourse.wellness_studio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     String nickname;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         greetingTV = findViewById(R.id.greeting_TV);
 
         // set greeting message in header
-        greetingTV.setText(nickname);
+        greetingTV.setText("Hello, " + nickname + " !");
 
         // for test only, home now directs to greeting TODO: home button does nothing
         homeBtn.setOnClickListener(new View.OnClickListener() {
