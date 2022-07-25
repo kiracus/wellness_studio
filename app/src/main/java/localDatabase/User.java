@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "UserInfoTable")
 // if you changed something in the table here (e.g. add a column in User.class,
 // don't forget to go to AppDatabase.class and update the version number (+1) there
 // or it will throw an error
