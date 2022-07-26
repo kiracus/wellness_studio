@@ -36,7 +36,9 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:max="7"
-                android:scaleY="8" />
+                android:scaleY="8"
+                android:indeterminate="true"
+                android:indeterminateTint="@android:color/holo_purple"/>
 
 
             <TextView
