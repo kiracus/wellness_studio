@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="edu.neu.madcourse.wellness_studio" >
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wellness_Studio"
         tools:targetApi="31" >
-        <activity
-            android:name=".AlarmSetting"
-            android:exported="false" />
         <activity
             android:name=".Profile"
             android:exported="false" />
@@ -33,7 +32,8 @@
             android:exported="false" />
         <activity
             android:name=".lightExercises.LightExercises"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".friendsList.FriendsList"
             android:exported="false" />
@@ -46,6 +46,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".lightExercises.AlarmReceiver"/>
     </application>
 
 </manifest>
