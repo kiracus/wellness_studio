@@ -53,7 +53,6 @@ public class LightExercises extends AppCompatActivity {
         setContentView(R.layout.activity_light_exercises);
         createNotificationChannel();
 
-        View view = findViewById(R.id.activity_light_exercises);
         timeTextView = findViewById(R.id.timeTextView);
         reminderSwitch = findViewById(R.id.reminderSwitch);
 
@@ -120,7 +119,7 @@ public class LightExercises extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    //alarm is never set
+                    //when alarm hasn't been set and user turns the switch to ON
                     if(hour == -1) {
                         Toast.makeText(getApplicationContext(), "please set an alarm", Toast.LENGTH_SHORT).show();
                         return;
@@ -134,7 +133,7 @@ public class LightExercises extends AppCompatActivity {
         });
     }
 
-    // a slight couple mins delay between setted time and actual notification time is expected.
+    // turns on the alarm, a slight couple mins delay between setted time and actual notification time is expected.
     public void setAlarm() {
         Intent intent = new Intent(this,AlarmReceiver.class);
         long millis = convertHourAndMinToMilliSeconds();
@@ -146,6 +145,7 @@ public class LightExercises extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"reminder is on",Toast.LENGTH_SHORT).show();
     }
 
+    //turns off the alarm
     public void cancelAlarm() {
         Intent intent = new Intent(this,AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
@@ -164,6 +164,7 @@ public class LightExercises extends AppCompatActivity {
         return millis;
     }
 
+    //database
     public void createNewLightExercise(LightExercise lightExercise) {
         appDatabase.lightExerciseDao().insertLightExercise(lightExercise);
     }
