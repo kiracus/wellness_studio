@@ -45,7 +45,7 @@ public class Greeting extends AppCompatActivity {
 
                 // check if nickname is valid, if yes save nickname, if not send a toast
                 if (checkValidNickname(nicknameInput)) {
-                    // TODO save nickname in user class or db
+                    // create new user with input nickname
                     UserService.createNewUser(db, nicknameInput);
 
                     // start main activity and finish current activity
