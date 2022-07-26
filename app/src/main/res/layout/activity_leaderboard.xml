@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Leaderboard">
+    tools:context=".leaderboard.Leaderboard">
     <TextView
         android:id="@+id/leaderboardHeading"
         android:layout_width="wrap_content"
@@ -81,6 +81,24 @@
         app:layout_constraintHorizontal_bias="0.884"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_groups_fill0_wght400_grad0_opsz48"
+        app:tint="@color/white" />
+
+    <Button
+        android:id="@+id/refresh_leaderboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="120dp"
+        android:clickable="true"
+        android:contentDescription="go to friend list"
+        android:focusable="true"
+        android:text="Update"
+        app:backgroundTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.119"
+        app:layout_constraintStart_toStartOf="parent"
         app:tint="@color/white" />
 
     <LinearLayout

@@ -36,13 +36,16 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <Button
+            <ToggleButton
+                android:id="@+id/exerciseShareButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Share Exercise"
+                android:checked="true"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:backgroundTint="@android:color/holo_green_light"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textOff="Share Exercise"
+                android:textOn="Unshare Exercise"
                 />
 
         </LinearLayout>
