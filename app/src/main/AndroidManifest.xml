@@ -25,7 +25,7 @@
             android:name=".Greeting"
             android:exported="false" />
         <activity
-            android:name=".Leaderboard"
+            android:name=".leaderboard.Leaderboard"
             android:exported="false" />
         <activity
             android:name=".WakeupSleepGoal"
