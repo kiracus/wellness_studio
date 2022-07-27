@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.sql.Date;
+
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
@@ -54,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Log.v(TAG, "if block passed");
-
         // user already exists so load user info
         user = UserService.getCurrentUser(db);
         nickname = user.getNickname();
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         user.setSleepAlarm("22:50");
         user.setWakeUpAlarm("08:10");
         user.setExerciseAlarm("20:00");
+        UserService.updateUserInfo(db, user);
 
 
         // get VI components
@@ -97,9 +98,30 @@ public class MainActivity extends AppCompatActivity {
 
         profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
 
+        // check if light exercise log exists, if not create a record for today
+        if (!UserService.checkIfLightExerciseExists(db)) {
+            Log.v(TAG, "no exercise log exists");
+            // create le for today
+            lightExercise = UserService.createNewLightExercise(db);
+        } else {
+            Log.v(TAG, "getting current le ...");
+            // get existing le
+            lightExercise = UserService.getCurrentLightExercise(db);
+        }
 
-        // set light exercise status
-        currStatus = UserService.getCurrentExerciseStatus(db);
+        // test lightExercise set complete; TODO: delete this before submit
+        Date currdate = new java.sql.Date(System.currentTimeMillis());
+        UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, currdate);
+        UserService.updateExerciseGoalStatus(db, true, currdate);
+
+
+        // load exercise status from db and set status on screen
+//        lightExercise = UserService.getCurrentLightExercise(db);
+//        currStatus = lightExercise.getExerciseStatus();
+        Log.v(TAG, currdate.toString());
+        //currStatus = UserService.getExerciseStatusByDate(db, currdate);
+        currStatus = ExerciseStatus.COMPLETED;  // TODO, testuse, still working on query
+        Log.v(TAG, currStatus.toString());
 
         switch (currStatus) {
             case COMPLETED:

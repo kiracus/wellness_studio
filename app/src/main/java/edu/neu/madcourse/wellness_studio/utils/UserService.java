@@ -3,12 +3,15 @@ package edu.neu.madcourse.wellness_studio.utils;
 
 import java.sql.Date;
 import java.util.List;
+
+import android.hardware.lights.Light;
 import android.util.Log;
 
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
+import localDatabase.utils.DateConverter;
 
 
 // provide all database related operation, will modify the local database
@@ -87,27 +90,71 @@ public class UserService {
             return null;
     }
 
+    public static LightExercise getLightExerciseByDate(AppDatabase db, Date dateInput) {
+        return db.lightExerciseDao().getLightExerciseByDate(dateInput);
+    }
+
     public static boolean checkIfLightExerciseExists(AppDatabase db) {
         return getCurrentLightExercise(db) != null;
     }
 
-    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
-        // get current date
-        long mili = System.currentTimeMillis();
-        Date date = new java.sql.Date(mili);
+    public static LightExercise createNewLightExercise(AppDatabase db) {
+        LightExercise le = new LightExercise();
+        le.setDate(new java.sql.Date(System.currentTimeMillis()));
+        db.lightExerciseDao().insertLightExercise(le);
+        return le;
+    }
 
-        // set date for light exercise instance
-        // no exercise data yet, set as not started
-        if (!checkIfLightExerciseExists(db)) {
-            return ExerciseStatus.NOT_STARTED;
-        } else {
-            // get status by today's date
+//    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
+//        // get current date
+//        long mili = System.currentTimeMillis();
+//        Date date = new java.sql.Date(mili);
+//
+//        // set date for light exercise instance
+//        // no exercise data yet, set as not started
+//        if (!checkIfLightExerciseExists(db)) {
+//            Log.v(TAG, "no current exercise obj exists");
+//            return ExerciseStatus.NOT_STARTED;
+//        } else {
+//            // get status by today's date
+//            Log.v(TAG, "return status now");
+//            System.out.println(db == null);
+//            System.out.println(db.lightExerciseDao() == null);
+//            ExerciseStatus status =
+//                    db.lightExerciseDao().getLightExerciseStatusByDate(date);
+//            System.out.println(status);
+//            return status;
+//        }
+//    }
+
+    public static ExerciseStatus getExerciseStatusByDate(AppDatabase db, Date dateInput) {
+        // convert date to long
+        Long dateLong = DateConverter.fromDate(dateInput);
+        System.out.println(dateLong);
+        if (checkIfLightExerciseExists(db)) {
+            // get status by date
+            Log.v(TAG, "returning status ...");
             ExerciseStatus status =
-                    db.lightExerciseDao().getLightExerciseStatusByDate(date);
+                    db.lightExerciseDao().getLightExerciseStatusByDate(dateLong);
+            System.out.println(status);
             return status;
         }
+        return null;
+    }
 
+    public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, Date date) {
+        if (checkIfLightExerciseExists(db)) {
+            LightExercise lightExercise = getCurrentLightExercise(db);
+            Log.v(TAG, "update status: " + status.toString());
+            db.lightExerciseDao().setLightExerciseStatusByDate(status, date);
+        }
+    }
 
+    public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, Date date) {
+        if (checkIfLightExerciseExists(db)) {
+            Log.v(TAG, "update status: " + isFinished.toString());
+            db.lightExerciseDao().setLightExerciseStatusByDate(isFinished, date);
+        }
     }
 
 }
