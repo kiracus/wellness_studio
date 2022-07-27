@@ -6,15 +6,15 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import localDatabase.AppDatabase;
+import localDatabase.enums.ExerciseStatus;
+import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +24,14 @@ public class MainActivity extends AppCompatActivity {
     // VI
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, profileBtn;
     Button exerciseGoBtn, sleepGoBtn;
-    TextView greetingTV;
+    TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
 
     // user and db
+    protected User user;
     protected String nickname;
+    protected LightExercise lightExercise;
+    protected ExerciseStatus currStatus;
+    protected String currStatusStr, currStatusComment;
     protected AppDatabase db;
 
 
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
 
-        // TODO: check if user already exists
+        // check if user already exists
         // if no, go to greeting screen, finish current activity
         if (!UserService.checkIfUserExists(db)) {
             Log.v(TAG, "no user exists");
@@ -52,10 +56,14 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG, "if block passed");
 
         // user already exists so load user info
-        nickname = UserService.getCurrentUser(db).getNickname();
+        user = UserService.getCurrentUser(db);
+        nickname = user.getNickname();
 
-        // test info here
-        //nickname = "testUser";
+        // use some test data for current user
+        user.setSleepAlarm("22:50");
+        user.setWakeUpAlarm("08:10");
+        user.setExerciseAlarm("20:00");
+
 
         // get VI components
         homeBtn = findViewById(R.id.imageButton_home);
@@ -66,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         exerciseGoBtn = findViewById(R.id.button1);
         sleepGoBtn = findViewById(R.id.button2);
         greetingTV = findViewById(R.id.greeting_TV);
+        exerciseStatusTV = findViewById(R.id.progressdetail1);
+        exerciseStatusCommentTV = findViewById(R.id.progresscomment1);
+        alarmStatusTV = findViewById(R.id.progressdetail2);
 
         // set greeting message in header
         greetingTV.setText("Hello, " + nickname + " !");
@@ -84,6 +95,32 @@ public class MainActivity extends AppCompatActivity {
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
 
         profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
+
+
+        // set light exercise status
+        currStatus = UserService.getCurrentExerciseStatus(db);
+
+        switch (currStatus) {
+            case COMPLETED:
+                currStatusStr = "Completed";
+                currStatusComment = "You did it, congrats!";
+               break;
+            case NOT_STARTED:
+                currStatusStr = "Not Started";
+                currStatusComment = "Start working on your goal!";
+                break;
+            case NOT_FINISHED:
+                currStatusStr = "Not Finished";
+                currStatusComment = "Keep going!";
+                break;
+            default:
+                currStatusStr = "No status available.";
+                currStatusComment = "Try some exercise?";
+                break;
+        }
+
+        exerciseStatusTV.setText(currStatusStr);
+        exerciseStatusCommentTV.setText(currStatusComment);
 
 
 //        // for test only

@@ -6,7 +6,10 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.sql.Date;
 import java.util.List;
+
+import localDatabase.enums.ExerciseStatus;
 
 @Dao
 public interface LightExerciseDao {
@@ -22,5 +25,8 @@ public interface LightExerciseDao {
 
     @Delete
     void deleteLightExercise(LightExercise lightExercise);
+
+    @Query("SELECT exerciseStatus FROM LightExerciseTable WHERE date = :dateInput")
+    ExerciseStatus getLightExerciseStatusByDate(Date dateInput);
 }
 
