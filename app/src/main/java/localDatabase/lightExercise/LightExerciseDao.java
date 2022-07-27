@@ -26,7 +26,21 @@ public interface LightExerciseDao {
     @Delete
     void deleteLightExercise(LightExercise lightExercise);
 
+    // get status by date (in long form, not date)
     @Query("SELECT exerciseStatus FROM LightExerciseTable WHERE date = :dateInput")
     ExerciseStatus getLightExerciseStatusByDate(String dateInput);
+
+    // get light exercise obj by date
+    @Query("SELECT * FROM LightExerciseTable WHERE date = :dateInput")
+    LightExercise getLightExerciseByDate(String dateInput);
+
+    // update to some status by date
+    @Query("UPDATE LightExerciseTable SET exerciseStatus = :status WHERE date = :dateInput")
+    void setLightExerciseStatusByDate(ExerciseStatus status, String dateInput);
+
+    // update goal finished or not by date
+    @Query("UPDATE LightExerciseTable SET exerciseGoalFinished = :isFinished WHERE date = :dateInput")
+    void setLightExerciseStatusByDate(Boolean isFinished, String dateInput);
+
 }
 
