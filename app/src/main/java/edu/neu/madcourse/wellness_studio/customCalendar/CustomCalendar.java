@@ -2,6 +2,7 @@ package edu.neu.madcourse.wellness_studio.customCalendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -161,7 +162,9 @@ public class CustomCalendar extends LinearLayout {
                 if(prop.dateTextViewResource != -1 && btn.findViewById(prop.dateTextViewResource) != null) ((TextView)btn.findViewById(prop.dateTextViewResource)).setText("" + (previousMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(j-i-1)));
             }
             else {
+                // dates of last month
                 btn = new Button(context);
+                btn.setBackgroundColor(Color.WHITE);
                 ((Button)btn).setText("" + (previousMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(j-i-1)));
             }
             btn.setLayoutParams(new LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
@@ -205,7 +208,9 @@ public class CustomCalendar extends LinearLayout {
                 if(prop.dateTextViewResource != -1 && btn.findViewById(prop.dateTextViewResource) != null) ((TextView)btn.findViewById(prop.dateTextViewResource)).setText("" + k);
             }
             else {
+                // dates of next month
                 btn = new Button(context);
+                btn.setBackgroundColor(Color.WHITE);
                 ((Button)btn).setText("" + k);
             }
             btn.setLayoutParams(new LayoutParams(0, LayoutParams.MATCH_PARENT, 1));

@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:backgroundTint="@color/white"
             android:src="@drawable/ic_keyboard_arrow_left_black_24dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:backgroundTint="@color/white"
             android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
