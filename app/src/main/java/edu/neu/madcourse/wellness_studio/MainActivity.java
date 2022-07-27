@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -110,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // test lightExercise set complete; TODO: delete this before submit
-        Date currdate = new java.sql.Date(System.currentTimeMillis());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String currdate = simpleDateFormat.format(new java.util.Date());
+
         UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, currdate);
         UserService.updateExerciseGoalStatus(db, true, currdate);
 

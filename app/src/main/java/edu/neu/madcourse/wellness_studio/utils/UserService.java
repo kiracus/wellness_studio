@@ -1,7 +1,8 @@
 package edu.neu.madcourse.wellness_studio.utils;
 
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.hardware.lights.Light;
@@ -90,7 +91,7 @@ public class UserService {
             return null;
     }
 
-    public static LightExercise getLightExerciseByDate(AppDatabase db, Date dateInput) {
+    public static LightExercise getLightExerciseByDate(AppDatabase db, String dateInput) {
         return db.lightExerciseDao().getLightExerciseByDate(dateInput);
     }
 
@@ -98,11 +99,26 @@ public class UserService {
         return getCurrentLightExercise(db) != null;
     }
 
+
     public static LightExercise createNewLightExercise(AppDatabase db) {
         LightExercise le = new LightExercise();
-        le.setDate(new java.sql.Date(System.currentTimeMillis()));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = simpleDateFormat.format(new Date());
+        le.setDate(date);
         db.lightExerciseDao().insertLightExercise(le);
         return le;
+    }
+
+    // TODO : dummy return value
+    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
+        // get current date
+//        long mili = System.currentTimeMillis();
+//        Date date = new java.sql.Date(mili);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = simpleDateFormat.format(new Date());
+        Log.d("myApp", "date: " + date);
+        return ExerciseStatus.COMPLETED;
     }
 
 //    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
@@ -127,22 +143,20 @@ public class UserService {
 //        }
 //    }
 
-    public static ExerciseStatus getExerciseStatusByDate(AppDatabase db, Date dateInput) {
-        // convert date to long
-        Long dateLong = DateConverter.fromDate(dateInput);
-        System.out.println(dateLong);
+    public static ExerciseStatus getExerciseStatusByDate(AppDatabase db, String dateInput) {
+
         if (checkIfLightExerciseExists(db)) {
             // get status by date
             Log.v(TAG, "returning status ...");
             ExerciseStatus status =
-                    db.lightExerciseDao().getLightExerciseStatusByDate(dateLong);
+                    db.lightExerciseDao().getLightExerciseStatusByDate(dateInput);
             System.out.println(status);
             return status;
         }
         return null;
     }
 
-    public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, Date date) {
+    public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
         if (checkIfLightExerciseExists(db)) {
             LightExercise lightExercise = getCurrentLightExercise(db);
             Log.v(TAG, "update status: " + status.toString());
@@ -150,7 +164,7 @@ public class UserService {
         }
     }
 
-    public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, Date date) {
+    public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
             Log.v(TAG, "update status: " + isFinished.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(isFinished, date);
