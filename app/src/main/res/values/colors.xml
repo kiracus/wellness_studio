@@ -12,6 +12,8 @@
     <color name="deep_blue">#00699A</color>
 
     <color name="red">#E13629</color>
+    <color name="yellow">#FFC107</color>
+    <color name="green">#8BC34A</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
