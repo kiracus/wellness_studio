@@ -6,4 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".Profile">
 
+    <CalendarView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+    </CalendarView>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

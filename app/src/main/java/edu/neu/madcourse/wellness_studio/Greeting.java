@@ -8,19 +8,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
+import localDatabase.AppDatabase;
 
+// user only enters this screen if db has no user info, will check userinfo when main starts
 public class Greeting extends AppCompatActivity {
+    // test
+    private final static String TAG = "greet";
 
+    // VI
     EditText enterNameET;
     Button startBtn;
 
+    // user and db
     private String nicknameInput;
+    protected AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greeting);
+
+        // initialize db instance
+        db = AppDatabase.getDbInstance(this.getApplicationContext());
 
         enterNameET = findViewById(R.id.enter_name_ET);
         startBtn = findViewById(R.id.start_button);
@@ -34,7 +45,8 @@ public class Greeting extends AppCompatActivity {
 
                 // check if nickname is valid, if yes save nickname, if not send a toast
                 if (checkValidNickname(nicknameInput)) {
-                    // TODO save nickname in user class or db
+                    // create new user with input nickname
+                    UserService.createNewUser(db, nicknameInput);
 
                     // start main activity and finish current activity
                     startActivity(new Intent(Greeting.this, MainActivity.class));
