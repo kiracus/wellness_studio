@@ -56,5 +56,23 @@
         tools:layout_editor_absoluteX="302dp"
         tools:layout_editor_absoluteY="112dp" />
 
+<!--    <com.kofigyan.stateprogressbar.StateProgressBar-->
+<!--        android:id="@+id/light_exercises_state_progress_bar"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        app:spb_animateToCurrentProgressState="true"-->
+<!--        app:spb_checkStateCompleted="true"-->
+<!--        app:spb_currentStateDescriptionColor="#0F9D58"-->
+<!--        app:spb_currentStateNumber="one"-->
+<!--        app:spb_maxStateNumber="four"-->
+<!--        app:spb_stateBackgroundColor="#BDBDBD"-->
+<!--        app:spb_stateDescriptionColor="#808080"-->
+<!--        app:spb_stateForegroundColor="#0F9D58"-->
+<!--        app:spb_stateNumberBackgroundColor="#808080"-->
+<!--        app:spb_stateNumberForegroundColor="#eeeeee"-->
+<!--        tools:layout_editor_absoluteX="73dp"-->
+<!--        tools:layout_editor_absoluteY="449dp" />-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

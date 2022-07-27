@@ -44,6 +44,7 @@ public class LightExercises extends AppCompatActivity {
     int hour, min = -1;
     TextView timeTextView;
     Switch reminderSwitch;
+
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
 
@@ -65,7 +66,7 @@ public class LightExercises extends AppCompatActivity {
             long mili = System.currentTimeMillis();
             Date date = new java.sql.Date(mili);
             lightExercise = new LightExercise();
-            lightExercise.setDate(date);
+//            lightExercise.setDate(date);
             createNewLightExercise(lightExercise);
         }
         else {
@@ -176,7 +177,7 @@ public class LightExercises extends AppCompatActivity {
 
     public void loadLightExerciseInfo() {
         LightExercise lightExercise = getCurrentLightExercise();
-        Date date = lightExercise.getDate();
+        String date = lightExercise.getDate();
         ExerciseStatus exerciseStatus = lightExercise.getExerciseStatus();
         Log.d("Myapp","date: " + date + "exerciseStatus: " + exerciseStatus);
     }

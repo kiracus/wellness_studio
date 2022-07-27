@@ -1,7 +1,8 @@
 package edu.neu.madcourse.wellness_studio.utils;
 
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import android.util.Log;
 
@@ -93,8 +94,12 @@ public class UserService {
 
     public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
         // get current date
-        long mili = System.currentTimeMillis();
-        Date date = new java.sql.Date(mili);
+//        long mili = System.currentTimeMillis();
+//        Date date = new java.sql.Date(mili);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = simpleDateFormat.format(new Date());
+        Log.d("myApp", "date: " + date);
 
         // set date for light exercise instance
         // no exercise data yet, set as not started

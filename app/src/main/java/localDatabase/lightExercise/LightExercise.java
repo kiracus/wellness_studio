@@ -18,8 +18,7 @@ import localDatabase.utils.TimeConverter;
 public class LightExercise {
     @PrimaryKey(autoGenerate = false)
     @NonNull
-    @TypeConverters(DateConverter.class)
-    public Date date;
+    public String date;
 
     @ColumnInfo(name = "exerciseReminder")
     @TypeConverters(TimeConverter.class)
@@ -50,11 +49,11 @@ public class LightExercise {
     public Boolean stepFourCompleted;
 
     @NonNull
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(@NonNull Date date) {
+    public void setDate(@NonNull String date) {
         this.date = date;
     }
 

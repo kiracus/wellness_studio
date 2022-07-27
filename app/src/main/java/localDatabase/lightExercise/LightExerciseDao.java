@@ -27,6 +27,6 @@ public interface LightExerciseDao {
     void deleteLightExercise(LightExercise lightExercise);
 
     @Query("SELECT exerciseStatus FROM LightExerciseTable WHERE date = :dateInput")
-    ExerciseStatus getLightExerciseStatusByDate(Date dateInput);
+    ExerciseStatus getLightExerciseStatusByDate(String dateInput);
 }
 
