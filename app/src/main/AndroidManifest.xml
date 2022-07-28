@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wellness_Studio"
         tools:targetApi="31">
+
+        <activity
+            android:name=".lightExercises.LightExercises_DuringExercise"
+            android:exported="false" />
         <activity
             android:name=".profile.ChangeProfile"
             android:exported="false" />
