@@ -22,11 +22,14 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import java.sql.Date;
 import java.util.Calendar;
@@ -39,12 +42,18 @@ import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 
-public class LightExercises extends AppCompatActivity {
+public class LightExercises extends AppCompatActivity implements View.OnClickListener{
     AppDatabase appDatabase;
-    int hour, min = -1;
+    int hour, min = -1000;
+    int currentStep = 0;
+
     TextView timeTextView;
     Switch reminderSwitch;
+    ImageView armImageView;
+    ImageView shoulderImageView;
+    ImageView legImageView;
 
+    StateProgressBar stateProgressBar;
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
 
@@ -56,24 +65,38 @@ public class LightExercises extends AppCompatActivity {
 
         timeTextView = findViewById(R.id.timeTextView);
         reminderSwitch = findViewById(R.id.reminderSwitch);
+        armImageView = findViewById(R.id.arm);
+        shoulderImageView = findViewById(R.id.shoulder);
+        legImageView = findViewById(R.id.leg);
+        stateProgressBar = findViewById(R.id.light_exercises_state_progress_bar);
 
+        //set onclick listener for choosing focus area and leads to the actual workout page
+        armImageView.setOnClickListener(this);
+        shoulderImageView.setOnClickListener(this);
+        legImageView.setOnClickListener(this);
+
+        stateProgressBar.setStateDescriptionData(new String[]{"Step 1", "Step 2", "Step 3", "Step 4"});
+        while (currentStep <= 4) {
+            setStateProgressBar();
+            currentStep++;
+        }
         setReminderSwitch(reminderSwitch);
 
         appDatabase = AppDatabase.getDbInstance(this.getApplicationContext());
 
         LightExercise lightExercise = getCurrentLightExercise();
-        if (lightExercise == null) {
-            long mili = System.currentTimeMillis();
-            Date date = new java.sql.Date(mili);
-            lightExercise = new LightExercise();
-//            lightExercise.setDate(date);
-            createNewLightExercise(lightExercise);
-        }
-        else {
-            lightExercise.setExerciseStatus(ExerciseStatus.NOT_STARTED);
-            updateLightExerciseInfo(lightExercise);
-        }
-        loadLightExerciseInfo();
+//        if (lightExercise == null) {
+//            long mili = System.currentTimeMillis();
+//            Date date = new java.sql.Date(mili);
+//            lightExercise = new LightExercise();
+////            lightExercise.setDate(date);
+//            createNewLightExercise(lightExercise);
+//        }
+//        else {
+//            lightExercise.setExerciseStatus(ExerciseStatus.NOT_STARTED);
+//            updateLightExerciseInfo(lightExercise);
+//        }
+//        loadLightExerciseInfo();
     }
 
     private void createNotificationChannel() {
@@ -157,13 +180,43 @@ public class LightExercises extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"reminder is off",Toast.LENGTH_SHORT).show();
     }
 
-    private long convertHourAndMinToMilliSeconds() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR,hour,min);
-        Log.d("myApp","calenar" + calendar.getTime());
-        long millis = calendar.getTimeInMillis();
-        return millis;
+    //set onClickListener for choosing focus area and leads to different exercise page
+    @Override
+    public void onClick(View v) {
+        int theId = v.getId();
+        Log.d("myApp", "Onclick:");
+        Intent intent = new Intent(this,LightExercises_DuringExercise.class);
+        if(theId == R.id.arm) {
+            intent.putExtra("exercises_focus_area", "arm");
+            Log.d("myApp", "Onclick:");
+        }
+        if(theId == R.id.shoulder) {
+            intent.putExtra("exercises_focus_area", "shoulder");
+        }
+        if(theId == R.id.leg) {
+            intent.putExtra("exercises_focus_area", "leg");
+        }
+        Log.d("myApp", "intent extra: " + intent.getStringExtra("exercises_focus_area"));
+        startActivity(intent);
     }
+
+    //set progress bar
+    public void setStateProgressBar() {
+        if(currentStep == 1) {
+            stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
+        }
+        if(currentStep == 2) {
+            stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
+        }
+        if(currentStep == 3) {
+            stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
+        }
+        if(currentStep == 4) {
+            stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
+        }
+    }
+
+
 
     //database
     public void createNewLightExercise(LightExercise lightExercise) {
@@ -189,5 +242,13 @@ public class LightExercises extends AppCompatActivity {
         }
         else
             return null;
+    }
+
+    private long convertHourAndMinToMilliSeconds() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR,hour,min);
+        Log.d("myApp","calenar" + calendar.getTime());
+        long millis = calendar.getTimeInMillis();
+        return millis;
     }
 }
