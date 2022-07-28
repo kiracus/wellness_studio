@@ -38,7 +38,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.room:room-runtime:2.5.0-alpha02'
     implementation 'androidx.room:room-common:2.3.0'
-//    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
     annotationProcessor "androidx.room:room-compiler:2.5.0-alpha02"
 
     testImplementation 'junit:junit:4.13.2'
@@ -49,4 +48,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-database'
 
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
 }
