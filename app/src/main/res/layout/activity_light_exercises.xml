@@ -112,7 +112,7 @@
                 android:src="@drawable/ic_baseline_exercise_24"/>
 
             <ImageView
-                android:id="@+id/shoulder"
+                android:id="@+id/back"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_marginLeft="10dp"

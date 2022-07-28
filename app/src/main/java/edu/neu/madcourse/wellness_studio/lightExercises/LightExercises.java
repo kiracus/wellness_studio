@@ -39,6 +39,7 @@ import java.util.Locale;
 
 import edu.neu.madcourse.wellness_studio.R;
 import localDatabase.AppDatabase;
+import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 
@@ -50,7 +51,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     TextView timeTextView;
     Switch reminderSwitch;
     ImageView armImageView;
-    ImageView shoulderImageView;
+    ImageView backImageView;
     ImageView legImageView;
 
     StateProgressBar stateProgressBar;
@@ -66,13 +67,13 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         timeTextView = findViewById(R.id.timeTextView);
         reminderSwitch = findViewById(R.id.reminderSwitch);
         armImageView = findViewById(R.id.arm);
-        shoulderImageView = findViewById(R.id.shoulder);
+        backImageView = findViewById(R.id.back);
         legImageView = findViewById(R.id.leg);
         stateProgressBar = findViewById(R.id.light_exercises_state_progress_bar);
 
         //set onclick listener for choosing focus area and leads to the actual workout page
         armImageView.setOnClickListener(this);
-        shoulderImageView.setOnClickListener(this);
+        backImageView.setOnClickListener(this);
         legImageView.setOnClickListener(this);
 
         stateProgressBar.setStateDescriptionData(new String[]{"Step 1", "Step 2", "Step 3", "Step 4"});
@@ -185,20 +186,25 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         int theId = v.getId();
         Log.d("myApp", "Onclick:");
-        Intent intent = new Intent(this,LightExercises_DuringExercise.class);
         if(theId == R.id.arm) {
-            intent.putExtra("exercises_focus_area", "arm");
+            sendAnIntentForChosenFocusedArea( ExerciseSet.ARM);
             Log.d("myApp", "Onclick:");
         }
-        if(theId == R.id.shoulder) {
-            intent.putExtra("exercises_focus_area", "shoulder");
+        if(theId == R.id.back) {
+            sendAnIntentForChosenFocusedArea( ExerciseSet.BACK);
         }
         if(theId == R.id.leg) {
-            intent.putExtra("exercises_focus_area", "leg");
+            sendAnIntentForChosenFocusedArea(ExerciseSet.LEG);
         }
-        Log.d("myApp", "intent extra: " + intent.getStringExtra("exercises_focus_area"));
+    }
+
+    //passing chosen selected area by an intent
+    public void sendAnIntentForChosenFocusedArea(ExerciseSet chosenFocusArea) {
+        Intent intent = new Intent(this,LightExercises_DuringExercise.class);
+        intent.putExtra("exercises_focus_area", chosenFocusArea);
         startActivity(intent);
     }
+
 
     //set progress bar
     public void setStateProgressBar() {
