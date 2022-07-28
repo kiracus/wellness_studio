@@ -82,78 +82,52 @@ public class UserService {
     }
 
     // light exercise
+    // get le obj for the current date (today)
     public static LightExercise getCurrentLightExercise(AppDatabase db) {
-        List<LightExercise> LightExerciseList = db.lightExerciseDao().getLightExercise();
-        if(LightExerciseList.size() != 0) {
-            return LightExerciseList.get(0);
-        }
-        else
-            return null;
+        return getLightExerciseByDate(db, Utils.getCurrentDate());
     }
 
+    // get a le object for a specific date, if obj does not exist, create a new one then return that
     public static LightExercise getLightExerciseByDate(AppDatabase db, String dateInput) {
-        return db.lightExerciseDao().getLightExerciseByDate(dateInput);
-    }
-
-    public static boolean checkIfLightExerciseExists(AppDatabase db) {
-        return getCurrentLightExercise(db) != null;
-    }
-
-
-    public static LightExercise createNewLightExercise(AppDatabase db) {
-        LightExercise le = new LightExercise();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String date = simpleDateFormat.format(new Date());
-        le.setDate(date);
-        db.lightExerciseDao().insertLightExercise(le);
+        LightExercise le =  db.lightExerciseDao().getLightExerciseByDate(dateInput);
+        if (le == null) {
+            Log.v(TAG, "no le log for today, creating one");
+            le = createNewLightExercise(db, dateInput);
+        }
+        Log.v(TAG, "returning le obj of date: " + le.date);
         return le;
     }
 
-    // TODO : dummy return value
-    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
-        // get current date
-//        long mili = System.currentTimeMillis();
-//        Date date = new java.sql.Date(mili);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String date = simpleDateFormat.format(new Date());
-        Log.d("myApp", "date: " + date);
-        return ExerciseStatus.COMPLETED;
+    // check if any row in LightExerciseTable
+    public static boolean checkIfLightExerciseExists(AppDatabase db) {
+        List<LightExercise> LightExerciseList = db.lightExerciseDao().getLightExercise();
+        return LightExerciseList.size() != 0;
     }
 
-//    public static ExerciseStatus getCurrentExerciseStatus(AppDatabase db) {
-//        // get current date
-//        long mili = System.currentTimeMillis();
-//        Date date = new java.sql.Date(mili);
-//
-//        // set date for light exercise instance
-//        // no exercise data yet, set as not started
-//        if (!checkIfLightExerciseExists(db)) {
-//            Log.v(TAG, "no current exercise obj exists");
-//            return ExerciseStatus.NOT_STARTED;
-//        } else {
-//            // get status by today's date
-//            Log.v(TAG, "return status now");
-//            System.out.println(db == null);
-//            System.out.println(db.lightExerciseDao() == null);
-//            ExerciseStatus status =
-//                    db.lightExerciseDao().getLightExerciseStatusByDate(date);
-//            System.out.println(status);
-//            return status;
-//        }
-//    }
+    // create a new le obj for the current date and a status of "not started"
+    public static LightExercise createNewLightExercise(AppDatabase db) {
+        LightExercise le = new LightExercise();
+        le.setDate(Utils.getCurrentDate());
+        le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
+        db.lightExerciseDao().insertLightExercise(le);
+        Log.v(TAG, "new le obj created for date: " + le.date);
+        return le;
+    }
 
+    // create a new le obj for the input date and a status of "not started"
+    public static LightExercise createNewLightExercise(AppDatabase db, String date) {
+        LightExercise le = new LightExercise();
+        le.setDate(date);
+        le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
+        db.lightExerciseDao().insertLightExercise(le);
+        Log.v(TAG, "new le obj created for date: " + date);
+        return le;
+    }
+
+    // get exercise status by date, return value will never be null
     public static ExerciseStatus getExerciseStatusByDate(AppDatabase db, String dateInput) {
-
-        if (checkIfLightExerciseExists(db)) {
-            // get status by date
-            Log.v(TAG, "returning status ...");
-            ExerciseStatus status =
-                    db.lightExerciseDao().getLightExerciseStatusByDate(dateInput);
-            System.out.println(status);
-            return status;
-        }
-        return null;
+        LightExercise le = getLightExerciseByDate(db, dateInput);
+        return le.exerciseStatus;
     }
 
     public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
@@ -166,9 +140,26 @@ public class UserService {
 
     public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "update status: " + isFinished.toString());
+            Log.v(TAG, "updating status: " + isFinished.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(isFinished, date);
         }
+    }
+
+    // set sleep and wakeup alarm
+    public static String getSleepAlarm(AppDatabase db) {
+        String res = db.userDao().getSleepAlarm();
+        if (res == null) {
+            return "--:--";
+        } else
+            return res;
+    }
+
+    public static String getWakeupAlarm(AppDatabase db) {
+        String res = db.userDao().getWakeupAlarm();
+        if (res == null) {
+            return "--:--";
+        } else
+            return res;
     }
 
 }
