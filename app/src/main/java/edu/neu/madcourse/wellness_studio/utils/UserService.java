@@ -58,6 +58,10 @@ public class UserService {
         db.userDao().updateUser(user);
     }
 
+    public static String getNickname(AppDatabase db) {
+        return db.userDao().getUserNickname();
+    }
+
     public static String showUserInfo(AppDatabase db) {
         User user = getCurrentUser(db);
         assert user != null;

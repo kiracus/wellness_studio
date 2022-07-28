@@ -6,15 +6,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set click listeners for buttons
         exerciseBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
+        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
         sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
@@ -140,6 +139,16 @@ public class MainActivity extends AppCompatActivity {
         wakeupAlarmStr = UserService.getWakeupAlarm(db);
 
         alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
+
+        // set exercise go button
+        exerciseGoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // show go if not started yet or completed, go to le activity
+
+                // if not finished (has some currentset value) go to that set (pass intent maybe)
+            }
+        });
 
     }
 }

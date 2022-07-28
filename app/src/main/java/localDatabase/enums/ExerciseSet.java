@@ -3,5 +3,6 @@ package localDatabase.enums;
 public enum ExerciseSet {
     ARM,
     LEG,
-    BACK
+    BACK,
+    NOT_SELECTED
 }
