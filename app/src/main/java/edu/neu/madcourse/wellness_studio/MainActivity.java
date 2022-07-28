@@ -13,10 +13,12 @@ import android.widget.TextView;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises_DuringExercise;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
+import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected String nickname;
     protected LightExercise lightExercise;
     protected ExerciseStatus currStatus;
+    protected ExerciseSet currSet;
     protected String currStatusStr, currStatusComment;
     protected String sleepAlarmStr, wakeupAlarmStr;
     protected AppDatabase db;
@@ -69,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         user.setWakeUpAlarm("08:10");
         user.setExerciseAlarm("20:00");
         UserService.updateUserInfo(db, user);
+
+        // test set 07-26 as COMPLETED TODO delete this
+        UserService.updateExerciseStatus(db, ExerciseStatus.NOT_FINISHED, "2022-07-26");
+        UserService.updateCurrSet(db, ExerciseSet.ARM);
 
 
         // get VI components
@@ -131,8 +138,34 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusTV.setText(currStatusStr);
         exerciseStatusCommentTV.setText(currStatusComment);
 
-        // test set 07-26 as COMPLETED TODO delete this
-        UserService.updateExerciseStatus(db, ExerciseStatus.NOT_FINISHED, "2022-07-26");
+        // get current set and set exercise button text
+        currSet = UserService.getCurrentSetByDate(db, currdate);
+        switch (currSet) {
+            case NOT_SELECTED:
+                exerciseGoBtn.setText("GO");
+                break;
+            default:
+                exerciseGoBtn.setText("CONTINUE");
+        }
+
+        // set exercise go button respond
+        exerciseGoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // show go if not started yet or completed, go to le activity
+                switch (currSet) {
+                    case NOT_SELECTED:
+                        goToLightExercise();
+                        break;
+                    default:
+                        goToCurrentSet();
+                        break;
+                }
+
+                // if not finished (has some currentset value) go to that set (pass intent maybe)
+            }
+        });
+
 
         // show sleep wakeup alarm status
         sleepAlarmStr = UserService.getSleepAlarm(db);
@@ -140,15 +173,18 @@ public class MainActivity extends AppCompatActivity {
 
         alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
 
-        // set exercise go button
-        exerciseGoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // show go if not started yet or completed, go to le activity
 
-                // if not finished (has some currentset value) go to that set (pass intent maybe)
-            }
-        });
 
+    }
+
+
+    private void goToLightExercise() {
+        startActivity(new Intent(MainActivity.this, LightExercises.class));
+    }
+
+    private void goToCurrentSet() {
+        Intent intent = new Intent(this,LightExercises_DuringExercise.class);
+        intent.putExtra("exercises_focus_area", currSet);
+        startActivity(intent);
     }
 }

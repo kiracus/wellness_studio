@@ -9,6 +9,7 @@ import androidx.room.Update;
 import java.sql.Date;
 import java.util.List;
 
+import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 
 @Dao
@@ -30,6 +31,10 @@ public interface LightExerciseDao {
     @Query("SELECT exerciseStatus FROM LightExerciseTable WHERE date = :dateInput")
     ExerciseStatus getLightExerciseStatusByDate(String dateInput);
 
+    // get current set by date
+    @Query("SELECT currentSet FROM LightExerciseTable WHERE date = :dateInput")
+    ExerciseSet getCurrentSetByDate(String dateInput);
+
     // get light exercise obj by date
     @Query("SELECT * FROM LightExerciseTable WHERE date = :dateInput")
     LightExercise getLightExerciseByDate(String dateInput);
@@ -41,6 +46,11 @@ public interface LightExerciseDao {
     // update goal finished or not by date
     @Query("UPDATE LightExerciseTable SET exerciseGoalFinished = :isFinished WHERE date = :dateInput")
     void setLightExerciseStatusByDate(Boolean isFinished, String dateInput);
+
+    // update current set by date
+    @Query("UPDATE LightExerciseTable SET currentSet = :set WHERE date = :date")
+    void setCurrSet(ExerciseSet set, String date);
+
 
 }
 
