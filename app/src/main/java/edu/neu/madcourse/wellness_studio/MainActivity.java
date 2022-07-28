@@ -6,16 +6,16 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
+import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected LightExercise lightExercise;
     protected ExerciseStatus currStatus;
     protected String currStatusStr, currStatusComment;
+    protected String sleepAlarmStr, wakeupAlarmStr;
     protected AppDatabase db;
+    protected String currdate;
 
 
     @SuppressLint("SetTextI18n")
@@ -59,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
         // user already exists so load user info
         user = UserService.getCurrentUser(db);
+        assert user != null;  // should not happen though because we'll return if user is null
         nickname = user.getNickname();
 
-        // use some test data for current user
+        // use some test data for current user TODO delete this
         user.setSleepAlarm("22:50");
         user.setWakeUpAlarm("08:10");
         user.setExerciseAlarm("20:00");
@@ -81,51 +84,31 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusCommentTV = findViewById(R.id.progresscomment1);
         alarmStatusTV = findViewById(R.id.progressdetail2);
 
-        // set greeting message in header
-        greetingTV.setText("Hello, " + nickname + " !");
-
-
         // for test only, home now directs to greeting TODO: home button does nothing
         homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
 
         // set click listeners for buttons
         exerciseBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-
+        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
         sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
-
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
-
         profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
 
-        // check if light exercise log exists, if not create a record for today
-        if (!UserService.checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "no exercise log exists");
-            // create le for today
-            lightExercise = UserService.createNewLightExercise(db);
-        } else {
-            Log.v(TAG, "getting current le ...");
-            // get existing le
-            lightExercise = UserService.getCurrentLightExercise(db);
+        // set greeting message in header
+        greetingTV.setText("Hello, " + nickname + " !");
+
+        // show current date
+        currdate = Utils.getCurrentDate();
+
+        // show exercise progress
+        // get a le obj for today (UserService should handle the null case)
+        currStatus = UserService.getExerciseStatusByDate(db, currdate);
+        if (currStatus == null) {
+            currStatus = ExerciseStatus.UNKNOWN; // should never happen
         }
 
-        // test lightExercise set complete; TODO: delete this before submit
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String currdate = simpleDateFormat.format(new java.util.Date());
-
-        UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, currdate);
-        UserService.updateExerciseGoalStatus(db, true, currdate);
-
-
-        // load exercise status from db and set status on screen
-//        lightExercise = UserService.getCurrentLightExercise(db);
-//        currStatus = lightExercise.getExerciseStatus();
-        Log.v(TAG, currdate.toString());
-        //currStatus = UserService.getExerciseStatusByDate(db, currdate);
-        currStatus = ExerciseStatus.COMPLETED;  // TODO, testuse, still working on query
-        Log.v(TAG, currStatus.toString());
-
+        // set text view
         switch (currStatus) {
             case COMPLETED:
                 currStatusStr = "Completed";
@@ -139,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 currStatusStr = "Not Finished";
                 currStatusComment = "Keep going!";
                 break;
-            default:
+            default:  // handle UNKNOWN, should never happen
                 currStatusStr = "No status available.";
                 currStatusComment = "Try some exercise?";
                 break;
@@ -148,13 +131,24 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusTV.setText(currStatusStr);
         exerciseStatusCommentTV.setText(currStatusComment);
 
+        // test set 07-26 as COMPLETED TODO delete this
+        UserService.updateExerciseStatus(db, ExerciseStatus.NOT_FINISHED, "2022-07-26");
 
-//        // for test only
-//        profileBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(MainActivity.this, Profile_With_Local_DB_Example.class));
-//            }
-//        });
+        // show sleep wakeup alarm status
+        sleepAlarmStr = UserService.getSleepAlarm(db);
+        wakeupAlarmStr = UserService.getWakeupAlarm(db);
+
+        alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
+
+        // set exercise go button
+        exerciseGoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // show go if not started yet or completed, go to le activity
+
+                // if not finished (has some currentset value) go to that set (pass intent maybe)
+            }
+        });
+
     }
 }

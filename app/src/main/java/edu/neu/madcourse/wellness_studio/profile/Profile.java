@@ -1,9 +1,14 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.profile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -11,24 +16,75 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.R;
+import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.customCalendar.CustomCalendar;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnDateSelectedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnNavigationButtonClickedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.Property;
+import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
+import edu.neu.madcourse.wellness_studio.utils.UserService;
+import localDatabase.AppDatabase;
+import localDatabase.lightExercise.LightExercise;
 
 public class Profile extends AppCompatActivity implements OnNavigationButtonClickedListener {
+    // test
+    protected static String TAG = "profile";
+
+    // VI
+    ImageButton settingBtn, loginBtn;
+    ImageView profileImgIV;
+    TextView nicknameTV;
+    CheckBox goalFinishedCB;
+    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    Calendar calendar;
+
+    // db
+    protected AppDatabase db;
+
     public static int MONTH = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Calendar calendar = Calendar.getInstance();
+
+        // initialize db instance
+        db = AppDatabase.getDbInstance(this.getApplicationContext());
+
+        calendar = Calendar.getInstance();
         MONTH = calendar.get(Calendar.MONTH);
 
-        // get VI component
-        final CustomCalendar customCalendar = (CustomCalendar) findViewById(R.id.custom_calendar);
+        // get VI components
+        final CustomCalendar customCalendar = findViewById(R.id.custom_calendar);
 
+        settingBtn = findViewById(R.id.imageButton_setting);
+        loginBtn = findViewById(R.id.imageButton_login);
+
+        profileImgIV = findViewById(R.id.profile_img);
+        nicknameTV = findViewById(R.id.nickname_profile);
+        goalFinishedCB = findViewById(R.id.goal_finished_checker);
+
+        homeBtn = findViewById(R.id.imageButton_home);
+        exerciseBtn = findViewById(R.id.imageButton_exercise);
+        sleepBtn = findViewById(R.id.imageButton_sleep);
+        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+
+        // show username and profile img TODO: img
+        nicknameTV.setText(UserService.getNickname(db));
+
+        // set buttons
+        homeBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Greeting.class)));
+        exerciseBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, LightExercise.class)));
+        sleepBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, WakeupSleepGoal.class)));
+        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Leaderboard.class)));
+        settingBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, ChangeProfile.class)));
+
+        // check if logged in, set login / logout button TODO
+
+
+        // set calendar
         // initialize hashmap to hold properties,
         // key is a string of description, value is a property obj
         HashMap<Object, Property> propertyMap = new HashMap<>();

@@ -1,4 +1,4 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.profile;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
+import edu.neu.madcourse.wellness_studio.R;
 import localDatabase.AppDatabase;
 import localDatabase.userInfo.User;
 

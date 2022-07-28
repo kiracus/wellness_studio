@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Utils {
 
     static String TAG = "util";
@@ -31,5 +34,11 @@ public class Utils {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    // return current date in a form like "2022-07-26"
+    public static String getCurrentDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return simpleDateFormat.format(new Date());
     }
 }
