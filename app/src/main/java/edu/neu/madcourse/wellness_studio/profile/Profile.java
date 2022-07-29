@@ -113,18 +113,6 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         propSelected.dateTextViewResource = R.id.selected_text;
         propertyMap.put("selected", propSelected);
 
-
-//        Property propUnavailable = new Property();
-//        propUnavailable.layoutResource = R.layout.unavailable_view;
-//        //You can leave the text view field blank. Custom calendar won't try to set a date on such views
-//        propUnavailable.enable = false;
-//        mapDescToProp.put("unavailable", propUnavailable);
-//
-//        Property propHoliday = new Property();
-//        propHoliday.layoutResource = R.layout.holiday_view;
-//        propHoliday.dateTextViewResource = R.id.holiday_datetextview;
-//        mapDescToProp.put("holiday", propHoliday);
-
         customCalendar.setPropertyMap(propertyMap);
 
         // initialize hashmap holding dates with description and properties

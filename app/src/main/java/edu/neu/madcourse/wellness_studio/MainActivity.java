@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     // user and db
     protected User user;
     protected String nickname;
-    protected LightExercise lightExercise;
+
     protected ExerciseStatus currStatus;
     protected ExerciseSet currSet;
     protected String currStatusStr, currStatusComment;
@@ -73,9 +73,17 @@ public class MainActivity extends AppCompatActivity {
         user.setExerciseAlarm("20:00");
         UserService.updateUserInfo(db, user);
 
-        // test set 07-26 as COMPLETED TODO delete this
-        UserService.updateExerciseStatus(db, ExerciseStatus.NOT_FINISHED, "2022-07-26");
-        UserService.updateCurrSet(db, ExerciseSet.ARM);
+        // test set some dummy data for le TODO delete this
+        String prefix = "2022-07-2";
+        String prefix2 = "2022-06-1";
+        for (int i=0; i<=9; i++) {
+            UserService.createNewLightExercise(db, prefix2+i);
+            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
+        }
+        for (int i=0; i<=7; i++) {
+            UserService.createNewLightExercise(db, prefix+i);
+            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
+        }
 
 
         // get VI components
@@ -95,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
 
         // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
+        exerciseBtn.setOnClickListener(v -> goToLightExercise());
         //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
         sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
@@ -152,17 +160,14 @@ public class MainActivity extends AppCompatActivity {
         exerciseGoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // show go if not started yet or completed, go to le activity
                 switch (currSet) {
                     case NOT_SELECTED:
                         goToLightExercise();
                         break;
                     default:
-                        goToCurrentSet();
+                        goToCurrentSet();  // if has currSet, go to that set
                         break;
                 }
-
-                // if not finished (has some currentset value) go to that set (pass intent maybe)
             }
         });
 
@@ -187,4 +192,5 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("exercises_focus_area", currSet);
         startActivity(intent);
     }
+
 }
