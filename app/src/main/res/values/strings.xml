@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Wellness_Studio</string>
 
-<<<<<<< HEAD
 
     <string name="wakeup_sleep_goal_title_TV">WAKEUP SLEEP GOAL</string>
     <string name="todo">TODO</string>
@@ -19,7 +18,7 @@
 
     <string name="sleep_reminder_title">SLEEP REMINDER SETTINGS</string>
     <string name="allow_sensor_use_TV">ALLOW SENSOR USE</string>
-=======
+
     <string-array name="days_of_week">
         <item>Sunday</item>
         <item>Monday</item>
@@ -30,5 +29,5 @@
         <item>Saturday</item>
     </string-array>
 
->>>>>>> 23d5c8e28dc4fd0ff31b42a0f07b7cadc0d518fd
+
 </resources>
