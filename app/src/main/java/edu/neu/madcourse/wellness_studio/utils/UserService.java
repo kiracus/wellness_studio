@@ -9,6 +9,7 @@ import android.hardware.lights.Light;
 import android.util.Log;
 
 import localDatabase.AppDatabase;
+import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
@@ -50,6 +51,12 @@ public class UserService {
     public static void createNewUser(AppDatabase db, String nickname) {
         User user = new User();
         user.setNickname(nickname);
+        // TODO set other properties
+        user.setHasOnlineAccount(false);
+        user.setHasLoggedInOnline(false);
+        // user a default avatar in assets folder
+        user.setProfileImg("some/address");
+
         createNewUser(db, user);
         Log.v(TAG, showUserInfo(db));
     }
@@ -108,23 +115,31 @@ public class UserService {
         return LightExerciseList.size() != 0;
     }
 
+    // check if record for a specific date exists in LightExerciseTable
+    public static boolean checkIfLightExerciseExists(AppDatabase db, String date) {
+        return db.lightExerciseDao().getLightExerciseByDate(date) != null;
+    }
+
     // create a new le obj for the current date and a status of "not started"
     public static LightExercise createNewLightExercise(AppDatabase db) {
-        LightExercise le = new LightExercise();
-        le.setDate(Utils.getCurrentDate());
-        le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
-        db.lightExerciseDao().insertLightExercise(le);
-        Log.v(TAG, "new le obj created for date: " + le.date);
-        return le;
+        return createNewLightExercise(db, Utils.getCurrentDate());
     }
 
     // create a new le obj for the input date and a status of "not started"
     public static LightExercise createNewLightExercise(AppDatabase db, String date) {
-        LightExercise le = new LightExercise();
-        le.setDate(date);
-        le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
-        db.lightExerciseDao().insertLightExercise(le);
-        Log.v(TAG, "new le obj created for date: " + date);
+        LightExercise le;
+        if (!checkIfLightExerciseExists(db, date)) {
+            le = new LightExercise();
+            le.setDate(date);
+            le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
+            le.setCurrentSet(ExerciseSet.NOT_SELECTED);
+            db.lightExerciseDao().insertLightExercise(le);
+            Log.v(TAG, "new le obj created for date: " + date);
+        } else {
+            le = getLightExerciseByDate(db, date);
+            Log.v(TAG, "CANNOT CREATE -> le obj already exists on: " + date);
+        }
+
         return le;
     }
 
@@ -134,20 +149,35 @@ public class UserService {
         return le.exerciseStatus;
     }
 
+    // get current exercise set by date, should never return null
+    public static ExerciseSet getCurrentSetByDate(AppDatabase db, String date) {
+        LightExercise le = getLightExerciseByDate(db, date);
+        return le.currentSet;
+    }
+
     public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
         if (checkIfLightExerciseExists(db)) {
-            LightExercise lightExercise = getCurrentLightExercise(db);
             Log.v(TAG, "update status: " + status.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(status, date);
         }
     }
 
+    // update isFinished by date
     public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
             Log.v(TAG, "updating status: " + isFinished.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(isFinished, date);
         }
     }
+
+    // update current set (for today)
+    public static void updateCurrSet(AppDatabase db, ExerciseSet set) {
+        if (checkIfLightExerciseExists(db)) {
+            Log.v(TAG, "updating currSet: " + set.toString());
+            db.lightExerciseDao().setCurrSet(set, Utils.getCurrentDate());
+        }
+    }
+
 
     // set sleep and wakeup alarm
     public static String getSleepAlarm(AppDatabase db) {

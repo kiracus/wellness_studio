@@ -16,6 +16,7 @@ import localDatabase.AppDatabase;
 public class Greeting extends AppCompatActivity {
     // test
     private final static String TAG = "greet";
+    private final static String NAME_TOAST = "Please enter a valid username within 25 chars.";
 
     // VI
     EditText enterNameET;
@@ -44,7 +45,7 @@ public class Greeting extends AppCompatActivity {
                 nicknameInput = enterNameET.getText().toString();
 
                 // check if nickname is valid, if yes save nickname, if not send a toast
-                if (checkValidNickname(nicknameInput)) {
+                if (Utils.checkValidName(nicknameInput)) {
                     // create new user with input nickname
                     UserService.createNewUser(db, nicknameInput);
 
@@ -53,25 +54,11 @@ public class Greeting extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Utils.postToast("Please enter a valid username.", Greeting.this);
+                    Utils.postToast(NAME_TOAST, Greeting.this);
                 };
             }
         });
     }
 
-    // check if a string only contains alphabet and digit
-    private boolean checkValidNickname(String s) {
-        if (s == null || s.equals("")) {
-            return false;
-        } else {
-            int len = s.length();
-            for (int i = 0; i < len; i++) {
-                if ((!Character.isLetterOrDigit(s.charAt(i)))) {
-                    return false;
-                }
-            }
-            return true;
-        }
 
-    }
 }
