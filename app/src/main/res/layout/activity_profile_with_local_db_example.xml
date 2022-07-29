@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Profile_With_Local_DB_Example">
+    tools:context=".profile.Profile_With_Local_DB_Example">
 
     <TextView
         android:id="@+id/textViewInProfileTest2"

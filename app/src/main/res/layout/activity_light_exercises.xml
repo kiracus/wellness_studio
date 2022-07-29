@@ -56,5 +56,79 @@
         tools:layout_editor_absoluteX="302dp"
         tools:layout_editor_absoluteY="112dp" />
 
+    <com.kofigyan.stateprogressbar.StateProgressBar
+        android:id="@+id/light_exercises_state_progress_bar"
+        android:layout_width="365dp"
+        android:layout_height="36dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="28dp"
+        app:layout_constraintBottom_toBottomOf="@+id/progressTxtView"
+        app:layout_constraintEnd_toEndOf="@+id/progressTxtView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/progressTxtView"
+        app:layout_constraintVertical_bias="0.468"
+        app:spb_animateToCurrentProgressState="true"
+        app:spb_checkStateCompleted="true"
+        app:spb_currentStateDescriptionColor="#0F9D58"
+        app:spb_currentStateNumber="one"
+        app:spb_maxStateNumber="four"
+        app:spb_stateBackgroundColor="#BDBDBD"
+        app:spb_stateDescriptionColor="#808080"
+        app:spb_stateForegroundColor="#0F9D58"
+        app:spb_stateNumberBackgroundColor="#808080"
+        app:spb_stateNumberForegroundColor="#eeeeee" />
+
+    <TextView
+        android:id="@+id/progressTxtView"
+        android:layout_width="376dp"
+        android:layout_height="108dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/border"
+        android:lines="4"
+        android:text="Today's Progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="547dp" />
+
+    <HorizontalScrollView
+        android:layout_width="341dp"
+        android:layout_height="306dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="197dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/arm"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_baseline_exercise_24"/>
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_baseline_exercise_24"/>
+
+            <ImageView
+                android:id="@+id/leg"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_baseline_exercise_24"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
