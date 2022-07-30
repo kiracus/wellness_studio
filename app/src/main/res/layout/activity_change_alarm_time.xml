@@ -170,32 +170,46 @@
         app:layout_constraintTop_toBottomOf="@+id/alarm_time_change_layout" />
 
 
-    <TextView
-        android:id="@+id/sleep_reminder_title_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/sleep_reminder_title"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.105"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarm_time_change_layout" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sensor_cardView"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
 
-    <TextView
-        android:id="@+id/sleep_sensor_allow_use"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/allow_sensor_use_TV"
-        android:textColor="@color/black"
-        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sleep_reminder_title_TV" />
+        app:layout_constraintTop_toTopOf="@+id/separate_line"
+        app:layout_constraintVertical_bias="0.024">
+
+        <TextView
+            android:id="@+id/sleep_reminder_title_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sleep_reminder_title"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/sleep_sensor_allow_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/allow_sensor_use_TV"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <ToggleButton
+            android:id="@+id/sensor_on_off"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="1dp" />
+
+
+    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/separate_line_second"
@@ -203,21 +217,9 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="372dp" />
-
-    <ToggleButton
-        android:id="@+id/sensor_on_off"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/separate_line_second"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.796"
-        app:layout_constraintStart_toEndOf="@+id/sleep_reminder_title_TV"
-        app:layout_constraintTop_toBottomOf="@+id/separate_line"
-        app:layout_constraintVertical_bias="0.333" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="381dp" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
