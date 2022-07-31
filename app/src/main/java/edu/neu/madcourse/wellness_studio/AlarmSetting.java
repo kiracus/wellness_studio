@@ -1,14 +1,19 @@
 package edu.neu.madcourse.wellness_studio;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -16,9 +21,14 @@ import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 public class AlarmSetting extends AppCompatActivity {
 
     TimePicker sleepTimePicker, wakeupTimePicker;
-    static String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
+    public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
+    String sleepAlarmUpdate, wakeupAlarmUpdate;
+    boolean isSave = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +49,26 @@ public class AlarmSetting extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isSave = !isSave;
+                if (isSave) {
+                    saveChanges(v);
 
-                Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
-                saveChanges();
-                Intent intent = new Intent(AlarmSetting.this, WakeupSleepGoal.class);
+                    //update Alarm
+                    Log.d("AlarmSetting", wakeupAlarmUpdate + sleepAlarmUpdate);
+
+                    Intent intent = new Intent();
+                    intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
+                    intent.putExtra(WAKEUP_ALARM_KEY_NAME, wakeupAlarmUpdate);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
+                    isSave = !isSave;
+                }
 
             }
         });
 
-
+        //Home UI buttons
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
         sleepBtn = findViewById(R.id.imageButton_sleep);
@@ -74,6 +95,8 @@ public class AlarmSetting extends AppCompatActivity {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 sleepAlarmHour = hourOfDay + "";
                 sleepAlarmMin = minute + "";
+                sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
+                Log.d("AlarmSetting", sleepAlarmUpdate);
 
             }
         });
@@ -86,17 +109,21 @@ public class AlarmSetting extends AppCompatActivity {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 wakeupAlarmHour = hourOfDay + "";
                 wakeupAlarmMin = minute + "";
+                wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
+                Log.d("AlarmSetting", wakeupAlarmUpdate);
             }
         });
 
 
     }
 
-    public void saveChanges() {
+
+    public void saveChanges(View v) {
         getCurrentSleepAlarm();
         getCurrentWakeupAlarm();
-
     }
+
+
 
 
 

@@ -1,10 +1,17 @@
 package edu.neu.madcourse.wellness_studio;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -25,6 +32,9 @@ public class WakeupSleepGoal extends AppCompatActivity {
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
+
+    ActivityResultLauncher<Intent> startForResult;
+
 
 
     @Override
@@ -48,20 +58,51 @@ public class WakeupSleepGoal extends AppCompatActivity {
         sleepAlarmOnTV = findViewById(R.id.alarm_on_TV);
         wakeupAlarmOnTV = findViewById(R.id.wakeup_alarm_on_TV);
 
+        startForResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result != null && result.getResultCode() == AlarmSetting.RESULT_OK) {
+                            if (result.getData() != null &&
+                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null &&
+                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null) {
+                                Intent data = result.getData();
+                                String sleepAlarmUpdate = data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME);
+                                String wakeupAlarmUpdate = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME);
+                                Log.d("WakeupSleepGoal", "Sleep = " + sleepAlarmUpdate + "Wakeup = " + wakeupAlarmUpdate );
+
+                                if (!TextUtils.isEmpty(sleepAlarmUpdate) && !TextUtils.isEmpty(wakeupAlarmUpdate))
+                                    sleepAlarmTV.setText(sleepAlarmUpdate);
+                                    wakeupAlarmTV.setText(wakeupAlarmUpdate);
+                                    sleepHoursTV.setText(diff(sleepAlarmUpdate, wakeupAlarmUpdate));
+                            }
+                        } else {
+                            return;
+                        }
+
+                    }
+                });
+
+
 
         sleepAlarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WakeupSleepGoal.this, AlarmSetting.class);
-                startActivity(intent);
+//                startActivity(intent);
+                startForResult.launch(intent);
             }
         });
+
+
+
 
         wakeupAlarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WakeupSleepGoal.this, AlarmSetting.class);
-                startActivity(intent);
+//                startActivity(intent);
+                startForResult.launch(intent);
             }
         });
 
@@ -87,7 +128,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         });
 
 
-
+        //Home UI buttons
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
         sleepBtn = findViewById(R.id.imageButton_sleep);
@@ -133,9 +174,35 @@ public class WakeupSleepGoal extends AppCompatActivity {
         }
     }
 
-    public void updateAlarmTextView() {
-                wakeupAlarmTV.setText(AlarmSetting.wakeupAlarmHour + ":" + AlarmSetting.wakeupAlarmMin);
-                sleepAlarmTV.setText(AlarmSetting.sleepAlarmHour + ":" + AlarmSetting.sleepAlarmMin);
+    private String diff(String s1, String s2) {
+
+        int time1 = removeColon(s1);
+        int time2 = removeColon(s2);
+
+        // difference between hours
+        int hourDiff = time2 / 100 - time1 / 100 - 1;
+
+        // difference between minutes
+        int minDiff = time2 % 100 + (60 - time1 % 100);
+
+        if (minDiff >= 60) {
+            hourDiff++;
+            minDiff = minDiff - 60;
+        }
+
+        // convert answer again in string with ':'
+
+        String res = String.valueOf(hourDiff) + ':' + String.valueOf(minDiff);
+        return res;
+    }
+    private int removeColon(String s) {
+        if (s.length() == 4)
+            s = s.substring(0,1) + s.substring(2);
+
+        if (s.length() == 5)
+            s = s.substring(0,2) + s.substring(3);
+
+        return Integer.valueOf(s);
     }
 
 }
