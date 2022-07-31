@@ -53,7 +53,15 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name=".AlarmSetting">
+
+        </activity>
+
+        <receiver android:name=".lightExercises.AlarmReceiver"/>
+
         <receiver android:name=".lightExercises.AlarmReceiver" />
+
     </application>
 
 </manifest>
