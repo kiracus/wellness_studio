@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -44,7 +47,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         sleepAlarmOnTV = findViewById(R.id.alarm_on_TV);
         wakeupAlarmOnTV = findViewById(R.id.wakeup_alarm_on_TV);
-
 
 
         sleepAlarmSetting.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +85,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
                 startActivity(new Intent(WakeupSleepGoal.this, Profile.class));
             }
         });
+
 
 
         homeBtn = findViewById(R.id.imageButton_home);
@@ -128,6 +131,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
             wakeupAlarmOnTV.setText("ALARM OFF");
             wakeAlarmOnOffCheck = "ALARM OFF";
         }
+    }
+
+    public void updateAlarmTextView() {
+                wakeupAlarmTV.setText(AlarmSetting.wakeupAlarmHour + ":" + AlarmSetting.wakeupAlarmMin);
+                sleepAlarmTV.setText(AlarmSetting.sleepAlarmHour + ":" + AlarmSetting.sleepAlarmMin);
     }
 
 }

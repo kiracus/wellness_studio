@@ -1,40 +1,112 @@
 package edu.neu.madcourse.wellness_studio;
 
 import android.app.AlarmManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.sql.Time;
+
+import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+
 public class AlarmSetting extends AppCompatActivity {
-    NumberPicker sleepHourNumberPicker, sleepMinNumberPicker, wakeupHourNumberPicker, wakeupMinNumberPicker;
+
+    TimePicker sleepTimePicker, wakeupTimePicker;
+    static String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    Button saveButton;
+    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_alarm_time);
 
-        sleepHourNumberPicker = (NumberPicker)findViewById(R.id.hour_picker);
-        sleepMinNumberPicker = (NumberPicker)findViewById(R.id.minute_picker);
-        wakeupHourNumberPicker = (NumberPicker)findViewById(R.id.wakeup_hour_picker);
-        wakeupMinNumberPicker = (NumberPicker)findViewById(R.id.wakeup_minute_picker);
+        sleepTimePicker = (TimePicker) findViewById(R.id.sleep_timePicker);
+        sleepTimePicker.setIs24HourView(true);
 
-        sleepHourNumberPicker.setMaxValue(23);
-        sleepHourNumberPicker.setMinValue(0);
-        sleepMinNumberPicker.setMaxValue(59);
-        sleepMinNumberPicker.setMinValue(0);
+        wakeupTimePicker = (TimePicker) findViewById(R.id.wakeup_timePicker);
+        wakeupTimePicker.setIs24HourView(true);
 
-        wakeupHourNumberPicker.setMaxValue(23);
-        wakeupHourNumberPicker.setMinValue(0);
-        wakeupMinNumberPicker.setMaxValue(59);
-        wakeupMinNumberPicker.setMinValue(0);
+        saveButton = findViewById(R.id.change_save_btn);
 
 
 
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, );
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
+                saveChanges();
+                Intent intent = new Intent(AlarmSetting.this, WakeupSleepGoal.class);
+
+            }
+        });
+
+
+        homeBtn = findViewById(R.id.imageButton_home);
+        exerciseBtn = findViewById(R.id.imageButton_exercise);
+        sleepBtn = findViewById(R.id.imageButton_sleep);
+        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        homeBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Greeting.class)));
+
+        // set click listeners for buttons
+        exerciseBtn.setOnClickListener(v -> goToLightExercise());
+        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
+        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
+        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
+
+
     }
+
+
+    private void goToLightExercise() {
+        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
+    }
+
+    public void getCurrentSleepAlarm() {
+        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                sleepAlarmHour = hourOfDay + "";
+                sleepAlarmMin = minute + "";
+
+            }
+        });
+
+    }
+
+    public void getCurrentWakeupAlarm() {
+        wakeupTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                wakeupAlarmHour = hourOfDay + "";
+                wakeupAlarmMin = minute + "";
+            }
+        });
+
+
+    }
+
+    public void saveChanges() {
+        getCurrentSleepAlarm();
+        getCurrentWakeupAlarm();
+
+    }
+
+
+
+
 
 
 }

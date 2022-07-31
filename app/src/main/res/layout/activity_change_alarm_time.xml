@@ -29,16 +29,15 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/change_save_TV"
+        <Button
+            android:id="@+id/change_save_btn"
             android:layout_width="18dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:text="@string/save_change_TV"
             android:textAlignment="center"
-            android:textColor="@color/blue"
-            android:textSize="20sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
 
@@ -79,17 +78,13 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp">
-                <NumberPicker
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/hour_picker"
-                    android:layout_marginRight="50dp"/>
 
 
-                <NumberPicker
+                <TimePicker
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/minute_picker"/>
+                    android:timePickerMode="spinner"
+                    android:id="@+id/sleep_timePicker"/>
 
             </LinearLayout>
 
@@ -132,17 +127,11 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
-                <NumberPicker
-                    android:id="@+id/wakeup_hour_picker"
+                <TimePicker
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="50dp"/>
-
-                <NumberPicker
-                    android:id="@+id/wakeup_minute_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
+                    android:timePickerMode="spinner"
+                    android:id="@+id/wakeup_timePicker"/>
             </LinearLayout>
             <ToggleButton
                 android:id="@+id/wakeup_alarm_on_off"
