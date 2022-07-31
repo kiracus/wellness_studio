@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
@@ -23,11 +24,13 @@ public class Leaderboard extends AppCompatActivity {
     Button refreshBtn;
     TextView currentWeek;
 
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+
 
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
@@ -64,10 +67,10 @@ public class Leaderboard extends AppCompatActivity {
 
         currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
                 monthEnd + "-" + dayEnd + "-" + yearEnd);
+
     }
 
     public void refreshLeaderboard() {
-
     }
 
 }

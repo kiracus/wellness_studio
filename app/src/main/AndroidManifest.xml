@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="edu.neu.madcourse.wellness_studio" >
+    package="edu.neu.madcourse.wellness_studio">
 
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -14,12 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wellness_Studio"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+
         <activity
-            android:name=".Profile"
+            android:name=".lightExercises.LightExercises_DuringExercise"
             android:exported="false" />
         <activity
-            android:name=".Profile_With_Local_DB_Example"
+            android:name=".profile.ChangeProfile"
+            android:exported="false" />
+        <activity
+            android:name=".profile.Profile"
+            android:exported="false" />
+        <activity
+            android:name=".profile.Profile_With_Local_DB_Example"
             android:exported="false" />
         <activity
             android:name=".Greeting"
@@ -32,14 +39,13 @@
             android:exported="false" />
         <activity
             android:name=".lightExercises.LightExercises"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".friendsList.FriendsList"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,11 +53,15 @@
             </intent-filter>
         </activity>
 
+
         <activity android:name=".AlarmSetting">
 
         </activity>
 
         <receiver android:name=".lightExercises.AlarmReceiver"/>
+
+        <receiver android:name=".lightExercises.AlarmReceiver" />
+
     </application>
 
 </manifest>
