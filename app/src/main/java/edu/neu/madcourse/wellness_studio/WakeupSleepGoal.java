@@ -10,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WakeupSleepGoal extends AppCompatActivity {
+    Button alarmSettingBtn, sleepAlarmOnOffBtn, wakeupAlarmOnOffBtn;
+    TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV;
+    ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Button alarmSettingBtn, sleepAlarmOnOffBtn, wakeupAlarmOnOffBtn;
-        TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV;
-        ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wakeup_sleep_goal);
 
