@@ -192,7 +192,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         // convert answer again in string with ':'
 
-        String res = String.valueOf(hourDiff) + ':' + String.valueOf(minDiff);
+        String res = String.valueOf(Math.abs(hourDiff)) + ':' + String.valueOf(Math.abs(minDiff));
         return res;
     }
     private int removeColon(String s) {

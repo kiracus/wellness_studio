@@ -2,6 +2,7 @@ package edu.neu.madcourse.wellness_studio;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,13 +22,14 @@ import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 public class AlarmSetting extends AppCompatActivity {
 
     TimePicker sleepTimePicker, wakeupTimePicker;
-    String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     boolean isSave = false;
+
 
 
     @Override
@@ -54,7 +56,7 @@ public class AlarmSetting extends AppCompatActivity {
                     saveChanges(v);
 
                     //update Alarm
-                    Log.d("AlarmSetting", wakeupAlarmUpdate + sleepAlarmUpdate);
+                    Log.d("AlarmSetting", "save button" + "wakeup" + wakeupAlarmUpdate + " " + "sleep" + sleepAlarmUpdate);
 
                     Intent intent = new Intent();
                     intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
@@ -89,38 +91,46 @@ public class AlarmSetting extends AppCompatActivity {
         startActivity(new Intent(AlarmSetting.this, LightExercises.class));
     }
 
-    public void getCurrentSleepAlarm() {
-        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                sleepAlarmHour = hourOfDay + "";
-                sleepAlarmMin = minute + "";
-                sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
-                Log.d("AlarmSetting", sleepAlarmUpdate);
+    public void getCurrentSleepAlarm(View view) {
+//        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+//            @Override
+//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//                sleepAlarmHour = hourOfDay + "";
+//                sleepAlarmMin = minute + "";
+//                sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
+//                Log.d("AlarmSetting", sleepAlarmUpdate);
+//
+//            }
+//        });
 
-            }
-        });
 
+            sleepAlarmHour = sleepTimePicker.getHour();
+            sleepAlarmMin = sleepTimePicker.getMinute();
+            sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
+            Log.d("AlarmSetting", sleepAlarmHour + ":" + sleepAlarmMin);
     }
 
-    public void getCurrentWakeupAlarm() {
-        wakeupTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                wakeupAlarmHour = hourOfDay + "";
-                wakeupAlarmMin = minute + "";
-                wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
-                Log.d("AlarmSetting", wakeupAlarmUpdate);
-            }
-        });
+    public void getCurrentWakeupAlarm(View view) {
+//        wakeupTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+//            @Override
+//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//                wakeupAlarmHour = hourOfDay + "";
+//                wakeupAlarmMin = minute + "";
+//                wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
+//                Log.d("AlarmSetting", wakeupAlarmUpdate);
+//            }
+//        });
 
-
+        wakeupAlarmHour = wakeupTimePicker.getHour();
+        wakeupAlarmMin = wakeupTimePicker.getMinute();
+        wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
+        Log.d("AlarmSetting", wakeupAlarmHour + ":" + wakeupAlarmMin);
     }
 
 
     public void saveChanges(View v) {
-        getCurrentSleepAlarm();
-        getCurrentWakeupAlarm();
+        getCurrentSleepAlarm(v);
+        getCurrentWakeupAlarm(v);
     }
 
 
