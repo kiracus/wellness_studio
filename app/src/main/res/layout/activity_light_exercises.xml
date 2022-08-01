@@ -109,7 +109,7 @@
                 android:layout_height="300dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24"/>
+                android:src="@drawable/arm"/>
 
             <ImageView
                 android:id="@+id/back"
@@ -117,7 +117,7 @@
                 android:layout_height="300dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24"/>
+                android:src="@drawable/back"/>
 
             <ImageView
                 android:id="@+id/leg"
@@ -125,7 +125,7 @@
                 android:layout_height="300dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24"/>
+                android:src="@drawable/leg"/>
 
         </LinearLayout>
     </HorizontalScrollView>
