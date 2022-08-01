@@ -21,4 +21,18 @@ public interface UserDao {
 
     @Delete
     void delete(User user);
+
+    // there is only one user so limit to the first record
+    // should select by nickname or id multiple user exists
+    @Query ("SELECT sleepAlarm FROM UserInfoTable LIMIT 1")
+    String getSleepAlarm();
+
+    @Query ("SELECT wakeUpAlarm FROM UserInfoTable LIMIT 1")
+    String getWakeupAlarm();
+
+    @Query("SELECT nickname FROM UserInfoTable LIMIT 1")
+    String getUserNickname();
+
+    @Query("SELECT email FROM UserInfoTable LIMIT 1")
+    String getUserEmail();
 }
