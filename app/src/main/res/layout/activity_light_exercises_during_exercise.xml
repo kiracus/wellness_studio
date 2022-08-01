@@ -15,36 +15,50 @@
         tools:layout_editor_absoluteY="197dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/arm"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24" />
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/arm1_standing_cross_chest_curl" />
 
-            <ImageView
-                android:id="@+id/shoulder"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24"/>
+            <!--            <ImageView-->
+<!--                android:id="@+id/set1"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:src="@drawable/ic_baseline_exercise_24" />-->
 
-            <ImageView
-                android:id="@+id/leg"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ic_baseline_exercise_24"/>
+<!--            <ImageView-->
+<!--                android:id="@+id/set2"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/set3"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/set4"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
 
         </LinearLayout>
     </HorizontalScrollView>
+
 
     <com.kofigyan.stateprogressbar.StateProgressBar
         android:id="@+id/light_exercises_state_progress_bar"
@@ -78,6 +92,16 @@
         android:lines="4"
         android:text="Today's Progress"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="547dp" />
+        tools:layout_editor_absoluteY="584dp" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.463"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="525dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

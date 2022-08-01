@@ -187,11 +187,11 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         int theId = v.getId();
         Log.d("myApp", "Onclick:");
         if(theId == R.id.arm) {
-            sendAnIntentForChosenFocusedArea( ExerciseSet.ARM);
+            sendAnIntentForChosenFocusedArea(ExerciseSet.ARM);
             Log.d("myApp", "Onclick:");
         }
         if(theId == R.id.back) {
-            sendAnIntentForChosenFocusedArea( ExerciseSet.BACK);
+            sendAnIntentForChosenFocusedArea(ExerciseSet.BACK);
         }
         if(theId == R.id.leg) {
             sendAnIntentForChosenFocusedArea(ExerciseSet.LEG);
