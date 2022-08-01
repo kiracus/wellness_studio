@@ -152,6 +152,7 @@ public class Leaderboard extends AppCompatActivity {
                                     {
                                         if (task.isSuccessful()) {
                                             Utils.postToast("Login successful.", Leaderboard.this);
+                                            user.setHasLoggedInOnline(true);
                                             dialog.dismiss();
                                         }
 
