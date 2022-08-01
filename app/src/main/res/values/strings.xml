@@ -1,3 +1,43 @@
 <resources>
     <string name="app_name">Wellness_Studio</string>
+
+
+    <string name="wakeup_sleep_goal_title_TV">WAKEUP SLEEP GOAL</string>
+    <string name="todo">TODO</string>
+    <string name="total_sleep_hours_TV">TOTAL SLEEP HOURS:</string>
+    <string name="hours_display_TV">-</string>
+    <string name="wakeup_alarm_text">WAKE UP</string>
+    <string name="sleep_alarm_text">SLEEP</string>
+    <string name="alarm_on_TV">ALARM ON</string>
+
+
+    <string name="change_alarm_tv">CHANGE</string>
+    <string name="save_change_TV">SAVE</string>
+    <string name="sleep_time_TV">SLEEP TIME</string>
+    <string name="wakeup_time_TV">WAKEUP TIME</string>
+
+    <string name="sleep_reminder_title">SLEEP REMINDER SETTINGS</string>
+    <string name="allow_sensor_use_TV">ALLOW SENSOR USE</string>
+
+    <string name="light_exercises_title">LIGHT EXERCISES</string>
+    <string name="light_exercises_during_exercises_title">SWIPE THROUGH SETS</string>
+    <string name="light_exercises_alarm_switch_button">ON</string>
+<!--    <string name=""></string>-->
+    <string name="light_exercises_alarm_TxtView">WORKOUT</string>
+    <string name="progressTxtView">Progress of Today</string>
+
+
+
+
+    <string-array name="days_of_week">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+
 </resources>

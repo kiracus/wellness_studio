@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import edu.neu.madcourse.wellness_studio.R;
 
-public class FriendListViewHolder {
+public class FriendListViewHolder  {
 
         ImageView personIcon;
         TextView friendName;
