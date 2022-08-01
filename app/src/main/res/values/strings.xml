@@ -19,6 +19,16 @@
     <string name="sleep_reminder_title">SLEEP REMINDER SETTINGS</string>
     <string name="allow_sensor_use_TV">ALLOW SENSOR USE</string>
 
+    <string name="light_exercises_title">LIGHT EXERCISES</string>
+    <string name="light_exercises_during_exercises_title">SWIPE THROUGH SETS</string>
+    <string name="light_exercises_alarm_switch_button">ON</string>
+<!--    <string name=""></string>-->
+    <string name="light_exercises_alarm_TxtView">WORKOUT</string>
+    <string name="progressTxtView">Progress of Today</string>
+
+
+
+
     <string-array name="days_of_week">
         <item>Sunday</item>
         <item>Monday</item>
