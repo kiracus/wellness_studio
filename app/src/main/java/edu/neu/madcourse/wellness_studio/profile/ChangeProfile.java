@@ -1,5 +1,6 @@
 package edu.neu.madcourse.wellness_studio.profile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -9,6 +10,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
@@ -24,6 +31,8 @@ public class ChangeProfile extends AppCompatActivity {
     protected final static String NAME_TOAST = "Please enter a valid username within 25 chars.";
     protected final static String MISS_INFO_TOAST = "Please enter both email and password to create account.";
     protected final static String INVALID_INFO_TOAST = "Please enter valid email and password";
+    protected final static String AUTH_INFO_SAVED = "Saved successfully.";
+    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later";
 
 
     // VI
@@ -35,6 +44,9 @@ public class ChangeProfile extends AppCompatActivity {
     // db
     protected AppDatabase db;
     protected User user;
+
+    // Firebase Auth
+    private FirebaseAuth mAuth;
 
     // user input
     protected String nicknameInput;
@@ -140,6 +152,21 @@ public class ChangeProfile extends AppCompatActivity {
                             // online account
                             user.setEmail(emailInput);
                             user.setPassword(passwordInput); // TODO save a token?
+
+                            // Create user with Firebase Auth
+                            mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
+                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task)
+                                        {
+                                            if (task.isSuccessful()) {
+                                                Utils.postToast(AUTH_INFO_SAVED, ChangeProfile.this);
+                                            }
+                                            else {
+                                                Utils.postToast(AUTH_INFO_NOT_SAVED, ChangeProfile.this);
+                                            }
+                                        }
+                            });
                         }
                     }
                 }

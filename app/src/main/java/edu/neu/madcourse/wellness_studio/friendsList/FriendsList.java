@@ -95,4 +95,9 @@ public class FriendsList extends AppCompatActivity {
             }
         });
     }
+
+    // TODO
+    // Add friend/delete friend
+        // Update cloud db
+    // Handle share/unshare of exercise w/friends (multiple listeners on list view buttons)
 }
