@@ -48,6 +48,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
 
     implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
 
