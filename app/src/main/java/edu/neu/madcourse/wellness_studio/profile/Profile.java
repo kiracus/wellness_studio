@@ -143,7 +143,14 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
             @Override
             public void onDateSelected(View view, Calendar selectedDate, Object desc) {
                 int date = selectedDate.get(Calendar.DAY_OF_MONTH);
-                dateMap.put(date, SELECTED);
+                int month = selectedDate.get(Calendar.MONTH) + 1;
+                int year = selectedDate.get(Calendar.YEAR);
+
+                // get selected date status from db
+                // Boolean isFinished = UserService.get
+                // change goal finished status based on result
+
+                // rerender calendar view
 
                 Snackbar.make(customCalendar, selectedDate.get(Calendar.DAY_OF_MONTH)
                         + " / " + (selectedDate.get(Calendar.MONTH) + 1)
@@ -214,25 +221,25 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         Property propDefault = new Property();
         propDefault.layoutResource = R.layout.default_view;
         propDefault.dateTextViewResource = R.id.default_text;
-        propertyMap.put("default", propDefault);
+        propertyMap.put(DEFAULT, propDefault);
 
         // initialize current date
         Property propCurrent = new Property();
         propCurrent.layoutResource = R.layout.current_view;
         propCurrent.dateTextViewResource = R.id.current_text;
-        propertyMap.put("current", propCurrent);
+        propertyMap.put(CURRENT, propCurrent);
 
         // checked date (when exercise goal finished)
         Property propChecked = new Property();
         propChecked.layoutResource = R.layout.checked_view;
         propChecked.dateTextViewResource = R.id.checked_text;
-        propertyMap.put("checked", propChecked);
+        propertyMap.put(CHECKED, propChecked);
 
         // selected date (when exercise goal finished)
         Property propSelected = new Property();
         propSelected.layoutResource = R.layout.selected_view;
         propSelected.dateTextViewResource = R.id.selected_text;
-        propertyMap.put("selected", propSelected);
+        propertyMap.put(SELECTED, propSelected);
     }
 
     private void goToLightExercise() {
