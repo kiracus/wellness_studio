@@ -3,13 +3,17 @@ package edu.neu.madcourse.wellness_studio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -79,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i<=9; i++) {
             UserService.createNewLightExercise(db, prefix2+i);
             UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
+            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
         }
         for (int i=0; i<=7; i++) {
             UserService.createNewLightExercise(db, prefix+i);
             UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
+            UserService.updateExerciseGoalStatus(db, true, prefix+i);
         }
 
 

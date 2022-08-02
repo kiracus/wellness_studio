@@ -122,7 +122,7 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
-        // when saved, does not go back to prev page automatically, just show change on screen
+        // when saved, does not go back to prev page automatically if only username is changed
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -135,6 +135,7 @@ public class ChangeProfile extends AppCompatActivity {
                     if (!nicknameInput.equals("") && Utils.checkValidName(nicknameInput)) {
                         // ignore no input(""), user just deleted the original text
                         user.nickname = nicknameInput;
+                        UserService.updateUserInfo(db, user);
                         Utils.postToast("Username changed.", ChangeProfile.this);
                     } else if (!nicknameInput.equals("") && !Utils.checkValidName(nicknameInput)) {
                         // not empty and not valid (null or has special chars)
@@ -194,11 +195,6 @@ public class ChangeProfile extends AppCompatActivity {
                         }
                     }
                 }
-
-                UserService.updateUserInfo(db, user);
-//                goToProfile();
-//                finish();
-
 
             }
         });

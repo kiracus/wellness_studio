@@ -45,11 +45,16 @@ public interface LightExerciseDao {
 
     // update goal finished or not by date
     @Query("UPDATE LightExerciseTable SET exerciseGoalFinished = :isFinished WHERE date = :dateInput")
-    void setLightExerciseStatusByDate(Boolean isFinished, String dateInput);
+    void setExerciseGoalByDate(Boolean isFinished, String dateInput);
 
     // update current set by date
     @Query("UPDATE LightExerciseTable SET currentSet = :set WHERE date = :date")
     void setCurrSet(ExerciseSet set, String date);
+
+    // get a list of dates of a month when goal is finished
+    // list will have no more than 31 items
+    @Query("SELECT date FROM LightExerciseTable WHERE exerciseGoalFinished = 1 AND date LIKE :yearMonthInput LIMIT 31")
+    List<String> getFinishedDatesOfMonth(String yearMonthInput);
 
 
 }
