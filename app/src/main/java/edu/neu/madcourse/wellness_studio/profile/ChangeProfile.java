@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import edu.neu.madcourse.wellness_studio.R;
@@ -32,8 +35,7 @@ public class ChangeProfile extends AppCompatActivity {
     protected final static String NAME_HINT = "Username should only contains alphabet and digits.";
     protected final static String NAME_TOAST = "Please enter a valid username within 25 chars.";
     protected final static String MISS_INFO_TOAST = "Please enter both email and password to create account.";
-    protected final static String INVALID_EMAIL_TOAST = "Please enter valid email.";
-    protected final static String INVALID_PW_TOAST = "Please enter valid password.";
+    protected final static String INVALID_INFO_TOAST = "Please enter valid email and password";
     protected final static String AUTH_INFO_SAVED = "Saved successfully.";
     protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later";
 
@@ -47,6 +49,11 @@ public class ChangeProfile extends AppCompatActivity {
     // db
     protected AppDatabase db;
     protected User user;
+
+    // Cloud
+    DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference UsersRef = dbRoot.child("users");
+    String uid = "";
 
     // Firebase Auth
     private FirebaseAuth mAuth;
@@ -68,7 +75,7 @@ public class ChangeProfile extends AppCompatActivity {
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
 
-        // initialize auth
+        // initialize auth instance
         mAuth = FirebaseAuth.getInstance();
 
         // get VI components
@@ -98,10 +105,8 @@ public class ChangeProfile extends AppCompatActivity {
             hasOnlineAccount = true;
             emailInputET.setText(user.getEmail());
             emailInputET.setFocusable(false);
-            emailInputET.setTextColor(Color.GRAY);
             passwordInputET.setText("******");
-            passwordInputET.setFocusable(false);
-            passwordInputET.setTextColor(Color.GRAY);
+            emailInputET.setFocusable(false);
         }
 
         // TODO set profile pic, if none use some default img from assets
@@ -122,7 +127,6 @@ public class ChangeProfile extends AppCompatActivity {
             }
         });
 
-        // when saved, does not go back to prev page automatically if only username is changed
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -135,8 +139,6 @@ public class ChangeProfile extends AppCompatActivity {
                     if (!nicknameInput.equals("") && Utils.checkValidName(nicknameInput)) {
                         // ignore no input(""), user just deleted the original text
                         user.nickname = nicknameInput;
-                        UserService.updateUserInfo(db, user);
-                        Utils.postToast("Username changed.", ChangeProfile.this);
                     } else if (!nicknameInput.equals("") && !Utils.checkValidName(nicknameInput)) {
                         // not empty and not valid (null or has special chars)
                         Utils.postToast(NAME_TOAST, ChangeProfile.this);
@@ -156,22 +158,17 @@ public class ChangeProfile extends AppCompatActivity {
                         // only one has input
                         Utils.postToast(MISS_INFO_TOAST, ChangeProfile.this);
                     } else {  // both have input, check if valid
-                        if (!Utils.checkValidEmail(emailInput)) {
-                            Log.v(TAG, "email: " + emailInput + " | " + Utils.checkValidEmail(emailInput) + "");
-                            Utils.postToast(INVALID_EMAIL_TOAST, ChangeProfile.this);
-                        } else if (!Utils.checkValidPassword(passwordInput)) {
-                            Log.v(TAG, "pw: " + Utils.checkValidPassword(passwordInput) + "");
-                            Utils.postToast(INVALID_PW_TOAST, ChangeProfile.this);
+                        if (!Utils.checkValidEmail(emailInput) || !Utils.checkValidPassword(passwordInput)) {
+                            Utils.postToast(INVALID_INFO_TOAST, ChangeProfile.this);
                         } else {
                             // valid, update user info, create account
                             // online account
-                            Log.v(TAG, "both valid, setting user info");
                             user.setEmail(emailInput);
-                            user.setPassword(passwordInput); // TODO need this?
+                            user.setPassword(passwordInput); // TODO save a token?
+                            user.setHasOnlineAccount(true);
 
                             // Create user with Firebase Auth
-                            Log.v(TAG, "creating online account");
-                            mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
+                            mAuth.createUserWithEmailAndPassword(user.email, user.password)
                                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task)
@@ -185,21 +182,53 @@ public class ChangeProfile extends AppCompatActivity {
                                         }
                             });
 
-                            Utils.postToast("Online account created.", ChangeProfile.this);
+                            // Create online id and pass to save
+                            UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    // can't change, only update once if new online account created
+                                    uid = UsersRef.push().getKey();
+                                    DatabaseReference newUserRef = UsersRef.child(uid);
+                                    newUserRef.child("name").setValue(user.nickname);
+                                    newUserRef.child("email").setValue(user.email);
+                                    newUserRef.child("img").setValue(user.profileImg);
+                                    //newUserRef.child("friends").setValue(null);
+                                    // Set online ID in local db
+                                    user.setUserId(uid);
+                                }
 
-                            user.setHasOnlineAccount(true);
-                            UserService.updateUserInfo(db, user);
-                            goToProfile();
-                            finish();
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
+                                }
+                            });
                         }
                     }
                 }
 
+                // Write to cloud
+                UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // can change, update everytime profile data saved
+                        DatabaseReference saveUser = UsersRef.child(user.userId);
+                        saveUser.child("name").setValue(user.nickname);
+                        saveUser.child("img").setValue(user.profileImg);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                // update local use info
+                UserService.updateUserInfo(db, user);
+                goToProfile();
+                finish();
             }
         });
 
-        // for cancel and go back
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

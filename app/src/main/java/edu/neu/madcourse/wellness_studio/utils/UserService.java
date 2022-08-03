@@ -80,7 +80,7 @@ public class UserService {
         Boolean hasOnlineAccount = user.hasOnlineAccount;
         String password = user.password;
         Boolean hasLoggedInOnline = user.hasLoggedInOnline;
-        int userId = user.userId;
+        String userId = user.userId;
         String profileImg = user.profileImg;
         String exerciseAlarm = user.exerciseAlarm;
         String sleepAlarm = user.sleepAlarm;
