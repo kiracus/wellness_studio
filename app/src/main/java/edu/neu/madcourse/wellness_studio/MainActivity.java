@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 exerciseGoBtn.setText("CONTINUE");
+                exerciseGoBtn.setTextSize(10);
         }
 
         // set exercise go button respond
