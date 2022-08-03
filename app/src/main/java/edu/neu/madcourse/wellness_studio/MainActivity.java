@@ -3,6 +3,7 @@ package edu.neu.madcourse.wellness_studio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -33,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "main";
 
     // VI
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+//    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
     Button exerciseGoBtn, sleepGoBtn;
     TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
     ImageView profileBtn;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected String currdate;
 
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         // get VI components
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+//        homeBtn = findViewById(R.id.imageButton_home);
+//        exerciseBtn = findViewById(R.id.imageButton_exercise);
+//        sleepBtn = findViewById(R.id.imageButton_sleep);
+//        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         profileBtn = findViewById(R.id.imageView_profile);
         exerciseGoBtn = findViewById(R.id.button1);
         sleepGoBtn = findViewById(R.id.button2);
@@ -108,15 +114,39 @@ public class MainActivity extends AppCompatActivity {
         alarmStatusTV = findViewById(R.id.progressdetail2);
 
         // for test only, home now directs to greeting TODO: home button does nothing
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
+//        homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
 
         // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
+//        exerciseBtn.setOnClickListener(v -> goToLightExercise());
         //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
+//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
+//        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
         profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
+
+        // set bottom nav, currently at home so disable home item
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    return false; // should not happen, disabled
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
+
+
 
         // set greeting message in header
         greetingTV.setText("Hello, " + nickname + " !");
@@ -190,6 +220,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        int seletedItemId = bottomNavigationView.getSelectedItemId();
+//        if (R.id.nav_home != seletedItemId) {
+//            setHomeItem(MainActivity.this);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
+//
+//    public static void setHomeItem(Activity activity) {
+//        BottomNavigationView navView = (BottomNavigationView)
+//                activity.findViewById(R.id.bottom_navigation);
+//        navView.setSelectedItemId(R.id.nav_home);
+//    }
+
+
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(MainActivity.this, Leaderboard.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class));
+    }
 
     private void goToLightExercise() {
         startActivity(new Intent(MainActivity.this, LightExercises.class));
