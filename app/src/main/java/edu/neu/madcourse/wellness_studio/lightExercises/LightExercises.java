@@ -45,7 +45,7 @@ import localDatabase.lightExercise.LightExercise;
 
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
     AppDatabase appDatabase;
-    int hour, min = -1000;
+    int hour, min = -1;
     int currentStep = 0;
 
     TextView timeTextView;
@@ -53,6 +53,9 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     ImageView armImageView;
     ImageView backImageView;
     ImageView legImageView;
+
+    ImageView setting_dot_lightExercises;
+    ToggleButton alarm_on_off_light_exercises;
 
     StateProgressBar stateProgressBar;
     PendingIntent pendingIntent;
@@ -66,9 +69,12 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
 
         timeTextView = findViewById(R.id.timeTextView);
         reminderSwitch = findViewById(R.id.reminderSwitch);
+        setting_dot_lightExercises = findViewById(R.id.setting_dot_lightExercises);
+
         armImageView = findViewById(R.id.arm);
         backImageView = findViewById(R.id.back);
         legImageView = findViewById(R.id.leg);
+
         stateProgressBar = findViewById(R.id.light_exercises_state_progress_bar);
 
         //set onclick listener for choosing focus area and leads to the actual workout page
@@ -122,12 +128,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 hour = hourOfDay;
                 min = minute;
                 String time  = String.format(Locale.getDefault(),"%02d:%02d",hour,min);
-
-                String reminder = "Reminder" + "\n" + time;
-                SpannableString spannableString = new SpannableString(reminder);
-                spannableString.setSpan(new RelativeSizeSpan(2f),0,8,0);
-                spannableString.setSpan(new ForegroundColorSpan(Color.BLACK),0,8,0);
-                timeTextView.setText(spannableString);
+                timeTextView.setText(time);
             }
         };
 
@@ -187,11 +188,11 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         int theId = v.getId();
         Log.d("myApp", "Onclick:");
         if(theId == R.id.arm) {
-            sendAnIntentForChosenFocusedArea( ExerciseSet.ARM);
+            sendAnIntentForChosenFocusedArea(ExerciseSet.ARM);
             Log.d("myApp", "Onclick:");
         }
         if(theId == R.id.back) {
-            sendAnIntentForChosenFocusedArea( ExerciseSet.BACK);
+            sendAnIntentForChosenFocusedArea(ExerciseSet.BACK);
         }
         if(theId == R.id.leg) {
             sendAnIntentForChosenFocusedArea(ExerciseSet.LEG);
@@ -252,7 +253,8 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
 
     private long convertHourAndMinToMilliSeconds() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR,hour,min);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE,min);
         Log.d("myApp","calenar" + calendar.getTime());
         long millis = calendar.getTimeInMillis();
         return millis;
