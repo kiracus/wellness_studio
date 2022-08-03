@@ -54,7 +54,7 @@
         app:srcCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:tint="@color/white" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendsListRecyclerView"
         android:layout_width="379dp"
         android:layout_height="447dp"
