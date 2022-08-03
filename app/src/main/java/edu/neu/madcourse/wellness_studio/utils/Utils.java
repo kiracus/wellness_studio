@@ -3,6 +3,7 @@ package edu.neu.madcourse.wellness_studio.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -69,7 +70,9 @@ public class Utils {
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
-        return matcher.find();
+        Boolean res =  matcher.find();
+        Log.v(TAG, "email result: " + s + " | " + res);
+        return res;
     }
 
     // check valid password with:
@@ -78,12 +81,16 @@ public class Utils {
     // at least one uppercase character
     // at least one special symbol among @_#$%
     // length between 6 and 20
+    // ** regex doesnot work so use a temp checker only check length
     public static boolean checkValidPassword(String s) {
-        Pattern VALID_EMAIL_ADDRESS_REGEX =
-                Pattern.compile("^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%]).{6,20}$", Pattern.CASE_INSENSITIVE);
-
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
-        return matcher.find();
+//        Pattern VALID_EMAIL_ADDRESS_REGEX =
+//                Pattern.compile("^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%]).{6,20}$",
+//                        Pattern.CASE_INSENSITIVE);
+//
+//        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
+//        Log.v(TAG, "password result: " + matcher.find()+"");
+//        return matcher.find();
+        return (s.length() >= 6 && s.length() <= 15);
     }
 
 }

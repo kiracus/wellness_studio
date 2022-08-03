@@ -15,6 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import edu.neu.madcourse.wellness_studio.R;
@@ -45,6 +50,11 @@ public class ChangeProfile extends AppCompatActivity {
     protected AppDatabase db;
     protected User user;
 
+    // Cloud
+    DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference UsersRef = dbRoot.child("users");
+    String uid = "";
+
     // Firebase Auth
     private FirebaseAuth mAuth;
 
@@ -64,6 +74,9 @@ public class ChangeProfile extends AppCompatActivity {
 
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
+
+        // initialize auth instance
+        mAuth = FirebaseAuth.getInstance();
 
         // get VI components
         profileImgBtn = findViewById(R.id.imageButton_change_img);
@@ -152,9 +165,10 @@ public class ChangeProfile extends AppCompatActivity {
                             // online account
                             user.setEmail(emailInput);
                             user.setPassword(passwordInput); // TODO save a token?
+                            user.setHasOnlineAccount(true);
 
                             // Create user with Firebase Auth
-                            mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
+                            mAuth.createUserWithEmailAndPassword(user.email, user.password)
                                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                         @Override
                                         public void onComplete(@NonNull Task<AuthResult> task)
@@ -167,14 +181,52 @@ public class ChangeProfile extends AppCompatActivity {
                                             }
                                         }
                             });
+
+                            // Create online id and pass to save
+                            UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    // can't change, only update once if new online account created
+                                    DatabaseReference saveKey = UsersRef.push();
+                                    uid = saveKey.getKey();
+                                    DatabaseReference newUserRef = UsersRef.child(uid);
+                                    newUserRef.child("name").setValue(user.nickname);
+                                    newUserRef.child("email").setValue(user.email);
+                                    newUserRef.child("img").setValue(user.profileImg);
+                                    newUserRef.child("friends").setValue("");
+
+                                    // Set online ID in local db
+                                    user.setUserId(uid);
+                                    UserService.updateUserInfo(db, user);
+
+                                    // Log user in online upon account creation
+                                    mAuth.signInWithEmailAndPassword(user.email, user.password);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
                     }
                 }
 
+                // Write to cloud
+                UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // can change, update everytime profile data saved
+                        DatabaseReference saveUser = UsersRef.child(user.userId);
+                        saveUser.child("name").setValue(user.nickname);
+                        saveUser.child("img").setValue(user.profileImg);
+                    }
 
-                // in case both email and password have input, create account
-                  // check if both valid, if not show toast
-                  // create account
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
                 // update local use info
                 UserService.updateUserInfo(db, user);

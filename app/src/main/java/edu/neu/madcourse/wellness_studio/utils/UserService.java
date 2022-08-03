@@ -24,7 +24,9 @@ public class UserService {
     // test
     private final static String TAG = "user";
 
-    // user info
+    // ================================================
+    // =============      user info       =============
+
     public static User getCurrentUser(AppDatabase db) {
         //this corresponds to the UserDao class's getAllUser(L12) sql query, i'm doing 'select * from table'
         //as an example, you can create your own abstract method in the dao class by following the same pattern
@@ -78,7 +80,7 @@ public class UserService {
         Boolean hasOnlineAccount = user.hasOnlineAccount;
         String password = user.password;
         Boolean hasLoggedInOnline = user.hasLoggedInOnline;
-        int userId = user.userId;
+        String userId = user.userId;
         String profileImg = user.profileImg;
         String exerciseAlarm = user.exerciseAlarm;
         String sleepAlarm = user.sleepAlarm;
@@ -92,7 +94,10 @@ public class UserService {
                 + "wakeUpAlarm: " + wakeUpAlarm + ", ");
     }
 
-    // light exercise
+
+    // ================================================
+    // =============   light exercise   ===============
+
     // get le obj for the current date (today)
     public static LightExercise getCurrentLightExercise(AppDatabase db) {
         return getLightExerciseByDate(db, Utils.getCurrentDate());
@@ -166,7 +171,7 @@ public class UserService {
     public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
             Log.v(TAG, "updating status: " + isFinished.toString());
-            db.lightExerciseDao().setLightExerciseStatusByDate(isFinished, date);
+            db.lightExerciseDao().setExerciseGoalByDate(isFinished, date);
         }
     }
 
@@ -176,6 +181,25 @@ public class UserService {
             Log.v(TAG, "updating currSet: " + set.toString());
             db.lightExerciseDao().setCurrSet(set, Utils.getCurrentDate());
         }
+    }
+
+    // get a list of dates(yyyy-mm-dd) when le goal is finished in given month
+    public static List<String> getFinishedDatesOfMonth(AppDatabase db, String yearMonth) {
+        if (checkIfLightExerciseExists(db)) {
+            Log.v(TAG, "looking for dates finished in month: " + yearMonth);
+            return db.lightExerciseDao().getFinishedDatesOfMonth(yearMonth+"%");
+        } else {
+            Log.v(TAG, "no available le data in month: " + yearMonth);
+            return null;
+        }
+    }
+
+    // check if goal is finished at the given date
+    public static Boolean getGoalFinishedByDate(AppDatabase db, String date) {
+        Boolean res = db.lightExerciseDao().getGoalFinishedByDate(date);
+        if (res == null) {
+            return false;
+        } else return res;
     }
 
 
