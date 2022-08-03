@@ -37,8 +37,6 @@ public class Leaderboard extends AppCompatActivity {
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, friendsList;
     Button refreshBtn;
     TextView currentWeek;
-    private EditText emailTextView, passwordTextView;
-    private Button loginButton;
 
     protected AppDatabase db;
     protected User user;
@@ -54,9 +52,6 @@ public class Leaderboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
         mAuth = FirebaseAuth.getInstance();
-        emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.password);
-        loginButton = findViewById(R.id.login);
 
         // Get current user
         db = AppDatabase.getDbInstance(this.getApplicationContext());
@@ -120,9 +115,10 @@ public class Leaderboard extends AppCompatActivity {
     public void createLoginDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
-        String email, password;
-        email = emailTextView.getText().toString();
-        password = passwordTextView.getText().toString();
+
+        Button loginButton= (Button) contactPopupView.findViewById(R.id.loginBtn);
+        EditText emailTV = (EditText) contactPopupView.findViewById(R.id.email);
+        EditText passwordTV = (EditText) contactPopupView.findViewById(R.id.password);
 
         dialogBuilder.setView(contactPopupView);
         dialog = dialogBuilder.create();
@@ -132,13 +128,15 @@ public class Leaderboard extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                String email = emailTV.getText().toString();
+                String password = passwordTV.getText().toString();
                 if (TextUtils.isEmpty(email)) {
                     Utils.postToast("Please enter email.", Leaderboard.this);
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Utils.postToast("Please enter password", Leaderboard.this);
+                    Utils.postToast("Please enter password.", Leaderboard.this);
                     return;
                 }
 
@@ -153,6 +151,7 @@ public class Leaderboard extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Utils.postToast("Login successful.", Leaderboard.this);
                                             user.setHasLoggedInOnline(true);
+                                            UserService.updateUserInfo(db, user);
                                             dialog.dismiss();
                                         }
 
