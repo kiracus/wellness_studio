@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // or the nav bar would act very strange
     @Override
     protected void onResume() {
         super.onResume();
@@ -241,8 +242,6 @@ public class MainActivity extends AppCompatActivity {
 //                activity.findViewById(R.id.bottom_navigation);
 //        navView.setSelectedItemId(R.id.nav_home);
 //    }
-
-
 
     // ========   helpers to start new activity  ===================
 

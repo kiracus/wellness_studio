@@ -214,7 +214,9 @@
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:menu="@menu/bottom_navigation_menu" />
+            app:backgroundTint="@color/sky_blue_00"
+            app:menu="@menu/bottom_navigation_menu"
+            app:labelVisibilityMode="labeled"/>
 
     </LinearLayout>
 
