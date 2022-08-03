@@ -187,14 +187,17 @@ public class ChangeProfile extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     // can't change, only update once if new online account created
-                                    uid = UsersRef.push().getKey();
+                                    DatabaseReference saveKey = UsersRef.push();
+                                    uid = saveKey.getKey();
                                     DatabaseReference newUserRef = UsersRef.child(uid);
                                     newUserRef.child("name").setValue(user.nickname);
                                     newUserRef.child("email").setValue(user.email);
                                     newUserRef.child("img").setValue(user.profileImg);
                                     //newUserRef.child("friends").setValue(null);
+
                                     // Set online ID in local db
                                     user.setUserId(uid);
+                                    UserService.updateUserInfo(db, user);
                                 }
 
                                 @Override
