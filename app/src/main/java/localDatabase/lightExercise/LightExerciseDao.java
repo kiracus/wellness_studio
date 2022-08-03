@@ -31,6 +31,10 @@ public interface LightExerciseDao {
     @Query("SELECT exerciseStatus FROM LightExerciseTable WHERE date = :dateInput")
     ExerciseStatus getLightExerciseStatusByDate(String dateInput);
 
+    // get goal status by date
+    @Query("SELECT exerciseGoalFinished FROM LightExerciseTable WHERE date = :dateInput")
+    Boolean getGoalFinishedByDate(String dateInput);
+
     // get current set by date
     @Query("SELECT currentSet FROM LightExerciseTable WHERE date = :dateInput")
     ExerciseSet getCurrentSetByDate(String dateInput);

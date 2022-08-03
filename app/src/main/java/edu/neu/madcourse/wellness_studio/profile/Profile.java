@@ -65,6 +65,8 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     protected static int MONTH = 0;
     protected static HashMap<Object, Property> propertyMap;
     protected static HashMap<Integer, Object> dateMap;
+    protected int selected = -1;
+    protected int selectedPrev = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         calendar = Calendar.getInstance();
         MONTH = calendar.get(Calendar.MONTH);
         Log.v(TAG, "current month: " + (MONTH+1));
+        String currdate = Utils.getCurrentDate();
 
         // get VI components
         customCalendar = findViewById(R.id.custom_calendar);
@@ -120,10 +123,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         dateMap.put(calendar.get(Calendar.DAY_OF_MONTH), CURRENT);  // today is the current date
 
         // get a list of dates with finished goal status
-        String currdate = Utils.getCurrentDate();
         Log.v(TAG, "checking dates in month : " + currdate.substring(0, 7));
         List<String> checkedDates = UserService.getFinishedDatesOfMonth(db, currdate.substring(0, 7));
-        Log.v(TAG, checkedDates.toString());
+        // Log.v(TAG, checkedDates.toString());
 
         // mark checked date as property "CHECKED" (green)
         if (checkedDates != null) {
@@ -146,20 +148,100 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 int month = selectedDate.get(Calendar.MONTH) + 1;
                 int year = selectedDate.get(Calendar.YEAR);
 
-                // get selected date status from db
-                // Boolean isFinished = UserService.get
-                // change goal finished status based on result
+                // get date key for checking db
+                String monthStr = month<10 ? "0"+month : ""+month;  // add "0" if only 1 digit
+                String dateStr = date<10 ? "0"+date : ""+date;
+                String dateKey = year + "-" + monthStr + "-" + dateStr;
+                //Log.v(TAG, "date key is : " + dateKey);
+                //Log.v(TAG, "is finished : " + UserService.getGoalFinishedByDate(db, dateKey));
 
-                // rerender calendar view
+                Log.v(TAG, "monthStr : " + monthStr);
+                Log.v(TAG, "month in curr date : " + currdate.substring(5,7));
 
-                Snackbar.make(customCalendar, selectedDate.get(Calendar.DAY_OF_MONTH)
-                        + " / " + (selectedDate.get(Calendar.MONTH) + 1)
-                        + " / " + selectedDate.get(Calendar.YEAR)
-                        + " selected", Snackbar.LENGTH_LONG).show();
+
+                // disable checkbox if not current month
+                if (!monthStr.equals(currdate.substring(5,7))) {
+                    //goalFinishedCB.setEnabled(false);
+                } else {
+                    // current month, show selected color
+                    //goalFinishedCB.setEnabled(true);
+                    selected = date;
+                    dateMap.put(selected, SELECTED);
+
+                    // change prev selected view back
+                    if (selectedPrev != (-1)) {
+                        dateMap.put(selectedPrev, DEFAULT);
+                    }
+
+                    // mark prev selected
+                    selectedPrev = selected;
+
+                    customCalendar.setDate(calendar, dateMap);  // reset view
+                }
+
+                // set checkbox view
+                Boolean isFinished = UserService.getGoalFinishedByDate(db, dateKey);
+                if (isFinished) {
+                    goalFinishedCB.setChecked(true);
+                } else {
+                    goalFinishedCB.setChecked(false);
+                }
+
+                // set checkbox listener, if tomorrow or after or other month, refuse, else approve
+                goalFinishedCB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // change view by the prev view
+                        if (!monthStr.equals(currdate.substring(5,7))) {
+                            //Utils.postToast("You can only change status of current month", Profile.this);
+
+                            UserService.updateExerciseGoalStatus(db, !isFinished, dateKey);
+                            String isFinishedStr = isFinished? "Not Finished" : "Finished";
+                            Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
+                            // reload calendar view
+
+
+
+                        } else {
+                            // approve change on goal status
+                            if (isFinished) {
+                                goalFinishedCB.setChecked(false);
+                            } else {
+                                goalFinishedCB.setChecked(true);
+                            }
+                            // update db
+                            UserService.updateExerciseGoalStatus(db, !isFinished, dateKey);
+                            String isFinishedStr = isFinished? "Not Finished" : "Finished";
+                            Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
+                        }
+                    }
+                });
+
+//                Snackbar.make(customCalendar, selectedDate.get(Calendar.DAY_OF_MONTH)
+//                        + " / " + (selectedDate.get(Calendar.MONTH) + 1)
+//                        + " / " + selectedDate.get(Calendar.YEAR)
+//                        + " selected", Snackbar.LENGTH_LONG).show();
             }
         });
 
-        // TODO set goal checker
+        // set checkbox listener if no date is selected
+        goalFinishedCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // change view by the prev view
+                Boolean isFinished = UserService.getGoalFinishedByDate(db, currdate);
+                if (isFinished) {
+                    goalFinishedCB.setChecked(false);
+                } else {
+                    goalFinishedCB.setChecked(true);
+                }
+                // update db
+                UserService.updateExerciseGoalStatus(db, !isFinished, currdate);
+                String isFinishedStr = isFinished? "Not Finished" : "Finished";
+                Utils.postToast("Change status of " + currdate + " to " + isFinishedStr, Profile.this);
+                }
+        });
+
     }
 
     // check user online status, responsible for ser online related VI components

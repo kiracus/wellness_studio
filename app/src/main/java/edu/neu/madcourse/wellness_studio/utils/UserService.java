@@ -194,6 +194,14 @@ public class UserService {
         }
     }
 
+    // check if goal is finished at the given date
+    public static Boolean getGoalFinishedByDate(AppDatabase db, String date) {
+        Boolean res = db.lightExerciseDao().getGoalFinishedByDate(date);
+        if (res == null) {
+            return false;
+        } else return res;
+    }
+
 
     // set sleep and wakeup alarm
     public static String getSleepAlarm(AppDatabase db) {
