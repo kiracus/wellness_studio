@@ -129,7 +129,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
         // mark checked date as property "CHECKED" (green)
         if (checkedDates != null) {
-            Log.v(TAG, checkedDates.toString());
+            // Log.v(TAG, checkedDates.toString());
             for (String date : checkedDates) {
                 Integer d = Integer.parseInt(date.substring(8));
                 dateMap.put(d, CHECKED);
@@ -242,6 +242,21 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 }
         });
 
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get online status
+                if (fUser != null) {
+                    FirebaseAuth.getInstance().signOut();
+                    loginBtn.setImageResource(R.drawable.ic_baseline_login_24);
+                    fUser = null;
+                } else {
+                    // go to login screen
+                    goToLoginOnline();
+                }
+            }
+        });
+
     }
 
     // check user online status, responsible for ser online related VI components
@@ -257,6 +272,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
                     loginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                    Log.v(TAG, "user UID: " + fUser.getUid());
                 }
             }
         });
@@ -326,5 +342,12 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     private void goToLightExercise() {
         startActivity(new Intent(Profile.this, LightExercises.class));
+    }
+
+    private void goToLoginOnline() {
+        Utils.postToast("You clicked login button!", this);
+        //startActivity(new Intent(Profile.this, LightExercises.class));
+
+        // maybe pass some intent so the login page knows it should go back to this screen?
     }
 }

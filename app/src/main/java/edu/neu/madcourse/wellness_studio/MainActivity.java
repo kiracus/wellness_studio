@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "main";
 
     // VI
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, profileBtn;
+    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     Button exerciseGoBtn, sleepGoBtn;
     TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
+    ImageView profileBtn;
 
     // user and db
     protected User user;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         exerciseBtn = findViewById(R.id.imageButton_exercise);
         sleepBtn = findViewById(R.id.imageButton_sleep);
         leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-        profileBtn = findViewById(R.id.imageButton_profile);
+        profileBtn = findViewById(R.id.imageView_profile);
         exerciseGoBtn = findViewById(R.id.button1);
         sleepGoBtn = findViewById(R.id.button2);
         greetingTV = findViewById(R.id.greeting_TV);

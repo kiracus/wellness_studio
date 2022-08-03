@@ -22,12 +22,30 @@
             android:textSize="20sp"
             android:text="Hello, there!" />
 
-        <ImageButton
-            android:id="@+id/imageButton_profile"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            app:cardCornerRadius="33dp"
             android:layout_margin="20dp"
-            app:srcCompat="@drawable/ic_baseline_person_24" />
+            app:cardBackgroundColor="@color/white">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:cardCornerRadius="30dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView_profile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/default_avatar"
+                    android:scaleType="centerCrop"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
