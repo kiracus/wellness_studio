@@ -198,6 +198,9 @@ public class ChangeProfile extends AppCompatActivity {
                                     // Set online ID in local db
                                     user.setUserId(uid);
                                     UserService.updateUserInfo(db, user);
+
+                                    // Log user in online upon account creation
+                                    mAuth.signInWithEmailAndPassword(user.email, user.password);
                                 }
 
                                 @Override
