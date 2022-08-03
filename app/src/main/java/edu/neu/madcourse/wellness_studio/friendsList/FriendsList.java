@@ -14,6 +14,8 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.R;
@@ -41,17 +42,14 @@ public class FriendsList extends AppCompatActivity {
     ToggleButton exerciseShareSetting;
     AppDatabase appDatabase;
 
-    ListView friendListView;
-    TextView friendUsername;
+    RecyclerView friendListRecyclerView;
+    FriendListAdapter friendListAdapter;
+    List<String> friendEmailList;
+
     public String friendEmailData = "";
     String userIdFriend = "";
     String userId = "";
-    FriendListAdapter friendListAdapter;
 
-
-    ArrayList<String> friendEmailList = new ArrayList<>();
-    ArrayList<String> imgUrlList = new ArrayList<>();
-    ArrayList<String> friendIdList = new ArrayList<>();
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
@@ -74,16 +72,17 @@ public class FriendsList extends AppCompatActivity {
         exerciseShareSetting = findViewById(R.id.exerciseShareButton);
         FloatingActionButton addFriend = findViewById(R.id.add_friend);
 
-        friendUsername = findViewById(R.id.friendListUsername);
-        friendListView = findViewById(R.id.friendsListRecyclerView);
-
         homeBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, Greeting.class)));
         exerciseBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, LightExercises.class)));
         sleepBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, WakeupSleepGoal.class)));
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, Leaderboard.class)));
 
-        friendListAdapter = new FriendListAdapter(this, imgUrlList, friendEmailList);
-        friendListView.setAdapter(friendListAdapter);
+        friendEmailList = new ArrayList<>();
+        friendListRecyclerView = findViewById(R.id.friendsListRecyclerView);
+        friendListRecyclerView.setHasFixedSize(true);
+        friendListAdapter = new FriendListAdapter(FriendsList.this, friendEmailList);
+        friendListRecyclerView.setAdapter(friendListAdapter);
+        friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
 
         // Local db
         appDatabase = AppDatabase.getDbInstance(this.getApplicationContext());
@@ -98,8 +97,8 @@ public class FriendsList extends AppCompatActivity {
         dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot ds: snapshot.getChildren()) {
-                    friendIdList.add(ds.getKey());
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     Log.d("FRIENDLIST", "key + ");
                     Log.d("FRIENDLIST", ds.getKey());
@@ -113,9 +112,11 @@ public class FriendsList extends AppCompatActivity {
 //                                Log.d("FRIENDLIST", ds2.getKey());
                                 if (ds2.getKey().equals(ds.getKey())) {
                                     friendEmailList.add(ds2.child("email").getValue(String.class));
-//                                    Log.d("FRIENDLIST", "EMAIL GENERATED  + ");
-//                                    Log.d("FRIENDLIST", ds2.child("email").getValue(String.class));
-                                    imgUrlList.add(ds2.child("img").getValue(String.class));
+                                    friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
+                                    friendListAdapter.notifyItemInserted(friendEmailList.size());
+
+                                    Log.d("FRIENDLIST", "friends + ");
+                                    Log.d("FRIENDLIST", friendEmailList.get(0));
                                 }
                             }
                         }
@@ -126,7 +127,6 @@ public class FriendsList extends AppCompatActivity {
                         }
                     });
                 }
-                friendListAdapter.notifyDataSetChanged();
 
             }
             @Override
@@ -191,9 +191,12 @@ public class FriendsList extends AppCompatActivity {
             });
             if (createEmailOnData.equals("")) {
                 errorAddFriend();
-            } else if (!Objects.equals(userIdFriend, "") && friendIdList.contains(String.valueOf(userIdFriend))) {
-                errorDuplicateFriend();
-            } else {
+            }
+
+            // TODO
+            //  Check for duplicates
+
+            else {
                 dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -214,9 +217,10 @@ public class FriendsList extends AppCompatActivity {
                                     .child(userIdFriend)
                                     .child("shareFrom").setValue(true);
                             Utils.postToast("Successfully added friend: " + createEmailOnData, FriendsList.this);
+                            friendEmailList.add(createEmailOnData);
                             dialog.dismiss();
                         }
-                        friendListAdapter.notifyDataSetChanged();
+                        friendListAdapter.notifyItemInserted(friendEmailList.size());
                     }
 
                     @Override
