@@ -36,13 +36,18 @@
         app:srcCompat="@drawable/ic_baseline_person_24" />
 
     <HorizontalScrollView
-        android:layout_width="347dp"
-        android:layout_height="308dp"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox"
+        android:id="@+id/scrollViewForExerciseSets"
+        android:layout_width="800px"
+        android:layout_height="600px"
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/exerciseCompletecheckBox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintHorizontal_bias="0.329"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/light_exercies_during_exercises_title">
+        app:layout_constraintTop_toBottomOf="@+id/light_exercies_during_exercises_title"
+        app:layout_constraintVertical_bias="0.604"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,45 +55,28 @@
             android:orientation="horizontal">
 
             <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gifImageView1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/arm1_standing_cross_chest_curl" />
+                app:loopCount="5" />
 
-            <!--            <ImageView-->
-            <!--                android:id="@+id/set1"-->
-            <!--                android:layout_width="300dp"-->
-            <!--                android:layout_height="300dp"-->
-            <!--                android:layout_marginLeft="10dp"-->
-            <!--                android:layout_marginRight="10dp"-->
-            <!--                android:src="@drawable/ic_baseline_exercise_24" />-->
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gifImageView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <!--            <ImageView-->
-            <!--                android:id="@+id/set2"-->
-            <!--                android:layout_width="300dp"-->
-            <!--                android:layout_height="300dp"-->
-            <!--                android:layout_marginLeft="10dp"-->
-            <!--                android:layout_marginRight="10dp"-->
-            <!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gifImageView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <!--            <ImageView-->
-            <!--                android:id="@+id/set3"-->
-            <!--                android:layout_width="300dp"-->
-            <!--                android:layout_height="300dp"-->
-            <!--                android:layout_marginLeft="10dp"-->
-            <!--                android:layout_marginRight="10dp"-->
-            <!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
-
-            <!--            <ImageView-->
-            <!--                android:id="@+id/set4"-->
-            <!--                android:layout_width="300dp"-->
-            <!--                android:layout_height="300dp"-->
-            <!--                android:layout_marginLeft="10dp"-->
-            <!--                android:layout_marginRight="10dp"-->
-            <!--                android:src="@drawable/ic_baseline_exercise_24"/>-->
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gifImageView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </HorizontalScrollView>
-
 
     <com.kofigyan.stateprogressbar.StateProgressBar
         android:id="@+id/light_exercises_state_progress_bar"
@@ -128,7 +116,7 @@
         app:layout_constraintVertical_bias="0.902" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/exerciseCompletecheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="464dp"
@@ -137,6 +125,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
+        app:layout_constraintVertical_bias="0.263"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
