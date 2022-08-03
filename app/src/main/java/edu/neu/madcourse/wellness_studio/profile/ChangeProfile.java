@@ -193,7 +193,7 @@ public class ChangeProfile extends AppCompatActivity {
                                     newUserRef.child("name").setValue(user.nickname);
                                     newUserRef.child("email").setValue(user.email);
                                     newUserRef.child("img").setValue(user.profileImg);
-                                    //newUserRef.child("friends").setValue(null);
+                                    newUserRef.child("friends").setValue("");
 
                                     // Set online ID in local db
                                     user.setUserId(uid);
