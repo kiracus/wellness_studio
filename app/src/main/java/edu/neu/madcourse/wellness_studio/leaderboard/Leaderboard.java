@@ -138,7 +138,7 @@ public class Leaderboard extends AppCompatActivity {
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Utils.postToast("Please enter password", Leaderboard.this);
+                    Utils.postToast("Please enter password.", Leaderboard.this);
                     return;
                 }
 
