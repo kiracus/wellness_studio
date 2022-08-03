@@ -32,7 +32,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
-
+    String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     ActivityResultLauncher<Intent> startForResult;
 
 
@@ -73,7 +73,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
                                 if (!TextUtils.isEmpty(sleepAlarmUpdate) && !TextUtils.isEmpty(wakeupAlarmUpdate))
                                     sleepAlarmTV.setText(sleepAlarmUpdate);
+                                    sleepAlarmReopenUpdate = sleepAlarmUpdate;
+                                    Log.d("WakeupSleepGoal", "sleepAlarmUpdate" + sleepAlarmReopenUpdate);
                                     wakeupAlarmTV.setText(wakeupAlarmUpdate);
+                                    wakeupAlarmReopenUpdate = wakeupAlarmUpdate;
+                                Log.d("WakeupSleepGoal", "wakeupAlarmUpdate" + wakeupAlarmReopenUpdate);
                                     sleepHoursTV.setText(diff(sleepAlarmUpdate, wakeupAlarmUpdate));
                             }
                         } else {
@@ -138,9 +142,18 @@ public class WakeupSleepGoal extends AppCompatActivity {
         // set click listeners for buttons
         exerciseBtn.setOnClickListener(v -> goToLightExercise());
         //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class)));
+//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class)));
+        sleepBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class));
+//                updateAlarmReopen(v);
+            }
+        });
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, Leaderboard.class)));
 
+
+        updateAlarmReopen();
 
 
     }
@@ -203,6 +216,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
             s = s.substring(0,2) + s.substring(3);
 
         return Integer.valueOf(s);
+    }
+
+    private void updateAlarmReopen() {
+        if (AlarmSetting.isSave) {
+            wakeupAlarmTV.setText(wakeupAlarmReopenUpdate);
+            sleepAlarmTV.setText(sleepAlarmReopenUpdate);
+        }
     }
 
 }

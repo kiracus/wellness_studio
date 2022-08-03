@@ -28,7 +28,7 @@ public class AlarmSetting extends AppCompatActivity {
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
-    boolean isSave = false;
+    static boolean isSave = false;
 
 
 
@@ -80,7 +80,13 @@ public class AlarmSetting extends AppCompatActivity {
         // set click listeners for buttons
         exerciseBtn.setOnClickListener(v -> goToLightExercise());
         //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
+//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
+        sleepBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
+            }
+        });
         leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
 
 
