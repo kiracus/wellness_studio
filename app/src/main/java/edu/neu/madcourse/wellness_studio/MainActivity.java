@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "main";
 
     // VI
-//    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     BottomNavigationView bottomNavigationView;
     Button exerciseGoBtn, sleepGoBtn;
     TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
@@ -99,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         // get VI components
-//        homeBtn = findViewById(R.id.imageButton_home);
-//        exerciseBtn = findViewById(R.id.imageButton_exercise);
-//        sleepBtn = findViewById(R.id.imageButton_sleep);
-//        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         profileBtn = findViewById(R.id.imageView_profile);
@@ -113,15 +108,8 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusCommentTV = findViewById(R.id.progresscomment1);
         alarmStatusTV = findViewById(R.id.progressdetail2);
 
-        // for test only, home now directs to greeting TODO: home button does nothing
-//        homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
-
         // set click listeners for buttons
-//        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
-//        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
         profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
 
         // set bottom nav, currently at home so disable home item

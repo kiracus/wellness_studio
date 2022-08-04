@@ -275,7 +275,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-
         android:gravity="center">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
