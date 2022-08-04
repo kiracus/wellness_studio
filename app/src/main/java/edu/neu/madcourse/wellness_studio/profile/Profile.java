@@ -72,12 +72,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     private FirebaseAuth mAuth;
     private FirebaseUser fUser;
 
-    private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
 
     // calendar
     Calendar calendar;
-    protected static int MONTH = 0;
     protected static HashMap<Object, Property> propertyMap;
     protected static HashMap<Integer, Object> dateMap;
     protected int selected = -1;
@@ -89,17 +87,14 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        Log.v(TAG, "oncreate of profile called");
-
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
 
-        // Initialize Firebase Auth
+        // initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        // initialize calendar instance, get currdate
         calendar = Calendar.getInstance();
-        MONTH = calendar.get(Calendar.MONTH);
-        Log.v(TAG, "current month: " + (MONTH+1));
         String currdate = Utils.getCurrentDate();
 
         // get VI components
@@ -111,9 +106,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         profileImgIV = findViewById(R.id.profile_img);
         nicknameTV = findViewById(R.id.nickname_profile);
         goalFinishedCB = findViewById(R.id.goal_finished_checker);
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        // set bottom nav, leaderboard as activated
+
+        // set bottom nav, home as activated
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -141,7 +136,6 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         // set buttons
         settingBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, ChangeProfile.class)));
 
-
         // set calendar
         // initialize hashmap to hold properties,
         // key is a string of description, value is a property obj
@@ -155,13 +149,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         dateMap.put(calendar.get(Calendar.DAY_OF_MONTH), CURRENT);  // today is the current date
 
         // get a list of dates with finished goal status
-        Log.v(TAG, "checking dates in month : " + currdate.substring(0, 7));
         List<String> checkedDates = UserService.getFinishedDatesOfMonth(db, currdate.substring(0, 7));
-        // Log.v(TAG, checkedDates.toString());
 
         // mark checked date as property "CHECKED" (green)
         if (checkedDates != null) {
-            // Log.v(TAG, checkedDates.toString());
             for (String date : checkedDates) {
                 Integer d = Integer.parseInt(date.substring(8));
                 dateMap.put(d, CHECKED);
@@ -181,8 +172,8 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 int year = selectedDate.get(Calendar.YEAR);
 
                 // get date key for checking db
-                String monthStr = month<10 ? "0"+month : ""+month;  // add "0" if only 1 digit
-                String dateStr = date<10 ? "0"+date : ""+date;
+                String monthStr = to2CharString(month);  // add "0" if only 1 digit
+                String dateStr = to2CharString(date);
                 String dateKey = year + "-" + monthStr + "-" + dateStr;
                 //Log.v(TAG, "date key is : " + dateKey);
                 //Log.v(TAG, "is finished : " + UserService.getGoalFinishedByDate(db, dateKey));
@@ -319,7 +310,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 //        Log.v(TAG, "new month: " + (newMonth.get(Calendar.MONTH)+1));
         String year = newMonth.get(Calendar.YEAR)+"";
         int monthInt = newMonth.get(Calendar.MONTH)+1;
-        String month = monthInt<10 ? "0"+monthInt : ""+monthInt;
+        String month = to2CharString(monthInt);
 
         String newYearMonth = year + "-" + month;
         Log.v(TAG, "new year and month: " + newYearMonth);
@@ -373,8 +364,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         propertyMap.put(SELECTED, propSelected);
     }
 
+
+    // show a login dialog if user clicks login button
     public void createLoginDialog() {
-        dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
 
         Button loginButton= (Button) contactPopupView.findViewById(R.id.loginBtn);
@@ -425,11 +418,12 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         });
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-//    }
+
+    // transfer an integer to a 2-char string, add 0 before single digit number
+    private String to2CharString(int num) {
+        return num<10 ? "0"+num : ""+num;
+    }
+
 
     // ========   helpers to start new activity  ===================
 

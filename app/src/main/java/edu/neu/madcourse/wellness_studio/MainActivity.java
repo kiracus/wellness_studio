@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Calendar;
+
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises_DuringExercise;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     Button exerciseGoBtn, sleepGoBtn;
     TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
+    TextView dateTV, monthTV, dayOfWeekTV;
     ImageView profileBtn;
 
     // user and db
@@ -108,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusCommentTV = findViewById(R.id.progresscomment1);
         alarmStatusTV = findViewById(R.id.progressdetail2);
 
+        dayOfWeekTV = findViewById(R.id.day_of_week_TV);
+        dateTV = findViewById(R.id.date_TV);
+        monthTV = findViewById(R.id.month_TV);
+
         // set click listeners for buttons
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         profileBtn.setOnClickListener(v -> goToProfile());
@@ -140,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
 
         // show current date
         currdate = Utils.getCurrentDate();
+        dateTV.setText(currdate.substring(8));
+        monthTV.setText(currdate.substring(5,7));
+        int dayIdx = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        String[] dayArray = getResources().getStringArray(R.array.days_of_week);
+        dayOfWeekTV.setText(dayArray[dayIdx-1]);
 
         // show exercise progress
         // get a le obj for today (UserService should handle the null case)
@@ -201,8 +213,6 @@ public class MainActivity extends AppCompatActivity {
         wakeupAlarmStr = UserService.getWakeupAlarm(db);
 
         alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
-
-
 
     }
 
