@@ -127,7 +127,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                     goToLeaderboard();
                     return true;
                 default:
-                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    //Log.v(TAG, "Invalid bottom navigation item clicked.");
                     return false;
             }
         });
@@ -182,7 +182,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 int month = selectedDate.get(Calendar.MONTH) + 1;
                 int year = selectedDate.get(Calendar.YEAR);
                 String monthStr = to2CharString(month);
-                Log.v(TAG, "selected date: " + year + " | " + month + " | " + date);
+                // Log.v(TAG, "selected date: " + year + " | " + month + " | " + date);
 
                 // get date key for checking db
                 String dateKey = year + "-" + monthStr + "-" + to2CharString(date);
@@ -327,7 +327,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         String month = to2CharString(monthInt);
 
         String newYearMonth = year + "-" + month;
-        Log.v(TAG, "new year and month: " + newYearMonth);
+        // Log.v(TAG, "new year and month: " + newYearMonth);
 
         Map<Integer, Object>[] arr = new Map[2];
         arr[0] = new HashMap<>();
