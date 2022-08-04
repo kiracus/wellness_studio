@@ -201,6 +201,15 @@ public class FriendsList extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         // Checks if friend exists
+                        Boolean userFound = false;
+                        for (DataSnapshot ds: snapshot.getChildren()) {
+                            if (ds.getKey().equals(userIdFriend)) {
+                                userFound = true;
+                            }
+                        }
+                        if (!userFound) {
+                            errorAddInvalidFriend();
+                        }
                         if (!snapshot.child(String.valueOf(userIdFriend)).exists()) {
                             errorAddInvalidFriend();
                         }
