@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
@@ -27,16 +30,20 @@ import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises_DuringExe
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 
 public class WakeupSleepGoal extends AppCompatActivity {
+    // test
+    private final static String TAG = "sleep";
+
     Button sleepAlarmOnOffBtn, wakeupAlarmOnOffBtn;
     TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV, sleepAlarmOnTV, wakeupAlarmOnTV;
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
-    String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
+    BottomNavigationView bottomNavigationView;
+    protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
 
     ActivityResultLauncher<Intent> startForResult;
 
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -128,25 +135,30 @@ public class WakeupSleepGoal extends AppCompatActivity {
         });
 
 
-        //Home UI buttons
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, Greeting.class)));
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+        bottomNavigationView.getMenu().findItem(R.id.nav_sleep).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    return false;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
-        // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, Leaderboard.class)));
 
 
-
-    }
-
-    private void goToLightExercise() {
-        startActivity(new Intent(WakeupSleepGoal.this, LightExercises.class));
     }
 
     private void onSleepToggleClicked(View view) {
@@ -203,6 +215,30 @@ public class WakeupSleepGoal extends AppCompatActivity {
             s = s.substring(0,2) + s.substring(3);
 
         return Integer.valueOf(s);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(WakeupSleepGoal.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(WakeupSleepGoal.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(WakeupSleepGoal.this, Leaderboard.class));
     }
 
 }

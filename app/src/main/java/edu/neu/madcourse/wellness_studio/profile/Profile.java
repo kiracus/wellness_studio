@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,12 +32,14 @@ import java.util.List;
 import java.util.Map;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.customCalendar.CustomCalendar;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnDateSelectedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnNavigationButtonClickedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.Property;
+import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
@@ -58,7 +61,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     ImageView profileImgIV;
     TextView nicknameTV;
     CheckBox goalFinishedCB;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
     CustomCalendar customCalendar;
 
     // db
@@ -105,19 +108,33 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         nicknameTV = findViewById(R.id.nickname_profile);
         goalFinishedCB = findViewById(R.id.goal_finished_checker);
 
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set bottom nav, leaderboard as activated
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
         // show username and profile img TODO: img
         nicknameTV.setText(UserService.getNickname(db));
 
         // set buttons
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Greeting.class)));
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Leaderboard.class)));
         settingBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, ChangeProfile.class)));
 
 
@@ -353,17 +370,6 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         propertyMap.put(SELECTED, propSelected);
     }
 
-    private void goToLightExercise() {
-        startActivity(new Intent(Profile.this, LightExercises.class));
-    }
-
-//    private void goToLoginOnline() {
-//        Utils.postToast("You clicked login button!", this);
-//        //startActivity(new Intent(Profile.this, LightExercises.class));
-//
-//        // maybe pass some intent so the login page knows it should go back to this screen?
-//    }
-
     public void createLoginDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
@@ -414,5 +420,29 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                 });
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(Profile.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(Profile.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(Profile.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(Profile.this, Leaderboard.class));
     }
 }
