@@ -1,5 +1,7 @@
 package edu.neu.madcourse.wellness_studio;
 
+import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -16,18 +18,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.w3c.dom.Text;
 
+import java.util.Locale;
+
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class AlarmSetting extends AppCompatActivity {
 
-    TimePicker sleepTimePicker, wakeupTimePicker;
+//    TimePicker sleepTimePicker, wakeupTimePicker;
     int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
+    public static final String SLEEP_ALARM_HOUR_KEY_NAME = "sleepAlarmHour";
+    public static final String SLEEP_ALARM_MIN_KEY_NAME = "sleepAlarmMin";
+    public static final String WAKEUP_ALARM_HOUR_KEY_NAME = "wakeupAlarmHour";
+    public static final String WAKEUP_ALARM_MIN_KEY_NAME = "wakeupAlarmMin";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
+    TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
     static boolean isSave = false;
 
 
@@ -38,14 +47,43 @@ public class AlarmSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_alarm_time);
 
-        sleepTimePicker = (TimePicker) findViewById(R.id.sleep_timePicker);
-        sleepTimePicker.setIs24HourView(true);
+//        sleepTimePicker = (TimePicker) findViewById(R.id.sleep_timePicker);
+//        sleepTimePicker.setIs24HourView(true);
 
-        wakeupTimePicker = (TimePicker) findViewById(R.id.wakeup_timePicker);
-        wakeupTimePicker.setIs24HourView(true);
+//        wakeupTimePicker = (TimePicker) findViewById(R.id.wakeup_timePicker);
+//        wakeupTimePicker.setIs24HourView(true);
 
         saveButton = findViewById(R.id.change_save_btn);
+        sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
 
+        sleepAlarmChangeTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popSleepTimePicker(v);
+            }
+        });
+
+        if (sleepAlarmUpdate == null) {
+            sleepAlarmChangeTV.setText("22:30");
+        } else {
+            sleepAlarmChangeTV.setText(sleepAlarmUpdate);
+        }
+
+
+        wakeupAlarmChangeTV = findViewById(R.id.wakeup_alarm_change_time_TV);
+        wakeupAlarmChangeTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWakeTimePicker(v);
+            }
+        });
+
+
+        if (wakeupAlarmUpdate == null) {
+            wakeupAlarmChangeTV.setText("08:30");
+        } else {
+            wakeupAlarmChangeTV.setText(wakeupAlarmUpdate);
+        }
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -57,10 +95,15 @@ public class AlarmSetting extends AppCompatActivity {
 
                     //update Alarm
                     Log.d("AlarmSetting", "save button" + "wakeup" + wakeupAlarmUpdate + " " + "sleep" + sleepAlarmUpdate);
+                    Log.d("Al")
 
                     Intent intent = new Intent();
                     intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
                     intent.putExtra(WAKEUP_ALARM_KEY_NAME, wakeupAlarmUpdate);
+                    intent.putExtra(SLEEP_ALARM_HOUR_KEY_NAME, sleepAlarmHour);
+                    intent.putExtra(SLEEP_ALARM_MIN_KEY_NAME, sleepAlarmMin);
+                    intent.putExtra(WAKEUP_ALARM_HOUR_KEY_NAME, wakeupAlarmHour);
+                    intent.putExtra(WAKEUP_ALARM_MIN_KEY_NAME, wakeupAlarmMin);
                     setResult(RESULT_OK, intent);
                     finish();
                     Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
@@ -110,10 +153,10 @@ public class AlarmSetting extends AppCompatActivity {
 //        });
 
 
-            sleepAlarmHour = sleepTimePicker.getHour();
-            sleepAlarmMin = sleepTimePicker.getMinute();
-            sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
-            Log.d("AlarmSetting", sleepAlarmHour + ":" + sleepAlarmMin);
+//            sleepAlarmHour = sleepTimePicker.getHour();
+//            sleepAlarmMin = sleepTimePicker.getMinute();
+//            sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
+//            Log.d("AlarmSetting", sleepAlarmHour + ":" + sleepAlarmMin);
     }
 
     public void getCurrentWakeupAlarm(View view) {
@@ -127,20 +170,58 @@ public class AlarmSetting extends AppCompatActivity {
 //            }
 //        });
 
-        wakeupAlarmHour = wakeupTimePicker.getHour();
-        wakeupAlarmMin = wakeupTimePicker.getMinute();
-        wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
-        Log.d("AlarmSetting", wakeupAlarmHour + ":" + wakeupAlarmMin);
+//        wakeupAlarmHour = wakeupTimePicker.getHour();
+//        wakeupAlarmMin = wakeupTimePicker.getMinute();
+//        wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
+//        Log.d("AlarmSetting", wakeupAlarmHour + ":" + wakeupAlarmMin);
     }
 
 
     public void saveChanges(View v) {
-        getCurrentSleepAlarm(v);
-        getCurrentWakeupAlarm(v);
+//        getCurrentSleepAlarm(v);
+//        getCurrentWakeupAlarm(v);
     }
 
 
 
+    public void popSleepTimePicker(View view) {
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                sleepAlarmHour = hourOfDay;
+                sleepAlarmMin = minute;
+                String time  = String.format(Locale.getDefault(),"%02d:%02d",sleepAlarmHour,sleepAlarmMin);
+                sleepAlarmChangeTV.setText(time);
+                sleepAlarmUpdate = time;
+
+            }
+        };
+
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style,onTimeSetListener,sleepAlarmHour,sleepAlarmMin,true);
+        timePickerDialog.setTitle("Select Time");
+        timePickerDialog.show();
+    }
+
+    public void popWakeTimePicker(View view) {
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                wakeupAlarmHour = hourOfDay;
+                wakeupAlarmMin = minute;
+                String time  = String.format(Locale.getDefault(),"%02d:%02d",wakeupAlarmHour,wakeupAlarmMin);
+                wakeupAlarmChangeTV.setText(time);
+                wakeupAlarmUpdate = time;
+            }
+        };
+
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style,onTimeSetListener,wakeupAlarmHour,wakeupAlarmMin,true);
+        timePickerDialog.setTitle("Select Time");
+        timePickerDialog.show();
+    }
 
 
 

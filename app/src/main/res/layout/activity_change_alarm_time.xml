@@ -80,11 +80,22 @@
                 android:layout_marginBottom="5dp">
 
 
-                <TimePicker
-                    android:layout_width="wrap_content"
+<!--                <TimePicker-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:timePickerMode="spinner"-->
+<!--                    android:id="@+id/sleep_timePicker"/>-->
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:timePickerMode="spinner"
-                    android:id="@+id/sleep_timePicker"/>
+                    android:id="@+id/sleep_alarm_change_time_TV"
+                    android:text="22:30"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:textSize="50sp"/>
 
             </LinearLayout>
 
@@ -95,11 +106,7 @@
                 android:layout_height="wrap_content"
                 android:text="ON"
                 android:layout_marginTop="60dp"
-                android:layout_marginLeft="280dp"/>
-
-
-
-
+                android:layout_marginLeft="270dp"/>
 
 
         </androidx.cardview.widget.CardView>
@@ -129,11 +136,22 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
-                <TimePicker
-                    android:layout_width="wrap_content"
+<!--                <TimePicker-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:timePickerMode="spinner"-->
+<!--                    android:id="@+id/wakeup_timePicker"/>-->
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:timePickerMode="spinner"
-                    android:id="@+id/wakeup_timePicker"/>
+                    android:id="@+id/wakeup_alarm_change_time_TV"
+                    android:text="08:30"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:textSize="50sp"/>
             </LinearLayout>
 
             <Switch
@@ -142,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:text="ON"
                 android:layout_marginTop="60dp"
-                android:layout_marginLeft="280dp"/>
+                android:layout_marginLeft="270dp"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -201,7 +219,7 @@
             android:layout_height="wrap_content"
             android:text="ON"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="280dp"/>
+            android:layout_marginLeft="270dp"/>
 
 
     </androidx.cardview.widget.CardView>

@@ -53,7 +53,7 @@
 
     <TextView
         android:id="@+id/hours_display"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
@@ -62,10 +62,10 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.775"
+        app:layout_constraintHorizontal_bias="0.325"
         app:layout_constraintStart_toEndOf="@+id/total_sleep_hour"
         app:layout_constraintTop_toBottomOf="@+id/alarm_cardView"
-        app:layout_constraintVertical_bias="0.265" />
+        app:layout_constraintVertical_bias="0.269" />
 
     <GridLayout
         android:id="@+id/alarm_cardView"
@@ -127,10 +127,7 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/moon"
-
-
-                >
+                app:srcCompat="@drawable/moon">
 
             </ImageView>
 
@@ -153,12 +150,14 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ToggleButton
-                android:id="@+id/alarm_on_off"
+
+            <Switch
+                android:id="@+id/sleep_alarm_on_off"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="230dp"
-                android:layout_marginTop="130dp" />
+                android:layout_marginLeft="250dp"
+                android:layout_marginTop="140dp"
+                />
 
 
         </androidx.cardview.widget.CardView>
@@ -231,15 +230,18 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ToggleButton
+
+            <Switch
                 android:id="@+id/wakeup_alarm_on_off"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="230dp"
-                android:layout_marginTop="130dp" />
+                android:layout_marginLeft="250dp"
+                android:layout_marginTop="140dp"
+                />
 
 
         </androidx.cardview.widget.CardView>
+
     </GridLayout>
 
     <LinearLayout
