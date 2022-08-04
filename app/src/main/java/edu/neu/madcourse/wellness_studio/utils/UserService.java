@@ -207,6 +207,8 @@ public class UserService {
     public static Boolean getGoalFinishedByDate(AppDatabase db, String date) {
         Boolean res = db.lightExerciseDao().getGoalFinishedByDate(date);
         if (res == null) {
+            // no record for that day so create one
+            createNewLightExercise(db, date);
             return false;
         } else return res;
     }
