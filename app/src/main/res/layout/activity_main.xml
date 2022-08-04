@@ -87,7 +87,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/lobster"
-                    android:text="08"
+                    android:text="--"
                     android:textSize="40sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -99,7 +99,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="-8dp"
                     android:fontFamily="@font/lobster"
-                    android:text="02"
+                    android:text="--"
                     android:textSize="40sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5sp"
                     android:fontFamily="@font/lobster"
-                    android:text="Friday"
+                    android:text="Sunday"
                     android:textSize="40sp" />
             </LinearLayout>
 

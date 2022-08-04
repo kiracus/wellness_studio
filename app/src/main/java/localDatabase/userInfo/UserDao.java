@@ -42,4 +42,7 @@ public interface UserDao {
     @Query("SELECT hasLoggedInOnline FROM UserInfoTable LIMIT 1")
     Boolean getOnlineStatus();
 
+    @Query("SELECT userId FROM userinfotable LIMIT 1")
+    String getUID();
+
 }

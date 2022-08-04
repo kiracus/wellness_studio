@@ -35,8 +35,6 @@
     <string name="profile">Profile</string>
 
 
-
-
     <string-array name="days_of_week">
         <item>Sunday</item>
         <item>Monday</item>
@@ -46,6 +44,5 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
-
 
 </resources>
