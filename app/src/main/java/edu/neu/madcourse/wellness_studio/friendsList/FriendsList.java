@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
@@ -290,7 +291,7 @@ public class FriendsList extends AppCompatActivity {
     // ========   helpers to start new activity  ===================
 
     private void goToHome() {
-        startActivity(new Intent(FriendsList.this, Greeting.class));
+        startActivity(new Intent(FriendsList.this, MainActivity.class));
     }
 
     private void goToLightExercise() {
