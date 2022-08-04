@@ -1,19 +1,27 @@
 package edu.neu.madcourse.wellness_studio.profile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,7 +54,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     protected final static String CURRENT = "current";
 
     // VI
-    ImageButton settingBtn, loginBtn;
+    ImageButton settingBtn, profileLoginBtn;
     ImageView profileImgIV;
     TextView nicknameTV;
     CheckBox goalFinishedCB;
@@ -59,6 +67,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     // firebase auth
     private FirebaseAuth mAuth;
     private FirebaseUser fUser;
+
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
 
     // calendar
     Calendar calendar;
@@ -88,7 +99,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         customCalendar = findViewById(R.id.custom_calendar);
 
         settingBtn = findViewById(R.id.imageButton_setting);
-        loginBtn = findViewById(R.id.imageButton_login);
+        profileLoginBtn = findViewById(R.id.imageButton_login);
 
         profileImgIV = findViewById(R.id.profile_img);
         nicknameTV = findViewById(R.id.nickname_profile);
@@ -242,17 +253,19 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 }
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        // login or logout
+        profileLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // get online status
-                if (fUser != null) {
+                if (!UserService.getOnlineStatus(db)) {
                     FirebaseAuth.getInstance().signOut();
-                    loginBtn.setImageResource(R.drawable.ic_baseline_login_24);
-                    fUser = null;
+                    profileLoginBtn.setImageResource(R.drawable.ic_baseline_login_24);
+                    UserService.changeOnlineStatus(db);
+                    Utils.postToast("Logged out.", Profile.this);
                 } else {
                     // go to login screen
-                    goToLoginOnline();
+                    createLoginDialog();
                 }
             }
         });
@@ -271,8 +284,8 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 // Check if user is signed in (non-null) and update UI accordingly.
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
-                    loginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
-                    Log.v(TAG, "user UID: " + fUser.getUid());
+                    profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                    Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
                 }
             }
         });
@@ -344,10 +357,62 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         startActivity(new Intent(Profile.this, LightExercises.class));
     }
 
-    private void goToLoginOnline() {
-        Utils.postToast("You clicked login button!", this);
-        //startActivity(new Intent(Profile.this, LightExercises.class));
+//    private void goToLoginOnline() {
+//        Utils.postToast("You clicked login button!", this);
+//        //startActivity(new Intent(Profile.this, LightExercises.class));
+//
+//        // maybe pass some intent so the login page knows it should go back to this screen?
+//    }
 
-        // maybe pass some intent so the login page knows it should go back to this screen?
+    public void createLoginDialog() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
+
+        Button loginButton= (Button) contactPopupView.findViewById(R.id.loginBtn);
+        EditText emailTV = (EditText) contactPopupView.findViewById(R.id.email);
+        EditText passwordTV = (EditText) contactPopupView.findViewById(R.id.password);
+
+        dialogBuilder.setView(contactPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                String email = emailTV.getText().toString();
+                String password = passwordTV.getText().toString();
+                if (TextUtils.isEmpty(email)) {
+                    Utils.postToast("Please enter email.", Profile.this);
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    Utils.postToast("Please enter password.", Profile.this);
+                    return;
+                }
+
+                // Firebase auth
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(
+                                new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(
+                                            @NonNull Task<AuthResult> task)
+                                    {
+                                        if (task.isSuccessful()) {
+                                            Utils.postToast("Login successful.", Profile.this);
+                                            UserService.changeOnlineStatus(db);
+                                            profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                                            dialog.dismiss();
+                                        }
+
+                                        else {
+                                            Utils.postToast("Login failed.", Profile.this);
+                                        }
+                                    }
+                                });
+            }
+        });
     }
 }
