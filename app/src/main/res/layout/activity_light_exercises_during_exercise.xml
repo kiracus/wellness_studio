@@ -79,7 +79,7 @@
     </HorizontalScrollView>
 
     <com.kofigyan.stateprogressbar.StateProgressBar
-        android:id="@+id/light_exercises_state_progress_bar"
+        android:id="@+id/light_exercises_state_progress_bar_during_exercise"
         android:layout_width="365dp"
         android:layout_height="36dp"
         android:layout_centerInParent="true"
@@ -92,7 +92,6 @@
         app:layout_constraintVertical_bias="0.468"
         app:spb_animateToCurrentProgressState="true"
         app:spb_checkStateCompleted="true"
-        app:spb_enableAllStatesCompleted="true"
         app:spb_currentStateDescriptionColor="#0F9D58"
         app:spb_currentStateNumber="one"
         app:spb_maxStateNumber="four"
