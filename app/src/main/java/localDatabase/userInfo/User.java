@@ -31,7 +31,7 @@ public class User {
     public Boolean hasLoggedInOnline;
 
     @ColumnInfo(name = "userId")
-    public int userId;
+    public String userId;
 
     @ColumnInfo(name = "profileImg")
     public String profileImg;
@@ -93,11 +93,11 @@ public class User {
         this.hasLoggedInOnline = hasLoggedInOnline;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -1,10 +1,17 @@
 package edu.neu.madcourse.wellness_studio.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -69,7 +76,9 @@ public class Utils {
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
-        return matcher.find();
+        Boolean res =  matcher.find();
+        Log.v(TAG, "email result: " + s + " | " + res);
+        return res;
     }
 
     // check valid password with:
@@ -78,12 +87,57 @@ public class Utils {
     // at least one uppercase character
     // at least one special symbol among @_#$%
     // length between 6 and 20
+    // ** regex doesnot work so use a temp checker only check length
     public static boolean checkValidPassword(String s) {
-        Pattern VALID_EMAIL_ADDRESS_REGEX =
-                Pattern.compile("^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%]).{6,20}$", Pattern.CASE_INSENSITIVE);
-
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
-        return matcher.find();
+//        Pattern VALID_EMAIL_ADDRESS_REGEX =
+//                Pattern.compile("^(?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%]).{6,20}$",
+//                        Pattern.CASE_INSENSITIVE);
+//
+//        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(s);
+//        Log.v(TAG, "password result: " + matcher.find()+"");
+//        return matcher.find();
+        return (s.length() >= 6 && s.length() <= 15);
     }
+
+
+    public static void saveImage(Bitmap bitmap, String username) {
+        OutputStream output;
+        String recentImageInCache;
+        File filepath = Environment.getExternalStorageDirectory();
+
+        // Create a new folder in SD Card
+        File dir = new File(filepath.getAbsolutePath()
+                + "/wellnessStudio/profile");
+        dir.mkdirs();
+
+        // Create a name for the saved image
+        File file = new File(dir, username+".jpg");
+        try {
+
+            output = new FileOutputStream(file);
+
+            // Compress into png format image from 0% - 100%
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
+            output.flush();
+            output.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == i && resultCode == RESULT_OK && data != null) {
+//            Uri selectedImage = data.getData();
+//
+//            saveImage(yourbitmap);
+//            coverpic.setImageURI(selectedImage);
+//            pathToImage = selectedImage.getPath();
+//            //stuff to do on click button upload cover??
+//        }
+//    }
 
 }
