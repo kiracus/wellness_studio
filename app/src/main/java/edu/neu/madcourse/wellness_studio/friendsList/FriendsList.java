@@ -1,5 +1,6 @@
 package edu.neu.madcourse.wellness_studio.friendsList;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,7 +40,10 @@ import localDatabase.AppDatabase;
 import localDatabase.userInfo.User;
 
 public class FriendsList extends AppCompatActivity {
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    // test
+    private final static String TAG = "friend";
+
+    BottomNavigationView bottomNavigationView;
     ToggleButton exerciseShareSetting;
     AppDatabase appDatabase;
 
@@ -60,22 +65,37 @@ public class FriendsList extends AppCompatActivity {
     private final static String ADD__INVALID_FRIEND_ERROR_MSG =
             "That user does not exist.";
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         exerciseShareSetting = findViewById(R.id.exerciseShareButton);
         FloatingActionButton addFriend = findViewById(R.id.add_friend);
 
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, Greeting.class)));
-        exerciseBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, Leaderboard.class)));
+        // set bottom nav, leaderboard as activated
+        bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
         friendEmailList = new ArrayList<>();
         friendListRecyclerView = findViewById(R.id.friendsListRecyclerView);
@@ -265,4 +285,23 @@ public class FriendsList extends AppCompatActivity {
     // TODO
     // Delete friend
     // Handle share/unshare of exercise w/friends (multiple listeners on list view buttons)
+
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(FriendsList.this, Greeting.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(FriendsList.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(FriendsList.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(FriendsList.this, Leaderboard.class));
+    }
 }
