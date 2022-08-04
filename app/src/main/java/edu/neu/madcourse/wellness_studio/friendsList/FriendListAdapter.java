@@ -1,53 +1,78 @@
 package edu.neu.madcourse.wellness_studio.friendsList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import com.squareup.picasso.Picasso;
+import android.widget.TextView;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import edu.neu.madcourse.wellness_studio.R;
 
-public class FriendListAdapter extends ArrayAdapter<String> {
+public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.FriendListViewHolder> {
 
-    Context context;
-    ArrayList<String> friendImg;
-    ArrayList<String> friendUsername;
+    private final List<String> friendsList;
+    private final Context context;
 
-    public FriendListAdapter(Context context, ArrayList<String> friendImg, ArrayList<String> friendUsername) {
-        super(context, R.layout.activity_friends_list_card_view);
+    public FriendListAdapter(Context context, List<String> friendsList) {
         this.context = context;
-        this.friendImg = friendImg;
-        this.friendUsername = friendUsername;
+        this.friendsList = friendsList;
     }
 
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View singleItem = convertView;
-        FriendListViewHolder viewHolder = null;
-
-        if (singleItem == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            singleItem = layoutInflater.inflate(R.layout.activity_friends_list_card_view, parent,false);
-            viewHolder = new FriendListViewHolder(singleItem);
-            singleItem.setTag(viewHolder);
-        } else {
-            viewHolder = (FriendListViewHolder) singleItem.getTag();
-        }
-
-        String url = clipDoubleQuotationMarkFromUrl(friendImg.get(position));
-        Picasso.get().setLoggingEnabled(true);
-        Picasso.get().load(url).resize(50, 50).into(viewHolder.personIcon);
-        viewHolder.friendName.setText(friendUsername.get(position));
-        return singleItem;
+    @SuppressLint("InflateParams")
+    @NonNull
+    @Override
+    public FriendListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new FriendListViewHolder(LayoutInflater.from(context).inflate(R.layout.activity_friends_list_card_view, parent, false));
     }
 
-    public static String clipDoubleQuotationMarkFromUrl(String url) {
-        if(url.contains("\"")) {
-            url = url.replace("\"","");
+    @Override
+    public void onBindViewHolder(@NonNull FriendListViewHolder holder, int position) {
+        holder.bindThisData(friendsList.get(position));
+//        holder.position = position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return friendsList.size();
+    }
+
+    public static class FriendListViewHolder extends RecyclerView.ViewHolder {
+
+        //ImageView personIcon;
+        TextView friendEmail;
+
+        FriendListViewHolder(View v) {
+            super(v);
+            //personIcon = v.findViewById(R.id.personIcon);
+            friendEmail = v.findViewById(R.id.friendListEmail);
+
+            // When clicking on whole row, give user option to delete friend or cancel
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("demo", "OnClick + " + getAdapterPosition());
+                }
+            });
+
+            // When clicking on button, share/unshare exercise with friend
+            v.findViewById(R.id.exerciseShareButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
+                }
+            });
         }
-        return url;
+
+        public void bindThisData(String thePersonToBind) {
+            friendEmail.setText(thePersonToBind);
+        }
+
     }
 }
