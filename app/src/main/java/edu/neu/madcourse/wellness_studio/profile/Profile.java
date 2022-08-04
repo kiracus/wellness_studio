@@ -3,6 +3,7 @@ package edu.neu.madcourse.wellness_studio.profile;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -82,10 +83,13 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     protected int selected = -1;
     protected int selectedPrev = -1;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        Log.v(TAG, "oncreate of profile called");
 
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
@@ -286,7 +290,6 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 }
             }
         });
-
     }
 
     // check user online status, responsible for ser online related VI components
@@ -422,11 +425,11 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+//    }
 
     // ========   helpers to start new activity  ===================
 

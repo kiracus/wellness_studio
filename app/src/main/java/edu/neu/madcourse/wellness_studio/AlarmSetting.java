@@ -102,13 +102,6 @@ public class AlarmSetting extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
-    }
-
-
 
     public void getCurrentSleepAlarm(View view) {
 //        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {

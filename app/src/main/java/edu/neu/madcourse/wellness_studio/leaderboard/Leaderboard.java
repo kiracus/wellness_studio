@@ -191,6 +191,12 @@ public class Leaderboard extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+    }
+
     // ========   helpers to start new activity  ===================
 
     private void goToHome() {

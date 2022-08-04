@@ -76,25 +76,25 @@ public class MainActivity extends AppCompatActivity {
         assert user != null;  // should not happen though because we'll return if user is null
         nickname = user.getNickname();
 
-        // use some test data for current user TODO delete this
-        user.setSleepAlarm("22:50");
-        user.setWakeUpAlarm("08:10");
-        user.setExerciseAlarm("20:00");
-        UserService.updateUserInfo(db, user);
-
-        // test set some dummy data for le TODO delete this
-        String prefix = "2022-07-2";
-        String prefix2 = "2022-06-1";
-        for (int i=0; i<=9; i++) {
-            UserService.createNewLightExercise(db, prefix2+i);
-            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
-            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
-        }
-        for (int i=0; i<=7; i++) {
-            UserService.createNewLightExercise(db, prefix+i);
-            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
-            UserService.updateExerciseGoalStatus(db, true, prefix+i);
-        }
+//        // use some test data for current user TODO delete this
+//        user.setSleepAlarm("22:50");
+//        user.setWakeUpAlarm("08:10");
+//        user.setExerciseAlarm("20:00");
+//        UserService.updateUserInfo(db, user);
+//
+//        // test set some dummy data for le TODO delete this
+//        String prefix = "2022-07-2";
+//        String prefix2 = "2022-06-1";
+//        for (int i=0; i<=9; i++) {
+//            UserService.createNewLightExercise(db, prefix2+i);
+//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
+//            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
+//        }
+//        for (int i=0; i<=7; i++) {
+//            UserService.createNewLightExercise(db, prefix+i);
+//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
+//            UserService.updateExerciseGoalStatus(db, true, prefix+i);
+//        }
 
 
         // get VI components
@@ -110,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
         // set click listeners for buttons
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
-        profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
+        profileBtn.setOnClickListener(v -> goToProfile());
 
         // set bottom nav, currently at home so disable home item
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
-        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
+//        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_home:
@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
         });
-
 
 
         // set greeting message in header
@@ -174,13 +173,11 @@ public class MainActivity extends AppCompatActivity {
 
         // get current set and set exercise button text
         currSet = UserService.getCurrentSetByDate(db, currdate);
-        switch (currSet) {
-            case NOT_SELECTED:
-                exerciseGoBtn.setText("GO");
-                break;
-            default:
-                exerciseGoBtn.setText("CONTINUE");
-                exerciseGoBtn.setTextSize(10);
+        if (currSet == ExerciseSet.NOT_SELECTED) {
+            exerciseGoBtn.setText("GO");
+        } else {
+            exerciseGoBtn.setText("CONTINUE");
+            exerciseGoBtn.setTextSize(10);
         }
 
         // set exercise go button respond
@@ -250,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,LightExercises_DuringExercise.class);
         intent.putExtra("exercises_focus_area", currSet);
         startActivity(intent);
+    }
+
+    private void goToProfile() {
+        Log.v(TAG, "go to profile called");
+        startActivity(new Intent(MainActivity.this, Profile.class));
     }
 
 }

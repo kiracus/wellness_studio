@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -133,8 +134,10 @@ public class ChangeProfile extends AppCompatActivity {
             hasOnlineAccount = true;
             emailInputET.setText(user.getEmail());
             emailInputET.setFocusable(false);
+            emailInputET.setTextColor(Color.GRAY);
             passwordInputET.setText("******");
-            emailInputET.setFocusable(false);
+            passwordInputET.setFocusable(false);
+            passwordInputET.setTextColor(Color.GRAY);
         }
 
         // TODO set profile pic, if none use some default img from assets
