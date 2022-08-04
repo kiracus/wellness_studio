@@ -220,4 +220,10 @@ public class UserService {
             return res;
     }
 
+    // update online db when goal is finished for some date
+    // will be called from profile and the light exercise
+    public static void updateWeeklyExerciseCounts(String uid, int counts) {
+        // TODO
+    }
+
 }
