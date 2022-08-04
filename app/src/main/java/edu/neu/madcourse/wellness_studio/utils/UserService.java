@@ -202,6 +202,8 @@ public class UserService {
         } else return res;
     }
 
+    // ================================================
+    // =============   sleep goal   ===============
 
     // set sleep and wakeup alarm
     public static String getSleepAlarm(AppDatabase db) {
@@ -218,6 +220,36 @@ public class UserService {
             return "--:--";
         } else
             return res;
+    }
+
+
+    // ================================================
+    // =============   leaderboard & login / logout  ===============
+
+    // check if current user is online from local db
+    public static boolean getOnlineStatus(AppDatabase db) {
+        return db.userDao().getOnlineStatus();
+    }
+
+    // update user online status
+    public static void changeOnlineStatus(AppDatabase db) {
+        User user = db.userDao().getUser();
+        if (user.getHasLoggedInOnline()) {
+            user.setHasLoggedInOnline(false);
+            updateUserInfo(db, user);
+            Log.v(TAG, "[DB] user is marked logged out.");
+        } else {
+            user.setHasLoggedInOnline(true);
+            updateUserInfo(db, user);
+            Log.v(TAG, "[DB] user is marked logged in.");
+        }
+    }
+
+
+    // update online db when goal is finished for some date
+    // will be called from profile and the light exercise
+    public static void updateWeeklyExerciseCounts(String uid, int counts) {
+        // TODO
     }
 
 }

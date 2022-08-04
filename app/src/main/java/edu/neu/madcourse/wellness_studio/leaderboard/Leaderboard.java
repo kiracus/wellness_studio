@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
@@ -33,8 +36,11 @@ import localDatabase.AppDatabase;
 import localDatabase.userInfo.User;
 
 public class Leaderboard extends AppCompatActivity {
+    // TAG for test
+    private final static String TAG = "leaderboard";
 
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, friendsList;
+    BottomNavigationView bottomNavigationView;
+    ImageButton friendsList;
     Button refreshBtn;
     TextView currentWeek;
 
@@ -46,7 +52,7 @@ public class Leaderboard extends AppCompatActivity {
     private AlertDialog dialog;
 
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,22 +63,34 @@ public class Leaderboard extends AppCompatActivity {
         db = AppDatabase.getDbInstance(this.getApplicationContext());
         user = UserService.getCurrentUser(db);
 
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         friendsList = findViewById(R.id.go_to_friends);
         currentWeek = findViewById(R.id.currentWeek);
         refreshBtn = findViewById(R.id.refresh_leaderboard);
 
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, Greeting.class)));
-
-        exerciseBtn.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, LightExercises.class)));
-
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, WakeupSleepGoal.class)));
-
-        // leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, Leaderboard.class)));
         friendsList.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, FriendsList.class)));
+
+        // set bottom nav, currently at leaderboard so disable home item
+        bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+        bottomNavigationView.getMenu().findItem(R.id.nav_leaderboard).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return false;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    return false;   // should not happen, disabled
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
         assert user != null;
         if (user.hasOnlineAccount) {
@@ -170,6 +188,27 @@ public class Leaderboard extends AppCompatActivity {
     // Work on refresh button
 
     public void refreshLeaderboard() {
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(Leaderboard.this, MainActivity.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(Leaderboard.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(Leaderboard.this, LightExercises.class));
     }
 
 }

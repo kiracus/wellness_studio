@@ -1,19 +1,29 @@
 package edu.neu.madcourse.wellness_studio.profile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -23,12 +33,14 @@ import java.util.List;
 import java.util.Map;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.customCalendar.CustomCalendar;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnDateSelectedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnNavigationButtonClickedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.Property;
+import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
@@ -46,11 +58,11 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     protected final static String CURRENT = "current";
 
     // VI
-    ImageButton settingBtn, loginBtn;
+    ImageButton settingBtn, profileLoginBtn;
     ImageView profileImgIV;
     TextView nicknameTV;
     CheckBox goalFinishedCB;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
     CustomCalendar customCalendar;
 
     // db
@@ -60,6 +72,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     private FirebaseAuth mAuth;
     private FirebaseUser fUser;
 
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+
     // calendar
     Calendar calendar;
     protected static int MONTH = 0;
@@ -68,10 +83,13 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     protected int selected = -1;
     protected int selectedPrev = -1;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        Log.v(TAG, "oncreate of profile called");
 
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
@@ -88,25 +106,39 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         customCalendar = findViewById(R.id.custom_calendar);
 
         settingBtn = findViewById(R.id.imageButton_setting);
-        loginBtn = findViewById(R.id.imageButton_login);
+        profileLoginBtn = findViewById(R.id.imageButton_login);
 
         profileImgIV = findViewById(R.id.profile_img);
         nicknameTV = findViewById(R.id.nickname_profile);
         goalFinishedCB = findViewById(R.id.goal_finished_checker);
 
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set bottom nav, leaderboard as activated
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
         // show username and profile img TODO: img
         nicknameTV.setText(UserService.getNickname(db));
 
         // set buttons
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Greeting.class)));
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, Leaderboard.class)));
         settingBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, ChangeProfile.class)));
 
 
@@ -129,7 +161,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
         // mark checked date as property "CHECKED" (green)
         if (checkedDates != null) {
-            Log.v(TAG, checkedDates.toString());
+            // Log.v(TAG, checkedDates.toString());
             for (String date : checkedDates) {
                 Integer d = Integer.parseInt(date.substring(8));
                 dateMap.put(d, CHECKED);
@@ -242,6 +274,22 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 }
         });
 
+        // login or logout
+        profileLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get online status
+                if (!UserService.getOnlineStatus(db)) {
+                    FirebaseAuth.getInstance().signOut();
+                    profileLoginBtn.setImageResource(R.drawable.ic_baseline_login_24);
+                    UserService.changeOnlineStatus(db);
+                    Utils.postToast("Logged out.", Profile.this);
+                } else {
+                    // go to login screen
+                    createLoginDialog();
+                }
+            }
+        });
     }
 
     // check user online status, responsible for ser online related VI components
@@ -256,7 +304,8 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 // Check if user is signed in (non-null) and update UI accordingly.
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
-                    loginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                    profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                    Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
                 }
             }
         });
@@ -324,7 +373,79 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         propertyMap.put(SELECTED, propSelected);
     }
 
+    public void createLoginDialog() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
+
+        Button loginButton= (Button) contactPopupView.findViewById(R.id.loginBtn);
+        EditText emailTV = (EditText) contactPopupView.findViewById(R.id.email);
+        EditText passwordTV = (EditText) contactPopupView.findViewById(R.id.password);
+
+        dialogBuilder.setView(contactPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                String email = emailTV.getText().toString();
+                String password = passwordTV.getText().toString();
+                if (TextUtils.isEmpty(email)) {
+                    Utils.postToast("Please enter email.", Profile.this);
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    Utils.postToast("Please enter password.", Profile.this);
+                    return;
+                }
+
+                // Firebase auth
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(
+                                new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(
+                                            @NonNull Task<AuthResult> task)
+                                    {
+                                        if (task.isSuccessful()) {
+                                            Utils.postToast("Login successful.", Profile.this);
+                                            UserService.changeOnlineStatus(db);
+                                            profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+                                            dialog.dismiss();
+                                        }
+
+                                        else {
+                                            Utils.postToast("Login failed.", Profile.this);
+                                        }
+                                    }
+                                });
+            }
+        });
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+//    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(Profile.this, MainActivity.class));
+    }
+
     private void goToLightExercise() {
         startActivity(new Intent(Profile.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(Profile.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(Profile.this, Leaderboard.class));
     }
 }

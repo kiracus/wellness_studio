@@ -1,5 +1,6 @@
 package edu.neu.madcourse.wellness_studio;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -14,17 +15,22 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.w3c.dom.Text;
 
+import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class AlarmSetting extends AppCompatActivity {
+    // test
+    private final static String TAG = "alarmsetting";
 
     TimePicker sleepTimePicker, wakeupTimePicker;
     int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
@@ -32,6 +38,7 @@ public class AlarmSetting extends AppCompatActivity {
 
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -70,26 +77,31 @@ public class AlarmSetting extends AppCompatActivity {
             }
         });
 
-        //Home UI buttons
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Greeting.class)));
-
-        // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
-
-
+        // bottom nav bar
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set bottom nav, leaderboard as activated
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
     }
 
-
-    private void goToLightExercise() {
-        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
-    }
 
     public void getCurrentSleepAlarm(View view) {
 //        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -139,5 +151,22 @@ public class AlarmSetting extends AppCompatActivity {
 
 
 
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(AlarmSetting.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(AlarmSetting.this, Leaderboard.class));
+    }
 
 }
