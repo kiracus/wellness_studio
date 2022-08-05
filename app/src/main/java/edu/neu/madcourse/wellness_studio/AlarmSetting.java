@@ -152,23 +152,23 @@ public class AlarmSetting extends AppCompatActivity {
 //            }
 //        });
         //Home UI buttons
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Greeting.class)));
-
-        // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
-        sleepBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
-            }
-        });
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
+//        homeBtn = findViewById(R.id.imageButton_home);
+//        exerciseBtn = findViewById(R.id.imageButton_exercise);
+//        sleepBtn = findViewById(R.id.imageButton_sleep);
+//        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+//        homeBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Greeting.class)));
+//
+//        // set click listeners for buttons
+//        exerciseBtn.setOnClickListener(v -> goToLightExercise());
+//        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
+////        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
+//        sleepBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
+//            }
+//        });
+//        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
 
 
     }
@@ -233,10 +233,10 @@ public class AlarmSetting extends AppCompatActivity {
     private void goToHome() {
         startActivity(new Intent(AlarmSetting.this, MainActivity.class));
     }
-
-    private void goToLightExercise() {
-        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
-    }
+//
+//    private void goToLightExercise() {
+//        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
+//    }
 
     private void goToSleepGoal() {
         startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));

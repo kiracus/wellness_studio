@@ -31,7 +31,7 @@
 
         <Button
             android:id="@+id/change_save_btn"
-            android:layout_width="18dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
