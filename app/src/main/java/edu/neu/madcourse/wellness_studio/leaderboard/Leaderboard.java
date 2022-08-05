@@ -66,6 +66,8 @@ public class Leaderboard extends AppCompatActivity {
     ProgressBar weeklyProgressBar;
     LeaderboardAdapter leaderboardAdapter;
 
+    String date;
+
 
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
@@ -143,6 +145,9 @@ public class Leaderboard extends AppCompatActivity {
         currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
                 monthEnd + "-" + dayEnd + "-" + yearEnd);
 
+        date = UserService.getFirstDayOfWeek();
+        Log.d("FRIENDLIST", date);
+
         // Instantiate array lists
         friendEmailList = new ArrayList<>();
         friendWeeklyCount = new ArrayList<>();
@@ -176,31 +181,34 @@ public class Leaderboard extends AppCompatActivity {
                                 if (ds2.getKey().equals(ds.getKey())) {
                                     if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
                                         friendEmailList.add(ds2.child("name").getValue(String.class));
-//                                        getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                            @Override
-//                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                int count = 0;
-//                                                for (DataSnapshot ds3 : snapshot.getChildren()) {
-//                                                    if (ds3.getKey().equals(ds2.getKey())) {
-//                                                        // get current week sunday
-//                                                        count = ds3.child("date").getValue(Integer.class);
-//                                                        friendWeeklyCount.add(String.valueOf(count));
-//                                                    }
-//                                                }
-//                                            }
-//
-//                                            @Override
-//                                            public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                            }
-//                                        });
-                                        friendWeeklyCount.add(String.valueOf(2));
+                                        Log.d("FRIENDLIST", ds2.getKey());
+                                        // TODO figure this part out + delete follwing line of code
+                                        friendWeeklyCount.add(String.valueOf(3));
+
+                                        DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
+                                        DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds2.getKey());
+                                        getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                int count;
+                                                for (DataSnapshot ds3 : snapshot.getChildren()) {
+                                                    Log.d("FRIENDLIST", date);
+                                                    count = ds3.getValue(Integer.class);
+                                                    Log.d("FRIENDLIST", String.valueOf(count));
+
+                                                    friendWeeklyCount.add(String.valueOf(count));
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                                         leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
                                         leaderboardAdapter.notifyItemInserted(friendEmailList.size());
                                     }
-
-                                        Log.d("FRIENDLIST", "friends + ");
-                                        Log.d("FRIENDLIST", friendEmailList.get(0));
                                 }
                             }
                         }
@@ -277,6 +285,10 @@ public class Leaderboard extends AppCompatActivity {
     // Work on refresh button
 
     public void refreshLeaderboard() {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 
 
