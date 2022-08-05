@@ -35,4 +35,14 @@ public interface UserDao {
 
     @Query("SELECT email FROM UserInfoTable LIMIT 1")
     String getUserEmail();
+
+    @Query("SELECT * FROM UserInfoTable LIMIT 1")
+    User getUser();
+
+    @Query("SELECT hasLoggedInOnline FROM UserInfoTable LIMIT 1")
+    Boolean getOnlineStatus();
+
+    @Query("SELECT userId FROM userinfotable LIMIT 1")
+    String getUID();
+
 }

@@ -1,5 +1,7 @@
 package edu.neu.madcourse.wellness_studio;
 
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -16,7 +18,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.w3c.dom.Text;
+
+
+import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 
 import java.util.Locale;
 
@@ -24,11 +31,13 @@ import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class AlarmSetting extends AppCompatActivity {
+    // test
+    private final static String TAG = "alarmsetting";
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
     public static int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
@@ -37,6 +46,7 @@ public class AlarmSetting extends AppCompatActivity {
 
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -104,6 +114,43 @@ public class AlarmSetting extends AppCompatActivity {
             }
         });
 
+        // bottom nav bar
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set bottom nav, leaderboard as activated
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
+    }
+
+
+    public void getCurrentSleepAlarm(View view) {
+//        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+//            @Override
+//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//                sleepAlarmHour = hourOfDay + "";
+//                sleepAlarmMin = minute + "";
+//                sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
+//                Log.d("AlarmSetting", sleepAlarmUpdate);
+//
+//            }
+//        });
         //Home UI buttons
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
@@ -181,5 +228,22 @@ public class AlarmSetting extends AppCompatActivity {
 
 
 
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(AlarmSetting.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(AlarmSetting.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(AlarmSetting.this, Leaderboard.class));
+    }
 
 }

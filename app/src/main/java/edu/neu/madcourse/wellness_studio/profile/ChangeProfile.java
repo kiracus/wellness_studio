@@ -5,14 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import edu.neu.madcourse.wellness_studio.Greeting;
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
+import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
+import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
+import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
@@ -44,7 +54,7 @@ public class ChangeProfile extends AppCompatActivity {
     ImageButton profileImgBtn, saveBtn, cancelBtn;
     EditText usernameInputET, emailInputET, passwordInputET;
     TextView usernameHintTV;
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+    BottomNavigationView bottomNavigationView;
 
     // db
     protected AppDatabase db;
@@ -67,6 +77,7 @@ public class ChangeProfile extends AppCompatActivity {
     // user info
     protected Boolean hasOnlineAccount = false;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,10 +99,28 @@ public class ChangeProfile extends AppCompatActivity {
         passwordInputET = findViewById(R.id.password_input_ET);
         usernameHintTV = findViewById(R.id.username_hint);
 
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set bottom nav, should have no activated item
+        bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(false); // TODO bug here
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
 
         // show username
         usernameInputET.setText(UserService.getNickname(db));
@@ -105,8 +134,10 @@ public class ChangeProfile extends AppCompatActivity {
             hasOnlineAccount = true;
             emailInputET.setText(user.getEmail());
             emailInputET.setFocusable(false);
+            emailInputET.setTextColor(Color.GRAY);
             passwordInputET.setText("******");
-            emailInputET.setFocusable(false);
+            passwordInputET.setFocusable(false);
+            passwordInputET.setTextColor(Color.GRAY);
         }
 
         // TODO set profile pic, if none use some default img from assets
@@ -249,8 +280,25 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(ChangeProfile.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(ChangeProfile.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(ChangeProfile.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(ChangeProfile.this, Leaderboard.class));
+    }
+
     private void goToProfile() {
         startActivity(new Intent(ChangeProfile.this, Profile.class));
-        finish();
     }
 }

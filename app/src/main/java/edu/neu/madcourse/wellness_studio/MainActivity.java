@@ -3,17 +3,20 @@ package edu.neu.madcourse.wellness_studio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
@@ -32,9 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "main";
 
     // VI
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn, profileBtn;
+    BottomNavigationView bottomNavigationView;
     Button exerciseGoBtn, sleepGoBtn;
     TextView greetingTV, exerciseStatusTV, exerciseStatusCommentTV, alarmStatusTV;
+    TextView dateTV, monthTV, dayOfWeekTV;
+    ImageView profileBtn;
 
     // user and db
     protected User user;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected String currdate;
 
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,33 +76,31 @@ public class MainActivity extends AppCompatActivity {
         assert user != null;  // should not happen though because we'll return if user is null
         nickname = user.getNickname();
 
-        // use some test data for current user TODO delete this
-        user.setSleepAlarm("22:50");
-        user.setWakeUpAlarm("08:10");
-        user.setExerciseAlarm("20:00");
-        UserService.updateUserInfo(db, user);
-
-        // test set some dummy data for le TODO delete this
-        String prefix = "2022-07-2";
-        String prefix2 = "2022-06-1";
-        for (int i=0; i<=9; i++) {
-            UserService.createNewLightExercise(db, prefix2+i);
-            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
-            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
-        }
-        for (int i=0; i<=7; i++) {
-            UserService.createNewLightExercise(db, prefix+i);
-            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
-            UserService.updateExerciseGoalStatus(db, true, prefix+i);
-        }
+//        // use some test data for current user TODO delete this
+//        user.setSleepAlarm("22:50");
+//        user.setWakeUpAlarm("08:10");
+//        user.setExerciseAlarm("20:00");
+//        UserService.updateUserInfo(db, user);
+//
+//        // test set some dummy data for le TODO delete this
+//        String prefix = "2022-07-2";
+//        String prefix2 = "2022-06-1";
+//        for (int i=0; i<=9; i++) {
+//            UserService.createNewLightExercise(db, prefix2+i);
+//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
+//            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
+//        }
+//        for (int i=0; i<=7; i++) {
+//            UserService.createNewLightExercise(db, prefix+i);
+//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
+//            UserService.updateExerciseGoalStatus(db, true, prefix+i);
+//        }
 
 
         // get VI components
-        homeBtn = findViewById(R.id.imageButton_home);
-        exerciseBtn = findViewById(R.id.imageButton_exercise);
-        sleepBtn = findViewById(R.id.imageButton_sleep);
-        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-        profileBtn = findViewById(R.id.imageButton_profile);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        profileBtn = findViewById(R.id.imageView_profile);
         exerciseGoBtn = findViewById(R.id.button1);
         sleepGoBtn = findViewById(R.id.button2);
         greetingTV = findViewById(R.id.greeting_TV);
@@ -105,22 +108,47 @@ public class MainActivity extends AppCompatActivity {
         exerciseStatusCommentTV = findViewById(R.id.progresscomment1);
         alarmStatusTV = findViewById(R.id.progressdetail2);
 
-        // for test only, home now directs to greeting TODO: home button does nothing
-        homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Greeting.class)));
+        dayOfWeekTV = findViewById(R.id.day_of_week_TV);
+        dateTV = findViewById(R.id.date_TV);
+        monthTV = findViewById(R.id.month_TV);
 
         // set click listeners for buttons
-        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-        sleepBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
-        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Leaderboard.class)));
-        profileBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Profile.class)));
+        profileBtn.setOnClickListener(v -> goToProfile());
+
+        // set bottom nav, currently at home so disable home item
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+//        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    return false; // should not happen, disabled
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
+
 
         // set greeting message in header
         greetingTV.setText("Hello, " + nickname + " !");
 
         // show current date
         currdate = Utils.getCurrentDate();
+        dateTV.setText(currdate.substring(8));
+        monthTV.setText(currdate.substring(5,7));
+        int dayIdx = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        String[] dayArray = getResources().getStringArray(R.array.days_of_week);
+        dayOfWeekTV.setText(dayArray[dayIdx-1]);
 
         // show exercise progress
         // get a le obj for today (UserService should handle the null case)
@@ -154,12 +182,11 @@ public class MainActivity extends AppCompatActivity {
 
         // get current set and set exercise button text
         currSet = UserService.getCurrentSetByDate(db, currdate);
-        switch (currSet) {
-            case NOT_SELECTED:
-                exerciseGoBtn.setText("GO");
-                break;
-            default:
-                exerciseGoBtn.setText("CONTINUE");
+        if (currSet == ExerciseSet.NOT_SELECTED) {
+            exerciseGoBtn.setText("GO");
+        } else {
+            exerciseGoBtn.setText("CONTINUE");
+            exerciseGoBtn.setTextSize(10);
         }
 
         // set exercise go button respond
@@ -184,10 +211,40 @@ public class MainActivity extends AppCompatActivity {
 
         alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
 
-
-
     }
 
+    // or the nav bar would act very strange
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        int seletedItemId = bottomNavigationView.getSelectedItemId();
+//        if (R.id.nav_home != seletedItemId) {
+//            setHomeItem(MainActivity.this);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
+//
+//    public static void setHomeItem(Activity activity) {
+//        BottomNavigationView navView = (BottomNavigationView)
+//                activity.findViewById(R.id.bottom_navigation);
+//        navView.setSelectedItemId(R.id.nav_home);
+//    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(MainActivity.this, Leaderboard.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class));
+    }
 
     private void goToLightExercise() {
         startActivity(new Intent(MainActivity.this, LightExercises.class));
@@ -197,6 +254,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,LightExercises_DuringExercise.class);
         intent.putExtra("exercises_focus_area", currSet);
         startActivity(intent);
+    }
+
+    private void goToProfile() {
+        Log.v(TAG, "go to profile called");
+        startActivity(new Intent(MainActivity.this, Profile.class));
     }
 
 }

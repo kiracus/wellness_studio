@@ -9,9 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
 
+
+import android.annotation.SuppressLint;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
@@ -37,10 +43,22 @@ import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises_DuringExe
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 
 public class WakeupSleepGoal extends AppCompatActivity {
+
+    // test
+    private final static String TAG = "sleep";
+
+    Button sleepAlarmOnOffBtn, wakeupAlarmOnOffBtn;
+    TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV, sleepAlarmOnTV, wakeupAlarmOnTV;
+    ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
+    BottomNavigationView bottomNavigationView;
+    protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
+
+
     TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV, sleepAlarmOnTV, wakeupAlarmOnTV;
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate, sleepHoursReopenUpdate;
+
     ActivityResultLauncher<Intent> startForResult;
     Switch sleepAlarmSwitch, wakeupAlarmSwitch;
     PendingIntent pendingIntent;
@@ -50,6 +68,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -184,6 +203,32 @@ public class WakeupSleepGoal extends AppCompatActivity {
             }
         });
 
+
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+        bottomNavigationView.getMenu().findItem(R.id.nav_sleep).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    goToLightExercise();
+                    return true;
+                case R.id.nav_sleep:
+                    return false;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
+
+
+
         //Home UI buttons
         homeBtn = findViewById(R.id.imageButton_home);
         exerciseBtn = findViewById(R.id.imageButton_exercise);
@@ -225,8 +270,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
         }
     }
 
-    private void goToLightExercise() {
-        startActivity(new Intent(WakeupSleepGoal.this, LightExercises.class));
     }
 
 
@@ -306,6 +349,32 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         return Integer.valueOf(s);
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+    }
+
+    // ========   helpers to start new activity  ===================
+
+    private void goToHome() {
+        startActivity(new Intent(WakeupSleepGoal.this, MainActivity.class));
+    }
+
+    private void goToLightExercise() {
+        startActivity(new Intent(WakeupSleepGoal.this, LightExercises.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class));
+    }
+
+    private void goToLeaderboard() {
+        startActivity(new Intent(WakeupSleepGoal.this, Leaderboard.class));
+    }
+
 
     public void setAlarm(int hour, int min) {
         Intent intent = new Intent(this, AlarmReceiver.class);

@@ -27,6 +27,12 @@
     <string name="progressTxtView">Progress of Today</string>
 
 
+<!--    bottom navigations-->
+    <string name="home">Home</string>
+    <string name="exercise">Exercise</string>
+    <string name="sleep">Sleep</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="profile">Profile</string>
 
 
     <string-array name="days_of_week">
@@ -38,6 +44,5 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
-
 
 </resources>
