@@ -303,7 +303,7 @@ public class UserService {
     }
 
     // return the first day of current week in string form yyyy-mm-dd
-    private static String getFirstDayOfWeek() {
+    public static String getFirstDayOfWeek() {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.set(Calendar.DAY_OF_WEEK, 1);
         int month = mCalendar.get(Calendar.MONTH) + 1;
