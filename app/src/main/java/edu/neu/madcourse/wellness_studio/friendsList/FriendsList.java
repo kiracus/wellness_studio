@@ -69,6 +69,7 @@ public class FriendsList extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
@@ -118,7 +119,7 @@ public class FriendsList extends AppCompatActivity {
         dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                // friendEmailList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     Log.d("FRIENDLIST", "key + ");
@@ -141,6 +142,7 @@ public class FriendsList extends AppCompatActivity {
                                 }
                             }
                         }
+
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
@@ -222,6 +224,7 @@ public class FriendsList extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         // Checks if friend exists
+                        // friendEmailList.clear();
                         Boolean userFound = false;
                         for (DataSnapshot ds: snapshot.getChildren()) {
                             if (ds.getKey().equals(userIdFriend)) {
