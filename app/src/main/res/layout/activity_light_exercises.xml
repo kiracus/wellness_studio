@@ -34,13 +34,13 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="20dp"
-            app:cardCornerRadius="20dp"
             app:cardBackgroundColor="@color/white">
 
             <androidx.cardview.widget.CardView
@@ -266,7 +266,6 @@
         android:id="@+id/progress_bar_container"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
         app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
-        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -277,7 +276,7 @@
             android:textColor="@color/deep_blue"
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
-            android:paddingBottom="10dp"
+            android:paddingBottom="5dp"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -285,8 +284,7 @@
             android:id="@+id/light_exercises_state_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
+            android:layout_margin="10dp"
             app:spb_animateToCurrentProgressState="true"
             app:spb_checkStateCompleted="true"
             app:spb_currentStateDescriptionColor="#0F9D58"

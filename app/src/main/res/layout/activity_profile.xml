@@ -8,36 +8,60 @@
     android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_title"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appBarLayout">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Profile"
+                android:background="@color/blue"
+                app:titleTextColor="@color/white"
+                android:paddingStart="30dp"
+                android:paddingEnd="10dp"
+                android:theme="@style/AppTheme.AppBarOverlay" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ImageButton
+            android:id="@+id/imageButton_login"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/ic_baseline_login_24"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton_setting"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/blue"
+            android:contentDescription="login or logout"/>
+
+        <ImageButton
+            android:id="@+id/imageButton_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="profile settings"
+            app:srcCompat="@drawable/ic_baseline_settings_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/blue"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toTopOf="parent">
-            <ImageButton
-                android:id="@+id/imageButton_login"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="start"
-                android:layout_marginStart="10dp"
-                app:srcCompat="@drawable/ic_baseline_login_24" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_weight="1"/>
-            <ImageButton
-                android:id="@+id/imageButton_setting"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="10dp"
-                app:srcCompat="@drawable/ic_baseline_settings_24" />
-        </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        android:layout_marginTop="24dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_img_container"
@@ -46,7 +70,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="50dp"
             app:cardCornerRadius="50dp">
 
             <ImageView
@@ -55,10 +78,9 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:background="@color/white"
-                app:srcCompat="@drawable/ic_baseline_person_24" />
+                app:srcCompat="@drawable/default_avatar" />
 
         </androidx.cardview.widget.CardView>
-
 
         <TextView
             android:id="@+id/nickname_profile"

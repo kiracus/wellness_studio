@@ -34,7 +34,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="Theme.MaterialComponents.DayNight.DarkActionBar" >
-        <item name="android:fontFamily">@font/lobster</item>
+<!--        <item name="android:fontFamily">@font/lobster</item>-->
     </style>
 
 </resources>
