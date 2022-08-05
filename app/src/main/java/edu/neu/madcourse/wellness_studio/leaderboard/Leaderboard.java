@@ -10,20 +10,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
@@ -50,6 +59,12 @@ public class Leaderboard extends AppCompatActivity {
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
+
+    RecyclerView leaderboardRecyclerView;
+    List<String> friendEmailList;
+    List<String> friendWeeklyCount;
+    ProgressBar weeklyProgressBar;
+    LeaderboardAdapter leaderboardAdapter;
 
 
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
@@ -128,6 +143,81 @@ public class Leaderboard extends AppCompatActivity {
         currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
                 monthEnd + "-" + dayEnd + "-" + yearEnd);
 
+        // Instantiate array lists
+        friendEmailList = new ArrayList<>();
+        friendWeeklyCount = new ArrayList<>();
+        weeklyProgressBar = (ProgressBar) findViewById(R.id.weeklyProgressBar);
+
+        // set view and adapter
+        leaderboardRecyclerView = findViewById(R.id.weeklyRankingRecyclerView);
+        leaderboardRecyclerView.setHasFixedSize(true);
+        leaderboardAdapter = new LeaderboardAdapter(Leaderboard.this, friendEmailList, friendWeeklyCount);
+        leaderboardRecyclerView.setAdapter(leaderboardAdapter);
+        leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+
+        // Populate lists with cloud data
+        DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(user.userId).child("friends");
+
+        dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // friendEmailList.clear();
+                for (DataSnapshot ds: snapshot.getChildren()) {
+//                    Log.d("FRIENDLIST", "key + ");
+//                    Log.d("FRIENDLIST", ds.getKey());
+
+                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference allUsers = db.child("users");
+                    allUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot ds2 : snapshot.getChildren()) {
+                                if (ds2.getKey().equals(ds.getKey())) {
+                                    if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
+                                        friendEmailList.add(ds2.child("name").getValue(String.class));
+//                                        getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                            @Override
+//                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                int count = 0;
+//                                                for (DataSnapshot ds3 : snapshot.getChildren()) {
+//                                                    if (ds3.getKey().equals(ds2.getKey())) {
+//                                                        // get current week sunday
+//                                                        count = ds3.child("date").getValue(Integer.class);
+//                                                        friendWeeklyCount.add(String.valueOf(count));
+//                                                    }
+//                                                }
+//                                            }
+//
+//                                            @Override
+//                                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                            }
+//                                        });
+                                        friendWeeklyCount.add(String.valueOf(2));
+                                        leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                                        leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                                    }
+
+                                        Log.d("FRIENDLIST", "friends + ");
+                                        Log.d("FRIENDLIST", friendEmailList.get(0));
+                                }
+                            }
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     public void createLoginDialog() {
@@ -183,7 +273,6 @@ public class Leaderboard extends AppCompatActivity {
     }
 
     // TODO
-    // Add leaderboard list view once login confirmed
     // Edit progress bar for each friend + count of days/7
     // Work on refresh button
 

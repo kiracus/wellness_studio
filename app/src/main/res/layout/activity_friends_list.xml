@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/friendListHeading"
-        app:layout_constraintVertical_bias="0.072" />
+        app:layout_constraintVertical_bias="0.171" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

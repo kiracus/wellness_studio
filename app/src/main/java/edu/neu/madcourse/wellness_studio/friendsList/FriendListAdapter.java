@@ -2,10 +2,12 @@ package edu.neu.madcourse.wellness_studio.friendsList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -75,6 +77,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+
                     String userId = "";
                     Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
                     Log.d("demo", "OnClick results in user email " + friendsList.get(pos));
