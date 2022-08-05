@@ -26,15 +26,11 @@ import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 public class AlarmSetting extends AppCompatActivity {
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
-    int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    public static int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     Button saveButton;
     ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
-    public static final String SLEEP_ALARM_HOUR_KEY_NAME = "sleepAlarmHour";
-    public static final String SLEEP_ALARM_MIN_KEY_NAME = "sleepAlarmMin";
-    public static final String WAKEUP_ALARM_HOUR_KEY_NAME = "wakeupAlarmHour";
-    public static final String WAKEUP_ALARM_MIN_KEY_NAME = "wakeupAlarmMin";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
     static boolean isSave = false;
@@ -63,11 +59,11 @@ public class AlarmSetting extends AppCompatActivity {
             }
         });
 
-        if (sleepAlarmUpdate == null) {
-            sleepAlarmChangeTV.setText("22:30");
-        } else {
-            sleepAlarmChangeTV.setText(sleepAlarmUpdate);
-        }
+//        if (sleepAlarmUpdate == null) {
+//            sleepAlarmChangeTV.setText("22:30");
+//        } else {
+//            sleepAlarmChangeTV.setText(sleepAlarmUpdate);
+//        }
 
 
         wakeupAlarmChangeTV = findViewById(R.id.wakeup_alarm_change_time_TV);
@@ -78,12 +74,12 @@ public class AlarmSetting extends AppCompatActivity {
             }
         });
 
-
-        if (wakeupAlarmUpdate == null) {
-            wakeupAlarmChangeTV.setText("08:30");
-        } else {
-            wakeupAlarmChangeTV.setText(wakeupAlarmUpdate);
-        }
+//
+//        if (wakeupAlarmUpdate == null) {
+//            wakeupAlarmChangeTV.setText("08:30");
+//        } else {
+//            wakeupAlarmChangeTV.setText(wakeupAlarmUpdate);
+//        }
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -95,15 +91,10 @@ public class AlarmSetting extends AppCompatActivity {
 
                     //update Alarm
                     Log.d("AlarmSetting", "save button" + "wakeup" + wakeupAlarmUpdate + " " + "sleep" + sleepAlarmUpdate);
-                    Log.d("Al")
 
                     Intent intent = new Intent();
                     intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
                     intent.putExtra(WAKEUP_ALARM_KEY_NAME, wakeupAlarmUpdate);
-                    intent.putExtra(SLEEP_ALARM_HOUR_KEY_NAME, sleepAlarmHour);
-                    intent.putExtra(SLEEP_ALARM_MIN_KEY_NAME, sleepAlarmMin);
-                    intent.putExtra(WAKEUP_ALARM_HOUR_KEY_NAME, wakeupAlarmHour);
-                    intent.putExtra(WAKEUP_ALARM_MIN_KEY_NAME, wakeupAlarmMin);
                     setResult(RESULT_OK, intent);
                     finish();
                     Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
@@ -140,46 +131,10 @@ public class AlarmSetting extends AppCompatActivity {
         startActivity(new Intent(AlarmSetting.this, LightExercises.class));
     }
 
-    public void getCurrentSleepAlarm(View view) {
-//        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-//            @Override
-//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-//                sleepAlarmHour = hourOfDay + "";
-//                sleepAlarmMin = minute + "";
-//                sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
-//                Log.d("AlarmSetting", sleepAlarmUpdate);
-//
-//            }
-//        });
-
-
-//            sleepAlarmHour = sleepTimePicker.getHour();
-//            sleepAlarmMin = sleepTimePicker.getMinute();
-//            sleepAlarmUpdate = sleepAlarmHour + ":" + sleepAlarmMin;
-//            Log.d("AlarmSetting", sleepAlarmHour + ":" + sleepAlarmMin);
-    }
-
-    public void getCurrentWakeupAlarm(View view) {
-//        wakeupTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-//            @Override
-//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-//                wakeupAlarmHour = hourOfDay + "";
-//                wakeupAlarmMin = minute + "";
-//                wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
-//                Log.d("AlarmSetting", wakeupAlarmUpdate);
-//            }
-//        });
-
-//        wakeupAlarmHour = wakeupTimePicker.getHour();
-//        wakeupAlarmMin = wakeupTimePicker.getMinute();
-//        wakeupAlarmUpdate = wakeupAlarmHour + ":" + wakeupAlarmMin;
-//        Log.d("AlarmSetting", wakeupAlarmHour + ":" + wakeupAlarmMin);
-    }
 
 
     public void saveChanges(View v) {
-//        getCurrentSleepAlarm(v);
-//        getCurrentWakeupAlarm(v);
+
     }
 
 

@@ -6,11 +6,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.NotificationManager;
+import android.app.NotificationChannel;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -42,7 +45,8 @@ public class WakeupSleepGoal extends AppCompatActivity {
     Switch sleepAlarmSwitch, wakeupAlarmSwitch;
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
-    String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin, sleepAlarmUpdate, wakeupAlarmUpdate;
+    String sleepAlarmUpdate, wakeupAlarmUpdate;
+    int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
 
 
 
@@ -56,14 +60,14 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
         if (sleepAlarmReopenUpdate == null) {
-            sleepAlarmTV.setText("22:30");
+            sleepAlarmTV.setText(sleepAlarmHour + ":" + sleepAlarmMin);
         } else {
             sleepAlarmTV.setText(sleepAlarmReopenUpdate);
         }
 
         wakeupAlarmTV = findViewById(R.id.wakeup_alarmTime_TV);
         if (wakeupAlarmReopenUpdate == null) {
-            wakeupAlarmTV.setText("08:30");
+            wakeupAlarmTV.setText("0"+ wakeupAlarmHour + ":" + sleepAlarmMin);
         } else {
             wakeupAlarmTV.setText(wakeupAlarmReopenUpdate);
         }
@@ -88,27 +92,23 @@ public class WakeupSleepGoal extends AppCompatActivity {
                         if (result != null && result.getResultCode() == AlarmSetting.RESULT_OK) {
                             if (result.getData() != null &&
                                     result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null &&
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null &&
-                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_HOUR_KEY_NAME) != null &&
-                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_MIN_KEY_NAME) != null &&
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_HOUR_KEY_NAME) != null &&
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_MIN_KEY_NAME) != null) {
+                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null){
                                 Intent data = result.getData();
                                 sleepAlarmUpdate = data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME);
-                                wakeupAlarmUpdate = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME);
-                                sleepAlarmHour = data.getStringExtra(AlarmSetting.SLEEP_ALARM_HOUR_KEY_NAME);
-                                sleepAlarmMin = data.getStringExtra(AlarmSetting.SLEEP_ALARM_MIN_KEY_NAME);
-                                wakeupAlarmHour = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_HOUR_KEY_NAME);
-                                wakeupAlarmMin = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_MIN_KEY_NAME);
 
+                                wakeupAlarmUpdate = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME);
                                 Log.d("WakeupSleepGoal", "Sleep = " + sleepAlarmUpdate + "Wakeup = " + wakeupAlarmUpdate );
 
                                 if (!TextUtils.isEmpty(sleepAlarmUpdate) && !TextUtils.isEmpty(wakeupAlarmUpdate))
                                     sleepAlarmTV.setText(sleepAlarmUpdate);
                                     sleepAlarmReopenUpdate = sleepAlarmUpdate;
                                     Log.d("WakeupSleepGoal", "sleepAlarmUpdate" + sleepAlarmReopenUpdate);
+                                    sleepAlarmHour = getHour(sleepAlarmUpdate);
+                                    sleepAlarmMin = getMin(sleepAlarmUpdate);
                                     wakeupAlarmTV.setText(wakeupAlarmUpdate);
                                     wakeupAlarmReopenUpdate = wakeupAlarmUpdate;
+                                    wakeupAlarmHour = getHour(wakeupAlarmUpdate);
+                                    wakeupAlarmMin = getMin(wakeupAlarmUpdate);
                                 Log.d("WakeupSleepGoal", "wakeupAlarmUpdate" + wakeupAlarmReopenUpdate);
                                     sleepHoursTV.setText(calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate));
                                     sleepHoursReopenUpdate = calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate);
@@ -158,10 +158,12 @@ public class WakeupSleepGoal extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     setAlarm(sleepAlarmHour, sleepAlarmMin);
+                    sleepAlarmOnTV.setText("ALARM ON");
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On.", Toast.LENGTH_SHORT).show();
                 } else {
                     cancelSleepAlarm();
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is Off.", Toast.LENGTH_SHORT).show();
+                    sleepAlarmOnTV.setText("ALARM OFF");
                 }
             }
         });
@@ -173,9 +175,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
                 if (isChecked) {
                     setAlarm(wakeupAlarmHour, wakeupAlarmMin);
                     Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is On.", Toast.LENGTH_SHORT).show();
+                    wakeupAlarmOnTV.setText("ALARM ON");
                 } else {
                     cancelSleepAlarm();
                     Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is Off.", Toast.LENGTH_SHORT).show();
+                    wakeupAlarmOnTV.setText("ALARM OFF");
                 }
             }
         });
@@ -202,7 +206,23 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
 
 
+        
+        //notification 
+        createNotificationChannel();
 
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "alarmAndroidChannel";
+            String description = "channel for alarm manager";
+            int important = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel1 = new NotificationChannel("alarmAndroid", name, important);
+            channel1.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel1);
+        }
     }
 
     private void goToLightExercise() {
@@ -211,6 +231,16 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
 
 
+
+    private int getHour(String s) {
+        int time = removeColon(s);
+        return time / 100;
+    }
+
+    private int getMin(String s) {
+        int time = removeColon(s);
+        return time % 100;
+    }
 
 
     private String calculateDiffTime(String sleepAlarm, String wakeupAlarm) {
@@ -266,25 +296,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
         }
     }
 
-//    private String diff(String s1, String s2) {
-//
-//        int time1 = removeColon(s1);
-//        int time2 = removeColon(s2);
-//
-//        // difference between hours
-//        int hourDiff = time2 / 100 - time1 / 100 - 1;
-//
-//        // difference between minutes
-//        int minDiff = time2 % 100 + (60 - time1 % 100);
-//
-//        if (minDiff >= 60) {
-//            hourDiff++;
-//            minDiff = minDiff - 60;
-//        }
-//
-//        String res = String.valueOf(Math.abs(hourDiff)) + ":" + String.valueOf(Math.abs(minDiff));
-//        return res;
-//    }
 
     private int removeColon(String s) {
         if (s.length() == 4)
@@ -296,7 +307,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         return Integer.valueOf(s);
     }
 
-    public void setAlarm(String hour, String min) {
+    public void setAlarm(int hour, int min) {
         Intent intent = new Intent(this, AlarmReceiver.class);
         long millis = convertHourAndMinToMilliSeconds(hour, min);
 
@@ -306,10 +317,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,millis,AlarmManager.INTERVAL_DAY,pendingIntent);
         Toast.makeText(getApplicationContext(),"Alarm is on",Toast.LENGTH_SHORT).show();
     }
-    private long convertHourAndMinToMilliSeconds(String hour, String min) {
+
+    private long convertHourAndMinToMilliSeconds(int hour, int min) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
-        calendar.set(Calendar.MINUTE,Integer.parseInt(min));
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE,min);
         Log.d("myApp","calenar" + calendar.getTime());
         long millis = calendar.getTimeInMillis();
         return millis;
