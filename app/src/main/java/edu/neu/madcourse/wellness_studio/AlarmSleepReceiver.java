@@ -33,35 +33,5 @@ public class AlarmSleepReceiver extends BroadcastReceiver {
         notificationCompat.notify(123, builder.build());
 
 
-//        String uriString = intent.getStringExtra("KEY_TONE_URL");
-//
-//        Toast.makeText(context,
-//                "Alarm received!\n"
-//                        + "uriString: " + uriString,
-//                Toast.LENGTH_LONG).show();
-//
-//        Intent secIntent = new Intent(context, SecondActivity.class);
-//        secIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        secIntent.putExtra("SEC_RINGTONE_URI", uriString);
-//        context.startActivity(secIntent);
-
-//
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        Intent intentOfLeadingToPage = new Intent(context, WakeupSleepGoal.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intentOfLeadingToPage,0);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"alarmAndroidSleep")
-//                .setSmallIcon(R.drawable.ic_baseline_alarm_24)
-//                .setContentTitle("Alarm Alarm Alarm")
-//                .setContentText("It is time to sleep!")
-//                .setAutoCancel(true)
-//                .setDefaults(NotificationCompat.DEFAULT_ALL)
-//                .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                .setContentIntent(pendingIntent);
-//
-//        NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
-//        notificationCompat.notify(123,builder.build());
-
-
-
     }
 }

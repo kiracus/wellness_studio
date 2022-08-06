@@ -60,6 +60,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
+    boolean isSnooze, isWakeupSensorUse, isSleepSensorUse;
 
 
 
@@ -222,8 +223,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
             }
         });
 
-
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
         bottomNavigationView.getMenu().findItem(R.id.nav_sleep).setEnabled(false);
@@ -245,32 +244,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
                     return false;
             }
         });
-
-
-
-        //Home UI buttons
-//        homeBtn = findViewById(R.id.imageButton_home);
-//        exerciseBtn = findViewById(R.id.imageButton_exercise);
-//        sleepBtn = findViewById(R.id.imageButton_sleep);
-//        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
-//        homeBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, Greeting.class)));
-
-        // set click listeners for buttons
-//        exerciseBtn.setOnClickListener(v -> goToLightExercise());
-        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
-//        sleepBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class)));
-//        sleepBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(WakeupSleepGoal.this, WakeupSleepGoal.class));
-////                updateAlarmReopen(v);
-//            }
-//        });
-//        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(WakeupSleepGoal.this, Leaderboard.class)));
-//
-
-
-        
 
 
     }
@@ -301,10 +274,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
             notificationManagerWakeup.createNotificationChannel(channel2);
         }
     }
-
-
-
-
 
     private int getHour(String s) {
         int time = removeColon(s);
