@@ -3,7 +3,6 @@ package edu.neu.madcourse.wellness_studio.lightExercises;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -30,7 +29,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import java.sql.Date;
@@ -39,20 +37,13 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
-import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
-import edu.neu.madcourse.wellness_studio.profile.Profile;
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
-    // for testing
-    private final static String TAG = "exercise";
-
     AppDatabase appDatabase;
     int hour, min = -1;
     int currentStep = 0;
@@ -62,8 +53,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     ImageView armImageView;
     ImageView backImageView;
     ImageView legImageView;
-    ImageView profileImageView;
-    BottomNavigationView bottomNavigationView;
 
     ImageView setting_dot_lightExercises;
     ToggleButton alarm_on_off_light_exercises;
@@ -72,7 +61,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,32 +81,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         armImageView.setOnClickListener(this);
         backImageView.setOnClickListener(this);
         legImageView.setOnClickListener(this);
-
-        profileImageView = findViewById(R.id.imageView_profile);
-        profileImageView.setOnClickListener(v -> goToProfile());
-
-        // set bottom nav bar
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_exercise);
-        bottomNavigationView.getMenu().findItem(R.id.nav_exercise).setEnabled(false);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    goToHome();
-                    return true;
-                case R.id.nav_exercise:
-                    return false;
-                case R.id.nav_sleep:
-                    goToSleepGoal();
-                    return true;
-                case R.id.nav_leaderboard:
-                    goToLeaderboard();
-                    return true;
-                default:
-                    Log.v(TAG, "Invalid bottom navigation item clicked.");
-                    return false;
-            }
-        });
 
         stateProgressBar.setStateDescriptionData(new String[]{"Step 1", "Step 2", "Step 3", "Step 4"});
         while (currentStep <= 4) {
@@ -296,23 +258,5 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         Log.d("myApp","calenar" + calendar.getTime());
         long millis = calendar.getTimeInMillis();
         return millis;
-    }
-
-    // helpers for launching activities
-    private void goToLeaderboard() {
-        startActivity(new Intent(LightExercises.this, Leaderboard.class));
-    }
-
-    private void goToSleepGoal() {
-        startActivity(new Intent(LightExercises.this, WakeupSleepGoal.class));
-    }
-
-    private void goToHome() {
-        startActivity(new Intent(LightExercises.this, MainActivity.class));
-    }
-
-    private void goToProfile() {
-        Log.v(TAG, "go to profile called");
-        startActivity(new Intent(LightExercises.this, Profile.class));
     }
 }

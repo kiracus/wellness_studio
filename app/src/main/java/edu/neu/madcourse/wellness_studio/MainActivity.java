@@ -27,6 +27,7 @@ import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
+import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -256,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToProfile() {
+        Log.v(TAG, "go to profile called");
         startActivity(new Intent(MainActivity.this, Profile.class));
     }
 

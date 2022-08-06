@@ -41,4 +41,12 @@
         <item>Saturday</item>
     </string-array>
 
+    <string-array name="alarm_type_array">
+        <item>Music</item>
+    </string-array>
+
+    <string-array name="stop_alarm_type_array">
+        <item>Shake</item>
+    </string-array>
+
 </resources>

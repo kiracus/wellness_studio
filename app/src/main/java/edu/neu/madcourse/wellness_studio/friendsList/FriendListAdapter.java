@@ -75,7 +75,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 //                }
 //            });
 
-            // TODO fix incorrect deletion
             v.findViewById(R.id.deleteFriendButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,7 +100,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                     for (DataSnapshot ds : snapshot.getChildren()) {
                                         if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
                                             friendId = ds.getKey();
-                                            Log.d("demo", "ID OF USER TO DELETE " + friendId);
                                         }
                                     }
                                 }
@@ -117,9 +115,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds2 : snapshot.getChildren()) {
                                         if (!Objects.equals(friendId, "") && ds2.getKey().equals(user.userId)) {
-                                            Log.d("demo", "Current user " + ds2.child("friends").child(friendId).getValue());
-//
-                                            dbCurrentUser.child(user.userId)
+                                            dbUserRef.child(user.userId)
                                                     .child("friends")
                                                     .child(friendId)
                                                     .removeValue();

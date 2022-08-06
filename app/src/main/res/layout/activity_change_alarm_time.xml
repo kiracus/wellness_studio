@@ -21,11 +21,11 @@
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Change Settings"
-                android:paddingStart="70dp"
                 android:background="@color/blue"
-                app:titleTextColor="@color/white"
-                android:theme="@style/AppTheme.AppBarOverlay" />
+                android:paddingStart="70dp"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:title="Change Settings"
+                app:titleTextColor="@color/white" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <ImageButton
@@ -352,7 +352,7 @@
 
                 <Spinner
                     android:id="@+id/alarm_type_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="270dp"
                     android:layout_marginTop="30dp"
@@ -360,7 +360,7 @@
 
                 <Spinner
                     android:id="@+id/to_stop_alarm_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="270dp"
                     android:layout_marginTop="60dp"
