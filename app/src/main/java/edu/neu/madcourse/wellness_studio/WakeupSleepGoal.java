@@ -30,8 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.AlarmReceiver;
@@ -52,7 +55,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate, sleepHoursReopenUpdate;
 
     ActivityResultLauncher<Intent> startForResult;
-    Switch sleepAlarmSwitch, wakeupAlarmSwitch;
+    SwitchMaterial sleepAlarmSwitch, wakeupAlarmSwitch;
     PendingIntent pendingIntentSleep, pendingIntentWakeUp;
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
@@ -69,7 +72,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         //notification
         createNotificationChannelSleep();
         createNotificationChannelWakeup();
-        profile = findViewById(R.id.profile_image);
+        profile = findViewById(R.id.imageView_profile);
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
         if (sleepAlarmReopenUpdate == null) {
@@ -95,8 +98,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
         sleepAlarmSetting = findViewById(R.id.setting_dot);
         wakeupAlarmSetting = findViewById(R.id.wakeup_setting_dot);
 
-        sleepAlarmOnTV = findViewById(R.id.alarm_on_TV);
-        wakeupAlarmOnTV = findViewById(R.id.wakeup_alarm_on_TV);
 
         startForResult = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -197,13 +198,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
-                    sleepAlarmOnTV.setText("ALARM ON");
                     sleepAlarmOnOffCheck = "ALARM ON";
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On. Time: " + sleepAlarmHour + ":" + sleepAlarmMin , Toast.LENGTH_SHORT).show();
                 } else {
                     cancelSleepAlarm();
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is Off.", Toast.LENGTH_SHORT).show();
-                    sleepAlarmOnTV.setText("ALARM OFF");
                     sleepAlarmOnOffCheck = "ALARM OFF";
                 }
             }
@@ -215,11 +214,9 @@ public class WakeupSleepGoal extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
-                    wakeupAlarmOnTV.setText("ALARM ON");
                     wakeAlarmOnOffCheck = "ALARM ON";
                 } else {
                     cancelWakeupAlarm();
-                    wakeupAlarmOnTV.setText("ALARM OFF");
                     wakeAlarmOnOffCheck = "ALARM OFF";
                 }
             }
@@ -434,20 +431,64 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
     private long convertHourAndMinToMilliSecondsSleep(int hour, int min) {
         Calendar calendarSleep = Calendar.getInstance();
-        calendarSleep.set(Calendar.HOUR_OF_DAY, hour);
-        calendarSleep.set(Calendar.MINUTE,min);
-        Log.d("myApp","sleep calendar" + calendarSleep.getTime());
-        long millis = calendarSleep.getTimeInMillis();
-        return millis;
+        if (hour < Calendar.HOUR_OF_DAY ) {
+            Date nextDate = new Date();
+            Calendar newCalendar = Calendar.getInstance();
+            newCalendar.setTime(nextDate);
+            newCalendar.add(Calendar.DATE, 1);
+
+            int year, month, day;
+            year = newCalendar.get(Calendar.YEAR);
+            month = newCalendar.get(Calendar.MONTH);
+            day = newCalendar.get(Calendar.DATE);
+            Log.d("Sleep Goal", year + month + day + "");
+            calendarSleep.set(Calendar.YEAR, year);
+            calendarSleep.set(Calendar.MONTH, month);
+            calendarSleep.set(Calendar.DAY_OF_MONTH, day);
+            calendarSleep.set(Calendar.HOUR_OF_DAY, hour);
+            calendarSleep.set(Calendar.MINUTE,min);
+            Log.d("myApp","sleep calendar" + calendarSleep.getTime());
+            long millis = calendarSleep.getTimeInMillis();
+            return millis;
+        } else {
+            calendarSleep.set(Calendar.HOUR_OF_DAY, hour);
+            calendarSleep.set(Calendar.MINUTE,min);
+            Log.d("myApp","sleep calendar" + calendarSleep.getTime());
+            long millis = calendarSleep.getTimeInMillis();
+            return millis;
+        }
     }
 
     private long convertHourAndMinToMilliSecondsWakeup(int hour, int min) {
         Calendar calendarWakeup = Calendar.getInstance();
-        calendarWakeup.set(Calendar.HOUR_OF_DAY, hour);
-        calendarWakeup.set(Calendar.MINUTE,min);
-        Log.d("myApp","wakeup calendar" + calendarWakeup.getTime());
-        long millis = calendarWakeup.getTimeInMillis();
-        return millis;
+
+        if (hour < Calendar.HOUR_OF_DAY) {
+
+            Date nextDate = new Date();
+            Calendar newCalendar = Calendar.getInstance();
+            newCalendar.setTime(nextDate);
+            newCalendar.add(Calendar.DATE, 1);
+
+            int year, month, day;
+            year = newCalendar.get(Calendar.YEAR);
+            month = newCalendar.get(Calendar.MONTH);
+            day = newCalendar.get(Calendar.DATE);
+            Log.d("WakeupGoal", year + month + day + "");
+            calendarWakeup.set(Calendar.YEAR, year);
+            calendarWakeup.set(Calendar.MONTH, month);
+            calendarWakeup.set(Calendar.DAY_OF_MONTH, day);
+            calendarWakeup.set(Calendar.HOUR_OF_DAY, hour);
+            calendarWakeup.set(Calendar.MINUTE,min);
+            Log.d("myApp","wakeup calendar" + calendarWakeup.getTime());
+            long millis = calendarWakeup.getTimeInMillis();
+            return millis;
+        } else {
+            calendarWakeup.set(Calendar.HOUR_OF_DAY, hour);
+            calendarWakeup.set(Calendar.MINUTE,min);
+            Log.d("myApp","wakeup calendar" + calendarWakeup.getTime());
+            long millis = calendarWakeup.getTimeInMillis();
+            return millis;
+        }
     }
     public void cancelSleepAlarm() {
         Intent intent = new Intent(this,AlarmReceiver.class);

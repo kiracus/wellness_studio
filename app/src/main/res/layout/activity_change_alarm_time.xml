@@ -21,11 +21,11 @@
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Change Settings"
-                android:paddingStart="70dp"
                 android:background="@color/blue"
-                app:titleTextColor="@color/white"
-                android:theme="@style/AppTheme.AppBarOverlay" />
+                android:paddingStart="70dp"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:title="Change Settings"
+                app:titleTextColor="@color/white" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <ImageButton
@@ -43,21 +43,6 @@
 
         <ImageButton
             android:id="@+id/change_save_btn"
-<<<<<<< HEAD
-<<<<<<< HEAD
-            android:layout_width="40dp"
-=======
-            android:layout_width="18dp"
->>>>>>> kiracus-main
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:text="@string/save_change_TV"
-            android:textAlignment="center"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-=======
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="end"
@@ -76,7 +61,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintBottom_toTopOf="@id/bottom_buttons">
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -233,78 +217,6 @@
                 app:layout_constraintTop_toTopOf="@+id/separate_line"
                 app:layout_constraintVertical_bias="0.024">
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<!--                <TimePicker-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:timePickerMode="spinner"-->
-<!--                    android:id="@+id/sleep_timePicker"/>-->
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sleep_alarm_change_time_TV"
-                    android:text="22:30"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:textSize="50sp"/>
-=======
-                <TimePicker
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:timePickerMode="spinner"
-                    android:id="@+id/sleep_timePicker"/>
->>>>>>> kiracus-main
-
-            </LinearLayout>
-
-
-<!--            <Switch-->
-<!--                android:id="@+id/sleep_alarm_on_off"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="ON"-->
-<!--                android:layout_marginTop="60dp"-->
-<!--                android:layout_marginLeft="270dp"/>-->
-
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/wakeup_time_cardView"
-            android:layout_width="350dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/wakeup_alarm_change_TV"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginTop="5dp"
-                android:text="@string/wakeup_time_TV"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="5dp"
-                android:orientation="horizontal">
-
-<<<<<<< HEAD
-<!--                <TimePicker-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:timePickerMode="spinner"-->
-<!--                    android:id="@+id/wakeup_timePicker"/>-->
-=======
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -376,7 +288,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sensor_cardView"
                 app:layout_constraintVertical_bias="0.113">
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
                 <TextView
                     android:id="@+id/wakeup_alarm_setting_TV"
@@ -386,36 +297,8 @@
                     android:layout_marginTop="10dp"
                     android:text="WAKEUP ALARM SETTINGS"
                     android:textColor="@color/black"
-<<<<<<< HEAD
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:textSize="50sp"/>
-=======
-                <TimePicker
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:timePickerMode="spinner"
-                    android:id="@+id/wakeup_timePicker"/>
->>>>>>> kiracus-main
-            </LinearLayout>
-
-<!--            <Switch-->
-<!--                android:id="@+id/wakeup_alarm_on_off"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="ON"-->
-<!--                android:layout_marginTop="60dp"-->
-<!--                android:layout_marginLeft="270dp"/>-->
-
-        </androidx.cardview.widget.CardView>
-
-
-    </GridLayout>
-=======
                     android:textSize="15sp"
                     android:textStyle="bold" />
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
                 <TextView
                     android:id="@+id/alarm_type_TV"
@@ -469,34 +352,15 @@
 
                 <Spinner
                     android:id="@+id/alarm_type_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="270dp"
                     android:layout_marginTop="30dp"
                     android:spinnerMode="dropdown" />
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-        <Switch
-            android:id="@+id/sleep_reminder_allow_sensor_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="270dp"/>
-=======
-        <ToggleButton
-            android:id="@+id/sensor_on_off"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="280dp"
-            android:layout_marginTop="1dp" />
->>>>>>> kiracus-main
-=======
                 <Spinner
                     android:id="@+id/to_stop_alarm_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="270dp"
                     android:layout_marginTop="60dp"
@@ -509,7 +373,6 @@
                     android:layout_marginLeft="270dp"
                     android:layout_marginTop="90dp"
                     android:text="ON" />
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
                 <Switch
                     android:id="@+id/sensor_use_switch"
@@ -521,61 +384,14 @@
 
             </androidx.cardview.widget.CardView>
 
-<<<<<<< HEAD
-    <View
-        android:id="@+id/separate_line_second"
-        android:layout_width="350dp"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:textAlignment="center"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="381dp" />
-<<<<<<< HEAD
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/wakeup_alarm_setting_cardView"
-        android:layout_width="350dp"
-        android:layout_height="175dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sensor_cardView"
-        app:layout_constraintVertical_bias="0.113">
-
-        <TextView
-            android:id="@+id/wakeup_alarm_setting_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="WAKEUP ALARM SETTINGS"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-=======
->>>>>>> kiracus-main
-=======
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
 
 
     </ScrollView>
 
-<<<<<<< HEAD
-        <Switch
-            android:id="@+id/wakeup_sensor_use_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="270dp"
-            android:layout_marginTop="120dp"
-            android:text="ON" />
-=======
->>>>>>> 49839ca72cbc1ef5254098a02e517e64ce382371
 
 
     <LinearLayout

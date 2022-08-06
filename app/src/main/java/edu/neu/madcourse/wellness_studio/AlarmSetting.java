@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.w3c.dom.Text;
 
@@ -41,14 +42,15 @@ public class AlarmSetting extends AppCompatActivity {
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    Button saveButton;
+    ImageButton saveButton;
     BottomNavigationView bottomNavigationView;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
-    Switch allowSleepSensorUseBtn, snoozeBtn, allowWakeupSensorUseBtn;
+    Switch  snoozeBtn, allowWakeupSensorUseBtn;
+    SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
     static boolean isSave = false;
 
@@ -176,7 +178,7 @@ public class AlarmSetting extends AppCompatActivity {
 
 
         //wakeup sensor
-        allowWakeupSensorUseBtn = findViewById(R.id.wakeup_sensor_use_switch);
+        allowWakeupSensorUseBtn = findViewById(R.id.sensor_use_switch);
 
 
         //sleep sensor
