@@ -9,8 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,12 +27,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
@@ -45,6 +43,8 @@ public class FriendsList extends AppCompatActivity {
     private final static String TAG = "friend";
 
     BottomNavigationView bottomNavigationView;
+    ImageView profileIV;
+    ImageButton addFriend;
     ToggleButton exerciseShareSetting;
     AppDatabase appDatabase;
 
@@ -73,9 +73,13 @@ public class FriendsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
+        // get VI components
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         exerciseShareSetting = findViewById(R.id.exerciseShareButton);
-        FloatingActionButton addFriend = findViewById(R.id.add_friend);
+        addFriend = findViewById(R.id.add_friend);
+        profileIV = findViewById(R.id.imageView_profile);
+
+        profileIV.setOnClickListener(v -> startActivity(new Intent(FriendsList.this, Profile.class)));
 
         // set bottom nav, leaderboard as activated
         bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);

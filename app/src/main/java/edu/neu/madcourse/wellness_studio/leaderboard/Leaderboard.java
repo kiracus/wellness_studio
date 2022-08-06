@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.ChangeProfile;
+import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
@@ -50,8 +52,9 @@ public class Leaderboard extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     ImageButton friendsList;
-    Button refreshBtn;
+    ImageButton refreshBtn;
     TextView currentWeek;
+    ImageView profileIV;
 
     protected AppDatabase db;
     protected User user;
@@ -84,7 +87,9 @@ public class Leaderboard extends AppCompatActivity {
         friendsList = findViewById(R.id.go_to_friends);
         currentWeek = findViewById(R.id.currentWeek);
         refreshBtn = findViewById(R.id.refresh_leaderboard);
+        profileIV = findViewById(R.id.imageView_profile);
 
+        profileIV.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, Profile.class)));
         friendsList.setOnClickListener(v -> startActivity(new Intent(Leaderboard.this, FriendsList.class)));
 
         // set bottom nav, currently at leaderboard so disable home item
@@ -142,8 +147,11 @@ public class Leaderboard extends AppCompatActivity {
         int dayEnd = mCalendar.get(Calendar.DAY_OF_MONTH);
         int yearEnd = mCalendar.get(Calendar.YEAR);
 
-        currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
-                monthEnd + "-" + dayEnd + "-" + yearEnd);
+//        currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
+//                monthEnd + "-" + dayEnd + "-" + yearEnd);
+
+        currentWeek.setText(monthStart + " / " + dayStart + " / " + yearStart + "  to  " +
+                monthEnd + " / " + dayEnd + " / " + yearEnd);
 
         date = UserService.getFirstDayOfWeek();
         Log.d("FRIENDLIST", date);

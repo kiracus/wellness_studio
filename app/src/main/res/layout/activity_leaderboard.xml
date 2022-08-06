@@ -5,101 +5,132 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".leaderboard.Leaderboard">
-    <TextView
-        android:id="@+id/leaderboardHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:text="WEEKLY RANKING"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.049" />
 
-    <TextView
-        android:id="@+id/currentWeek"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:text="Week from to"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/leaderboardHeading"
-        app:layout_constraintVertical_bias="0.027" />
+        android:id="@+id/header_title"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/friendIcon"
-        android:layout_width="wrap_content"
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appBarLayout">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Weekly Ranking"
+                android:background="@color/blue"
+                app:titleTextColor="@color/white"
+                android:paddingStart="30dp"
+                android:paddingEnd="10dp"
+                android:theme="@style/AppTheme.AppBarOverlay" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ImageButton
+            android:id="@+id/refresh_leaderboard"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            app:srcCompat="@drawable/ic_baseline_refresh_24"
+            app:layout_constraintEnd_toStartOf="@+id/go_to_friends"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/blue"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="refresh leaderboard" />
+
+        <ImageButton
+            android:id="@+id/go_to_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:contentDescription="go to friend list"
+            android:focusable="true"
+            app:srcCompat="@drawable/ic_baseline_people_alt_24"
+            app:layout_constraintEnd_toStartOf="@id/profile_img_container"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:tint="@color/white"
+            android:backgroundTint="@color/blue" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_img_container"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="20dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/default_avatar"
+                    android:scaleType="centerCrop"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/current_week_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:clickable="false"
-        android:contentDescription="friend icon"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/weeklyRankingRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.892"
-        app:layout_constraintStart_toEndOf="@id/leaderboardHeading"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.038"
-        app:srcCompat="@drawable/ic_groups_fill0_wght400_grad0_opsz48" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_title">
+
+        <TextView
+            android:id="@+id/currentWeekTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Current Week"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/currentWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-- / -- / ----  to  -- / -- / ----"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weeklyRankingRecyclerView"
-        android:layout_width="381dp"
-        android:layout_height="425dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="70dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_buttons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currentWeek"
-        app:layout_constraintVertical_bias="0.072" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/go_to_friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="120dp"
-        android:clickable="true"
-        android:contentDescription="go to friend list"
-        android:focusable="true"
-        app:backgroundTint="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.884"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_groups_fill0_wght400_grad0_opsz48"
-        app:tint="@color/white" />
-
-    <Button
-        android:id="@+id/refresh_leaderboard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="120dp"
-        android:clickable="true"
-        android:contentDescription="go to friend list"
-        android:focusable="true"
-        android:text="Update"
-        app:backgroundTint="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.119"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toBottomOf="@id/current_week_container" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
