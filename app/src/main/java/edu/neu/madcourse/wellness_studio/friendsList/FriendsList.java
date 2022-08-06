@@ -51,7 +51,6 @@ public class FriendsList extends AppCompatActivity {
     RecyclerView friendListRecyclerView;
     FriendListAdapter friendListAdapter;
     List<String> friendEmailList;
-    List<String> localFriendList;
     List<String> userList;
 
     public String friendEmailData = "";
@@ -102,7 +101,6 @@ public class FriendsList extends AppCompatActivity {
         });
 
         friendEmailList = new ArrayList<>();
-        localFriendList = new ArrayList<>();
         userList = new ArrayList<>();
         friendListRecyclerView = findViewById(R.id.friendsListRecyclerView);
         friendListRecyclerView.setHasFixedSize(true);
@@ -123,7 +121,6 @@ public class FriendsList extends AppCompatActivity {
         dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // friendEmailList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     Log.d("FRIENDLIST", "key + ");
@@ -134,17 +131,13 @@ public class FriendsList extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot ds2 : snapshot.getChildren()) {
-//                                Log.d("FRIENDLIST", "key 2 + ");
-//                                Log.d("FRIENDLIST", ds2.getKey());
                                 if (ds2.getKey().equals(ds.getKey())) {
                                     friendEmailList.add(ds2.child("email").getValue(String.class));
-                                    localFriendList.add(ds2.child("email").getValue(String.class));
-                                    userList.add(ds2.child("email").getValue(String.class));
                                     friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
                                     friendListAdapter.notifyItemInserted(friendEmailList.size());
 
-                                    Log.d("FRIENDLIST", "friends + ");
-                                    Log.d("FRIENDLIST", friendEmailList.get(0));
+//                                    Log.d("FRIENDLIST", "friends + ");
+//                                    Log.d("FRIENDLIST", friendEmailList.get(0));
                                 }
                             }
                         }
@@ -160,6 +153,22 @@ public class FriendsList extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference getAllUsers = db.child("users");
+        getAllUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dss: snapshot.getChildren()) {
+                    userList.add(dss.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -201,6 +210,7 @@ public class FriendsList extends AppCompatActivity {
 //                        Log.d("FRIENDLIST", "key + ");
 //                        Log.d("FRIENDLIST", key);
                         String email = ds1.child("email").getValue(String.class);
+                        userList.add(ds1.child("email").getValue(String.class));
 
 //                        Log.d("FRIENDLIST", "email + ");
 //                        Log.d("FRIENDLIST", email);
@@ -223,11 +233,6 @@ public class FriendsList extends AppCompatActivity {
                 dialog.dismiss();
                 errorAddFriend();
             }
-            // Check if user is already friends with provided user
-            else if (friendEmailList.contains(createEmailOnData)) {
-                dialog.dismiss();
-                errorDuplicateFriend();
-            }
             // Make sure email provided belongs to valid account
             else if (!userList.contains(createEmailOnData)) {
                 dialog.dismiss();
@@ -246,9 +251,6 @@ public class FriendsList extends AppCompatActivity {
                             }
                         }
                         if (!userFound) {
-                            errorAddInvalidFriend();
-                        }
-                        else if (!snapshot.child(String.valueOf(userIdFriend)).exists()) {
                             errorAddInvalidFriend();
                         }
                         else {
@@ -296,9 +298,6 @@ public class FriendsList extends AppCompatActivity {
         Utils.postToastLong(ADD__INVALID_FRIEND_ERROR_MSG, FriendsList.this);
     }
 
-    private void errorDuplicateFriend() {
-        Utils.postToastLong(ADD__DUPLICATE_FRIEND_ERROR_MSG, FriendsList.this);
-    }
 
     // TODO
     // Delete friend
