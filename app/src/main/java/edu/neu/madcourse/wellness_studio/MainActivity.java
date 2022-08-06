@@ -256,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToProfile() {
-        Log.v(TAG, "go to profile called");
         startActivity(new Intent(MainActivity.this, Profile.class));
     }
 
