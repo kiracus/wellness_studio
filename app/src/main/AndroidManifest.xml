@@ -4,8 +4,6 @@
     package="edu.neu.madcourse.wellness_studio">
 
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -64,9 +62,7 @@
 
         <receiver android:name=".lightExercises.AlarmReceiver" />
 
-        <receiver android:name=".AlarmSleepReceiver"/>
-
-        <receiver android:name=".AlarmWakeupReceiver"/>
+        <receiver android:name=".AlarmBroadcastReceiver"/>
 
     </application>
 
