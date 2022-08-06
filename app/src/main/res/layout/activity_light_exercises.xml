@@ -1,124 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_light_exercises"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".lightExercises.LightExercises">
+    tools:context=".lightExercises.LightExercises"
+    android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/light_exercies_title_txtView"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/light_exercises_title"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.07" />
+        android:id="@+id/header_title"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appBarLayout">
 
-    <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Light Exercises"
+                android:background="@color/blue"
+                app:titleTextColor="@color/white"
+                android:paddingStart="30dp"
+                android:paddingEnd="10dp"
+                android:theme="@style/AppTheme.AppBarOverlay" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="20dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/default_avatar"
+                    android:scaleType="centerCrop"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/alarm_cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toEndOf="@+id/light_exercies_title_txtView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/ic_baseline_person_24" />
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerForFocusArea"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/card_row1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent">
 
-<!--    <TextView-->
-<!--        android:id="@+id/timeTextView"-->
-<!--        android:layout_width="205dp"-->
-<!--        android:layout_height="93dp"-->
-<!--        android:text="Reminder"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.184"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.197" />-->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="20dp"
+                    app:srcCompat="@drawable/ic_baseline_exercise_24" />
 
-    <!--        <Button-->
-    <!--            android:id="@+id/button"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="12dp"-->
-    <!--            android:onClick="popTimePicker"-->
-    <!--            android:text="Button" />-->
+                <TextView
+                    android:id="@+id/light_exercises_alarm_TxtView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/light_exercises_alarm_TxtView"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
 
-<!--        <Switch-->
-<!--        android:id="@+id/reminderSwitch"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Switch"-->
-<!--         />-->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
-    <com.kofigyan.stateprogressbar.StateProgressBar
-        android:id="@+id/light_exercises_state_progress_bar"
-        android:layout_width="365dp"
-        android:layout_height="36dp"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/progressTxtView"
-        app:layout_constraintEnd_toEndOf="@+id/progressTxtView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/progressTxtView"
-        app:layout_constraintVertical_bias="0.468"
-        app:spb_animateToCurrentProgressState="true"
-        app:spb_checkStateCompleted="true"
-        app:spb_currentStateDescriptionColor="#0F9D58"
-        app:spb_currentStateNumber="one"
-        app:spb_maxStateNumber="four"
-        app:spb_stateBackgroundColor="#BDBDBD"
-        app:spb_stateDescriptionColor="#808080"
-        app:spb_stateForegroundColor="#0F9D58"
-        app:spb_stateNumberBackgroundColor="#808080"
-        app:spb_stateNumberForegroundColor="#eeeeee" />
+                <ImageView
+                    android:id="@+id/setting_dot_lightExercises"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="20dp"
+                    android:onClick="popTimePicker"
+                    app:srcCompat="@drawable/ic_baseline_alarm_24" />
 
-    <TextView
-        android:id="@+id/progressTxtView"
-        android:layout_width="362dp"
-        android:layout_height="92dp"
-        android:background="@drawable/border"
-        android:lines="4"
-        android:text="@string/progressTxtView"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.46"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/card_row2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/card_row1">
+
+                <TextView
+                    android:id="@+id/timeTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginStart="40dp"
+                    android:text="23:00"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/reminderSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/light_exercises_alarm_switch_button"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/light_exercises_alarm_TxtView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="70dp"-->
+        <!--                android:layout_marginTop="20dp"-->
+        <!--                android:text="@string/light_exercises_alarm_TxtView"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                android:textSize="25sp"-->
+        <!--                android:textStyle="bold">-->
+        <!--            </TextView>-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/timeTextView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginLeft="50dp"-->
+        <!--                android:layout_marginTop="110dp"-->
+        <!--                android:text="23:00"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                android:textSize="40dp"-->
+        <!--                android:textStyle="bold" />-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="50dp"-->
+        <!--                android:layout_height="50dp"-->
+        <!--                android:layout_marginLeft="10dp"-->
+        <!--                android:layout_marginTop="10dp"-->
+        <!--                app:srcCompat="@drawable/ic_baseline_exercise_24" />-->
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/setting_dot_lightExercises"-->
+        <!--                android:layout_width="50dp"-->
+        <!--                android:layout_height="50dp"-->
+        <!--                android:layout_marginLeft="250dp"-->
+        <!--                android:layout_marginTop="20dp"-->
+        <!--                android:onClick="popTimePicker"-->
+        <!--                app:srcCompat="@drawable/ic_baseline_alarm_24" />-->
+
+        <!--            <Switch-->
+        <!--                android:id="@+id/reminderSwitch"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="@string/light_exercises_alarm_switch_button"-->
+        <!--                android:layout_marginLeft="240dp"-->
+        <!--                android:layout_marginTop="120dp"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                android:textSize="20sp"-->
+        <!--                android:textStyle="bold" />-->
+
+    </androidx.cardview.widget.CardView>
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="300dp"
-        android:layout_height="273dp"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/progressTxtView"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/progress_bar_container"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_cardView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.322"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarm_cardView">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -152,93 +242,136 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <GridLayout
-        android:id="@+id/alarm_cardView"
+    <TextView
+        android:id="@+id/light_exercies_during_exercises_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="1"
-        android:gravity="center"
-
-        android:rowCount="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/light_exercises_guide"
+        android:textColor="@color/deep_blue"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/alarm_cardView"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.234">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/sleep_cardView"
-            android:layout_width="350dp"
-            android:layout_height="190dp"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_gravity="center_horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wakeup_sleep_goal_title"
-            app:layout_constraintVertical_bias="0.072"
-            tools:ignore="MissingConstraints">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar_container"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/progressTxtView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/progressTxtView"
+            android:textColor="@color/deep_blue"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:paddingBottom="5dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.kofigyan.stateprogressbar.StateProgressBar
+            android:id="@+id/light_exercises_state_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_margin="10dp"
+            app:spb_animateToCurrentProgressState="true"
+            app:spb_checkStateCompleted="true"
+            app:spb_currentStateDescriptionColor="#0F9D58"
+            app:spb_currentStateNumber="one"
+            app:spb_maxStateNumber="four"
+            app:spb_stateBackgroundColor="#BDBDBD"
+            app:spb_stateDescriptionColor="#808080"
+            app:spb_stateForegroundColor="#0F9D58"
+            app:spb_stateNumberBackgroundColor="#808080"
+            app:spb_stateNumberForegroundColor="#eeeeee" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:backgroundTint="@color/sky_blue_00"
+            app:menu="@menu/bottom_navigation_menu"
+            app:labelVisibilityMode="labeled"/>
+
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:id="@+id/light_exercies_title_txtView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/light_exercises_title"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="25sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.189"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.07" />-->
 
 
-            <TextView
-                android:id="@+id/light_exercises_alarm_TxtView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/light_exercises_alarm_TxtView"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold">
-            </TextView>
+<!--    <ImageView-->
+<!--        android:id="@+id/profile_image"-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_margin="20dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.6"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/light_exercies_title_txtView"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.022"-->
+<!--        app:srcCompat="@drawable/ic_baseline_person_24" />-->
 
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="110dp"
-                android:text="23:00"
-                android:textColor="@color/black"
-                android:textSize="40dp"
-                android:textStyle="bold" />
+<!--    <androidx.viewpager2.widget.ViewPager2-->
+<!--        android:id="@+id/viewPagerForFocusArea"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/ic_baseline_exercise_24"
-                >
+<!--    <TextView-->
+<!--        android:id="@+id/timeTextView"-->
+<!--        android:layout_width="205dp"-->
+<!--        android:layout_height="93dp"-->
+<!--        android:text="Reminder"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.184"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.197" />-->
 
-            </ImageView>
+    <!--        <Button-->
+    <!--            android:id="@+id/button"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginEnd="12dp"-->
+    <!--            android:onClick="popTimePicker"-->
+    <!--            android:text="Button" />-->
 
-            <ImageView
-                android:id="@+id/setting_dot_lightExercises"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="20dp"
-                android:onClick="popTimePicker"
-                app:srcCompat="@drawable/ic_baseline_alarm_24" />
+<!--        <Switch-->
+<!--        android:id="@+id/reminderSwitch"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Switch"-->
+<!--         />-->
 
 
-            <Switch
-                android:id="@+id/reminderSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/light_exercises_alarm_switch_button"
-                android:layout_marginLeft="240dp"
-                android:layout_marginTop="120dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </androidx.cardview.widget.CardView>
-    </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
