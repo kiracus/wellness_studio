@@ -20,4 +20,11 @@
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+<!--    switch colors-->
+    <!-- inactive thumb color -->
+    <color name="gray_100">#E1E1E1</color>
+
+    <!-- inactive track color (30% transparency) -->
+    <color name="gray_200">#7E8F6A</color>
 </resources>

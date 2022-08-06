@@ -5,67 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/wakeup_sleep_goal_title"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/wakeup_sleep_goal_title_TV"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.07" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appBarLayout">
 
-    <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toEndOf="@+id/wakeup_sleep_goal_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/ic_baseline_person_24" />
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Wakeup Sleep Goal"
+                android:background="@color/blue"
+                app:titleTextColor="@color/white"
+                android:paddingStart="30dp"
+                android:paddingEnd="10dp"
+                android:theme="@style/AppTheme.AppBarOverlay" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/total_sleep_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/total_sleep_hours_TV"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.109"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarm_cardView"
-        app:layout_constraintVertical_bias="0.265" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/white">
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="20dp"
+                android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/hours_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:text="@string/hours_display_TV"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.325"
-        app:layout_constraintStart_toEndOf="@+id/total_sleep_hour"
-        app:layout_constraintTop_toBottomOf="@+id/alarm_cardView"
-        app:layout_constraintVertical_bias="0.269" />
+                <ImageView
+                    android:id="@+id/imageView_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/default_avatar"
+                    android:scaleType="centerCrop"/>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <GridLayout
         android:id="@+id/alarm_cardView"
@@ -74,175 +63,235 @@
         android:columnCount="1"
         android:gravity="center"
         android:rowCount="2"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/wakeup_sleep_goal_title"
-        app:layout_constraintVertical_bias="0.099">
+        app:layout_constraintTop_toBottomOf="@+id/header_title"
+        app:layout_constraintBottom_toTopOf="@id/total_sleep_container">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/sleep_cardView"
-            android:layout_width="350dp"
-            android:layout_height="190dp"
-            android:layout_gravity="center_horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wakeup_sleep_goal_title"
-            app:layout_constraintVertical_bias="0.072"
-            tools:ignore="MissingConstraints">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/sleep_alarm_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/sleep_alarm_text"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold">
+                <LinearLayout
+                    android:id="@+id/card_row1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="20dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_baseline_night_24"
+                        app:tint="@color/deep_blue" />
 
-            </TextView>
+                    <TextView
+                        android:id="@+id/sleep_alarm_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/sleep_alarm_text"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/sleep_alarmTime_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="110dp"
-                android:text="--:--"
-                android:textColor="@color/black"
-                android:textSize="40dp"
-                android:textStyle="bold" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/moon">
+                    <ImageView
+                        android:id="@+id/setting_dot"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="20dp"
+                        app:srcCompat="@drawable/ic_baseline_more_horiz_24"
+                        app:tint="@color/black"/>
 
-            </ImageView>
+                </LinearLayout>
 
-            <ImageView
-                android:id="@+id/setting_dot"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="20dp"
-                app:srcCompat="@drawable/dot" />
+                <LinearLayout
+                    android:id="@+id/card_row2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/card_row1">
 
-            <TextView
-                android:id="@+id/alarm_on_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="220dp"
-                android:layout_marginTop="95dp"
-                android:text="@string/alarm_on_TV"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/sleep_alarmTime_TV"
+                        android:layout_width="100dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="25dp"
+                        android:textAlignment="center"
+                        android:text="--:--"
+                        android:textColor="@color/black"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
-            <Switch
-                android:id="@+id/sleep_alarm_on_off"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="140dp"
-                />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/sleep_alarm_on_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="20dp"
+                        android:layout_gravity="center"
+                        android:text="OFF"
+                        android:textSize="18sp"
+                        tools:ignore="UseSwitchCompatOrMaterialXml"
+                        android:theme="@style/mySwitch"/>
 
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--            <TextView-->
+<!--                android:id="@+id/alarm_on_TV"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="220dp"-->
+<!--                android:layout_marginTop="95dp"-->
+<!--                android:text="@string/alarm_on_TV"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="20sp"-->
+<!--                android:textStyle="bold" />-->
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/wakeup_cardView"
-            android:layout_width="350dp"
-            android:layout_height="190dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sleep_cardView"
-            app:layout_constraintVertical_bias="0.032"
-            tools:ignore="MissingConstraints">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/wakeup_alarm_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/wakeup_alarm_text"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold">
+                <LinearLayout
+                    android:id="@+id/card2_row1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="20dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_baseline_day_24"
+                        app:tint="@color/deep_blue" />
 
-            </TextView>
+                    <TextView
+                        android:id="@+id/wakeup_alarm_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/wakeup_alarm_text"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/wakeup_alarmTime_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="110dp"
-                android:text="--:--"
-                android:textColor="@color/black"
-                android:textSize="40dp"
-                android:textStyle="bold" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/sun">
+                    <ImageView
+                        android:id="@+id/wakeup_setting_dot"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="20dp"
+                        app:srcCompat="@drawable/ic_baseline_more_horiz_24"
+                        app:tint="@color/black"/>
 
-            </ImageView>
+                </LinearLayout>
 
-            <ImageView
-                android:id="@+id/wakeup_setting_dot"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="20dp"
-                app:srcCompat="@drawable/dot" />
+                <LinearLayout
+                    android:id="@+id/card2_row2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/card2_row1">
 
-            <TextView
-                android:id="@+id/wakeup_alarm_on_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="220dp"
-                android:layout_marginTop="95dp"
-                android:text="@string/alarm_on_TV"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/wakeup_alarmTime_TV"
+                        android:layout_width="100dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="25dp"
 
+                        android:textAlignment="center"
+                        android:text="--:--"
+                        android:textColor="@color/black"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
 
-            <Switch
-                android:id="@+id/wakeup_alarm_on_off"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="140dp"
-                />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/wakeup_alarm_on_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="20dp"
+                        android:layout_gravity="center"
+                        android:text="OFF"
+                        android:textSize="18sp"
+                        tools:ignore="UseSwitchCompatOrMaterialXml"
+                        android:theme="@style/mySwitch"/>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 
     </GridLayout>
+
+    <LinearLayout
+        android:id="@+id/total_sleep_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/alarm_cardView"
+        app:layout_constraintBottom_toTopOf="@id/bottom_buttons"
+        android:layout_marginHorizontal="30dp"
+
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/total_sleep_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_sleep_hours_TV"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/hours_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text="@string/hours_display_TV"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

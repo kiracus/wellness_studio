@@ -142,8 +142,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/light_exercises_alarm_switch_button"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
+                    android:textSize="18sp"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             </LinearLayout>

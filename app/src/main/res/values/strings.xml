@@ -5,7 +5,7 @@
     <string name="wakeup_sleep_goal_title_TV">WAKEUP SLEEP GOAL</string>
     <string name="todo">TODO</string>
     <string name="total_sleep_hours_TV">TOTAL SLEEP HOURS:</string>
-    <string name="hours_display_TV">-</string>
+    <string name="hours_display_TV">-- hrs, -- mins</string>
     <string name="wakeup_alarm_text">WAKE UP</string>
     <string name="sleep_alarm_text">SLEEP</string>
     <string name="alarm_on_TV">ALARM OFF</string>

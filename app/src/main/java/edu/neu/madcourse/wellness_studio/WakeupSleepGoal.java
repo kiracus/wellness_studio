@@ -33,6 +33,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
 
@@ -51,12 +52,12 @@ public class WakeupSleepGoal extends AppCompatActivity {
     TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV, sleepAlarmOnTV, wakeupAlarmOnTV;
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     BottomNavigationView bottomNavigationView;
-    protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+//    protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
+//    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate, sleepHoursReopenUpdate;
 
     ActivityResultLauncher<Intent> startForResult;
-    Switch sleepAlarmSwitch, wakeupAlarmSwitch;
+    SwitchMaterial sleepAlarmSwitch, wakeupAlarmSwitch;
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
@@ -71,7 +72,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wakeup_sleep_goal);
 
-        profile = findViewById(R.id.profile_image);
+        profile = findViewById(R.id.imageView_profile);
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
         if (sleepAlarmReopenUpdate == null) {
@@ -89,7 +90,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         sleepHoursTV = findViewById(R.id.hours_display);
         if (sleepHoursReopenUpdate == null) {
-            sleepHoursTV.setText("10 hours, 0 min");
+            sleepHoursTV.setText("10 hrs, 0 min");
         } else {
             sleepHoursTV.setText(sleepHoursReopenUpdate);
         }
@@ -97,8 +98,9 @@ public class WakeupSleepGoal extends AppCompatActivity {
         sleepAlarmSetting = findViewById(R.id.setting_dot);
         wakeupAlarmSetting = findViewById(R.id.wakeup_setting_dot);
 
-        sleepAlarmOnTV = findViewById(R.id.alarm_on_TV);
-        wakeupAlarmOnTV = findViewById(R.id.wakeup_alarm_on_TV);
+        // not using alarm on/off any more
+//        sleepAlarmOnTV = findViewById(R.id.alarm_on_TV);
+//        wakeupAlarmOnTV = findViewById(R.id.wakeup_alarm_on_TV);
 
         startForResult = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -193,12 +195,14 @@ public class WakeupSleepGoal extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     setAlarm(sleepAlarmHour, sleepAlarmMin);
-                    sleepAlarmOnTV.setText("ALARM ON");
+                    //sleepAlarmOnTV.setText("ALARM ON");
+                    sleepAlarmSwitch.setText("ON");
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On.", Toast.LENGTH_SHORT).show();
                 } else {
                     cancelSleepAlarm();
                     Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is Off.", Toast.LENGTH_SHORT).show();
-                    sleepAlarmOnTV.setText("ALARM OFF");
+//                    sleepAlarmOnTV.setText("ALARM OFF");
+                    sleepAlarmSwitch.setText("OFF");
                 }
             }
         });
@@ -210,11 +214,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
                 if (isChecked) {
                     setAlarm(wakeupAlarmHour, wakeupAlarmMin);
                     Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is On.", Toast.LENGTH_SHORT).show();
-                    wakeupAlarmOnTV.setText("ALARM ON");
+                    //wakeupAlarmOnTV.setText("ALARM ON");
+                    wakeupAlarmSwitch.setText("ON");
                 } else {
                     cancelSleepAlarm();
                     Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is Off.", Toast.LENGTH_SHORT).show();
-                    wakeupAlarmOnTV.setText("ALARM OFF");
+                    //wakeupAlarmOnTV.setText("ALARM OFF");
+                    wakeupAlarmSwitch.setText("OFF");
                 }
             }
         });
@@ -324,13 +330,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
             }
 
             if (minDiff <= 1 && totalHour <= 1 ) {
-                return String.valueOf(Math.abs(totalHour)) + " hour, " + String.valueOf(Math.abs(minDiff)) + " min";
+                return String.valueOf(Math.abs(totalHour)) + " hr, " + String.valueOf(Math.abs(minDiff)) + " min";
             } else if (minDiff <= 1 && totalHour > 1){
-                return String.valueOf(Math.abs(totalHour)) + " hours, " + String.valueOf(Math.abs(minDiff)) + " min";
+                return String.valueOf(Math.abs(totalHour)) + " hrs, " + String.valueOf(Math.abs(minDiff)) + " min";
             } else if (minDiff > 1 && totalHour <= 1) {
-                return String.valueOf(Math.abs(totalHour)) + " hour, " + String.valueOf(Math.abs(minDiff)) + " mins";
+                return String.valueOf(Math.abs(totalHour)) + " hr, " + String.valueOf(Math.abs(minDiff)) + " mins";
             } else {
-                return String.valueOf(Math.abs(totalHour)) + " hours, " + String.valueOf(Math.abs(minDiff)) + " mins";
+                return String.valueOf(Math.abs(totalHour)) + " hrs, " + String.valueOf(Math.abs(minDiff)) + " mins";
             }
 
         } else {
@@ -341,13 +347,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
                 minDiff = minDiff - 60;
             }
             if (minDiff <= 1 && hourDiff <= 1 ) {
-                return String.valueOf(Math.abs(hourDiff)) + " hour, " + String.valueOf(Math.abs(minDiff)) + " min";
+                return String.valueOf(Math.abs(hourDiff)) + " hr, " + String.valueOf(Math.abs(minDiff)) + " min";
             } else if (minDiff <= 1 && hourDiff > 1){
-                return String.valueOf(Math.abs(hourDiff)) + " hours, " + String.valueOf(Math.abs(minDiff)) + " min";
+                return String.valueOf(Math.abs(hourDiff)) + " hrs, " + String.valueOf(Math.abs(minDiff)) + " min";
             } else if (minDiff > 1 && hourDiff <= 1) {
-                return String.valueOf(Math.abs(hourDiff)) + " hour, " + String.valueOf(Math.abs(minDiff)) + " mins";
+                return String.valueOf(Math.abs(hourDiff)) + " hr, " + String.valueOf(Math.abs(minDiff)) + " mins";
             } else {
-                return String.valueOf(Math.abs(hourDiff)) + " hours, " + String.valueOf(Math.abs(minDiff)) + " mins";
+                return String.valueOf(Math.abs(hourDiff)) + " hrs, " + String.valueOf(Math.abs(minDiff)) + " mins";
             }
 
 
