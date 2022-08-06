@@ -221,5 +221,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             friendEmail.setText(thePersonToBind);
         }
 
+
     }
 }
