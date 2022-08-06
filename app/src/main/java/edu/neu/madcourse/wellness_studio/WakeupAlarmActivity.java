@@ -21,8 +21,8 @@ public class WakeupAlarmActivity extends AppCompatActivity {
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(this.KEYGUARD_SERVICE);
             keyguardManager.requestDismissKeyguard(this, null);
         } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD ||
-                    );
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD ||
+//                    );
         }
     }
 }
