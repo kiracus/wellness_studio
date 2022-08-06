@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ public class AlarmSetting extends AppCompatActivity {
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
+    Switch allowSleepSensorUseBtn, snoozeBtn, allowWakeupSensorUseBtn;
     static boolean isSave = false;
 
 
@@ -110,6 +113,27 @@ public class AlarmSetting extends AppCompatActivity {
 
             }
         });
+
+        //snooze
+        snoozeBtn = findViewById(R.id.snooze_switch);
+        snoozeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+
+
+                } else {
+
+                }
+            }
+        });
+
+        //wakeup sensor
+        allowWakeupSensorUseBtn = findViewById(R.id.wakeup_sensor_use_switch);
+
+
+        //sleep sensor
+        allowSleepSensorUseBtn = findViewById(R.id.sleep_reminder_allow_sensor_switch);
 
         // bottom nav bar
         bottomNavigationView = findViewById(R.id.bottom_navigation);

@@ -331,7 +331,7 @@
             android:text="ON" />
 
         <Switch
-            android:id="@+id/sensor_use_switch"
+            android:id="@+id/wakeup_sensor_use_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="270dp"
