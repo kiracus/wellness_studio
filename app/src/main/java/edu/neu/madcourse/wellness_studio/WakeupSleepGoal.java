@@ -46,12 +46,10 @@ public class WakeupSleepGoal extends AppCompatActivity {
     // test
     private final static String TAG = "sleep";
 
-    Button sleepAlarmOnOffBtn, wakeupAlarmOnOffBtn;
-    TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV, sleepAlarmOnTV, wakeupAlarmOnTV;
+    TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV;
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     BottomNavigationView bottomNavigationView;
     protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
-    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate, sleepHoursReopenUpdate;
 
     ActivityResultLauncher<Intent> startForResult;
@@ -60,7 +58,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    boolean isSnooze, isWakeupSensorUse, isSleepSensorUse;
+    String isSnooze, isWakeupSensorUse, isSleepSensorUse;
 
 
 
@@ -107,8 +105,36 @@ public class WakeupSleepGoal extends AppCompatActivity {
                         if (result != null && result.getResultCode() == AlarmSetting.RESULT_OK) {
                             if (result.getData() != null &&
                                     result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null ||
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null){
+                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null ||
+                                    result.getData().getStringExtra(AlarmSetting.SNOOZE_VALUE) != null ||
+                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null ||
+                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null
+                                    ){
+
                                 Intent data = result.getData();
+                                isSnooze = data.getStringExtra(AlarmSetting.SNOOZE_VALUE);
+                                isSleepSensorUse = data.getStringExtra(AlarmSetting.SLEEP_SENSOR_USE);
+                                isSleepSensorUse = data.getStringExtra(AlarmSetting.WAKEUP_SENSOR_USE);
+                                if (isSnooze.equals("ON")) {
+                                    startSnooze();
+                                } else {
+                                    cancelSnooze();
+                                }
+
+                                if (isSleepSensorUse.equals("ON")) {
+                                    startSleepSensor();
+                                } else {
+                                    cancelSleepSensor();
+                                }
+
+                                if (isWakeupSensorUse.equals("ON")) {
+                                    startWakeupSensor();
+                                } else {
+                                    cancelWakeupSensor();
+                                }
+
+
+
                                 if (data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null) {
                                     sleepAlarmUpdate = data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME);
                                 } else {
@@ -247,6 +273,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
 
     }
+
 
 
     private void createNotificationChannelSleep() {
@@ -477,5 +504,24 @@ public class WakeupSleepGoal extends AppCompatActivity {
         }
         alarmManagerWakeup.cancel(pendingIntentWakeUp);
         Toast.makeText(getApplicationContext(),"Wakeup Alarm is off",Toast.LENGTH_SHORT).show();
+    }
+
+    private void cancelWakeupSensor() {
+    }
+
+    private void startWakeupSensor() {
+    }
+
+    private void cancelSleepSensor() {
+    }
+
+    private void startSleepSensor() {
+    }
+
+    private void cancelSnooze() {
+    }
+
+    private void startSnooze() {
+
     }
 }
