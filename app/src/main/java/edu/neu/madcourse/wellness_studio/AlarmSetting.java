@@ -10,9 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,6 +49,7 @@ public class AlarmSetting extends AppCompatActivity {
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
     Switch allowSleepSensorUseBtn, snoozeBtn, allowWakeupSensorUseBtn;
+    Spinner alarmTypeSpinner, stopAlarmSpinner;
     static boolean isSave = false;
 
 
@@ -127,6 +131,49 @@ public class AlarmSetting extends AppCompatActivity {
                 }
             }
         });
+
+        alarmTypeSpinner = findViewById(R.id.alarm_type_spinner);
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.alarm_type_array, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        alarmTypeSpinner.setAdapter(typeAdapter);
+        alarmTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newItem = alarmTypeSpinner.getSelectedItem().toString();
+//                Toast.makeText(AlarmSetting.this, "you selected:" + newItem, Toast.LENGTH_SHORT).show();
+                typeAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+        stopAlarmSpinner = findViewById(R.id.to_stop_alarm_spinner);
+        ArrayAdapter<CharSequence> stopAdapter = ArrayAdapter.createFromResource(this,
+                R.array.stop_alarm_type_array, android.R.layout.simple_spinner_item);
+        stopAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stopAlarmSpinner.setAdapter(stopAdapter);
+
+        stopAlarmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String stopNewItem = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(AlarmSetting.this, "you selected:" + stopNewItem, Toast.LENGTH_SHORT).show();
+                stopAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         //wakeup sensor
         allowWakeupSensorUseBtn = findViewById(R.id.wakeup_sensor_use_switch);
