@@ -56,7 +56,7 @@ public class AlarmSetting extends AppCompatActivity {
     SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
     boolean isSave = false, isSnooze = false, isWakeupSensorUse = false, isSleepSensorUse = false;
-    String sleepSensorUse, snoozeUse, wakeupSensorUse;
+    String sleepSensorUse = "OFF", snoozeUse = "OFF", wakeupSensorUse = "OFF";
 
 
 
@@ -246,6 +246,7 @@ public class AlarmSetting extends AppCompatActivity {
     private void goToLightExercise() {
         startActivity(new Intent(AlarmSetting.this, LightExercises.class));
     }
+
 
 
     public void popSleepTimePicker(View view) {

@@ -59,6 +59,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
     String isSnooze, isWakeupSensorUse, isSleepSensorUse;
+    long wakeupMillis, sleepMillis;
 
 
 
@@ -114,25 +115,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
                                 Intent data = result.getData();
                                 isSnooze = data.getStringExtra(AlarmSetting.SNOOZE_VALUE);
                                 isSleepSensorUse = data.getStringExtra(AlarmSetting.SLEEP_SENSOR_USE);
-                                isSleepSensorUse = data.getStringExtra(AlarmSetting.WAKEUP_SENSOR_USE);
-                                if (isSnooze.equals("ON")) {
-                                    startSnooze();
-                                } else {
-                                    cancelSnooze();
-                                }
-
-                                if (isSleepSensorUse.equals("ON")) {
-                                    startSleepSensor();
-                                } else {
-                                    cancelSleepSensor();
-                                }
-
-                                if (isWakeupSensorUse.equals("ON")) {
-                                    startWakeupSensor();
-                                } else {
-                                    cancelWakeupSensor();
-                                }
-
+                                isWakeupSensorUse = data.getStringExtra(AlarmSetting.WAKEUP_SENSOR_USE);
 
 
                                 if (data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null) {
@@ -403,9 +386,36 @@ public class WakeupSleepGoal extends AppCompatActivity {
     }
 
 
+    private void checkSnooze() {
+        if (isSnooze.equals("ON")) {
+            startSnooze();
+        } else {
+            cancelSnooze();
+        }
+    }
+
+
+    private void checkWakeupSensor() {
+        if (isWakeupSensorUse.equals("ON")) {
+            startWakeupSensor();
+        } else {
+            cancelWakeupSensor();
+        }
+
+    }
+
+    private void checkSleepSensor(long currentMillis) {
+        if (isSleepSensorUse.equals("ON")) {
+            startSleepSensor();
+        } else {
+            cancelSleepSensor();
+        }
+    }
+
     public void setSleepAlarm(int hour, int min) {
         Intent intent = new Intent(this, AlarmSleepReceiver.class);
         long millis = convertHourAndMinToMilliSecondsSleep(hour, min);
+        sleepMillis = millis;
 
         alarmManagerSleep = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntentSleep = PendingIntent.getBroadcast(this,0,intent,0);
@@ -417,6 +427,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     private void setWakeupAlarm(int wakeupAlarmHour, int wakeupAlarmMin) {
         Intent intent = new Intent(this, AlarmWakeupReceiver.class);
         long millis = convertHourAndMinToMilliSecondsWakeup(wakeupAlarmHour, wakeupAlarmMin);
+        wakeupMillis = millis;
 
         alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntentWakeUp = PendingIntent.getBroadcast(this,1,intent,0);
@@ -516,12 +527,19 @@ public class WakeupSleepGoal extends AppCompatActivity {
     }
 
     private void startSleepSensor() {
+        snoozeAlarm();
+    }
+
+    private void snoozeAlarm() {
+
     }
 
     private void cancelSnooze() {
+
     }
 
     private void startSnooze() {
+
 
     }
 }
