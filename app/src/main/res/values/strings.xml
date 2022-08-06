@@ -20,6 +20,7 @@
     <string name="allow_sensor_use_TV">ALLOW SENSOR USE</string>
 
     <string name="light_exercises_title">LIGHT EXERCISES</string>
+    <string name="light_exercises_guide">Swipe and choose a set to start.</string>
     <string name="light_exercises_during_exercises_title">SWIPE THROUGH SETS</string>
     <string name="during_exercises_guide">Swipe to check next step.</string>
     <string name="light_exercises_alarm_switch_button">ON</string>
