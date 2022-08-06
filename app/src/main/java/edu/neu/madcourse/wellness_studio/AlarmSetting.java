@@ -36,7 +36,7 @@ public class AlarmSetting extends AppCompatActivity {
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    Button saveButton;
+    ImageButton saveButton;
     BottomNavigationView bottomNavigationView;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
