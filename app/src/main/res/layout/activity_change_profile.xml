@@ -10,33 +10,58 @@
         android:id="@+id/profile_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toTopOf="parent">
-            <ImageButton
-                android:id="@+id/imageButton_cancel"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="start"
-                android:layout_marginStart="10dp"
-                app:srcCompat="@drawable/ic_baseline_cancel_24" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_weight="1"/>
-            <ImageButton
-                android:id="@+id/imageButton_save"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="10dp"
-                app:srcCompat="@drawable/ic_baseline_save_24" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appBarLayout">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Edit Profile"
+                android:paddingStart="70dp"
+                android:background="@color/blue"
+                app:titleTextColor="@color/white"
+                android:theme="@style/AppTheme.AppBarOverlay" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ImageButton
+            android:id="@+id/imageButton_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            app:srcCompat="@drawable/ic_baseline_close_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/blue"
+            android:contentDescription="cancel and leave"
+            app:tint="@color/white" />
+
+        <ImageButton
+            android:id="@+id/imageButton_save"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="save settings"
+            app:srcCompat="@drawable/ic_baseline_save_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/blue"
+            app:tint="@color/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_img_name_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/profile_header">
 
         <ImageButton
             android:id="@+id/imageButton_change_img"
@@ -46,7 +71,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             app:srcCompat="@drawable/ic_baseline_person_24" />
 
         <TextView
@@ -58,7 +83,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="85dp"
+            android:layout_marginTop="55dp"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:shadowColor="@color/black"
@@ -74,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/profile_header"
+        app:layout_constraintTop_toBottomOf="@id/profile_img_name_container"
         android:layout_margin="20dp">
 
         <TextView
