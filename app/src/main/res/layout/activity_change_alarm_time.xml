@@ -31,7 +31,11 @@
 
         <Button
             android:id="@+id/change_save_btn"
+<<<<<<< HEAD
             android:layout_width="40dp"
+=======
+            android:layout_width="18dp"
+>>>>>>> kiracus-main
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
@@ -80,6 +84,7 @@
                 android:layout_marginBottom="5dp">
 
 
+<<<<<<< HEAD
 <!--                <TimePicker-->
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"-->
@@ -96,6 +101,13 @@
                     android:textAlignment="center"
                     android:layout_gravity="center"
                     android:textSize="50sp"/>
+=======
+                <TimePicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    android:id="@+id/sleep_timePicker"/>
+>>>>>>> kiracus-main
 
             </LinearLayout>
 
@@ -136,6 +148,7 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
+<<<<<<< HEAD
 <!--                <TimePicker-->
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"-->
@@ -152,6 +165,13 @@
                     android:textAlignment="center"
                     android:layout_gravity="center"
                     android:textSize="50sp"/>
+=======
+                <TimePicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    android:id="@+id/wakeup_timePicker"/>
+>>>>>>> kiracus-main
             </LinearLayout>
 
 <!--            <Switch-->
@@ -212,6 +232,7 @@
             android:textColor="@color/black"
             android:textSize="15sp" />
 
+<<<<<<< HEAD
 
         <Switch
             android:id="@+id/sleep_reminder_allow_sensor_switch"
@@ -220,6 +241,14 @@
             android:text="ON"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="270dp"/>
+=======
+        <ToggleButton
+            android:id="@+id/sensor_on_off"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="1dp" />
+>>>>>>> kiracus-main
 
 
     </androidx.cardview.widget.CardView>
@@ -233,6 +262,7 @@
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="30dp"
         tools:layout_editor_absoluteY="381dp" />
+<<<<<<< HEAD
 
 
     <androidx.cardview.widget.CardView
@@ -255,6 +285,8 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
+=======
+>>>>>>> kiracus-main
 
         <TextView
             android:id="@+id/alarm_type_TV"

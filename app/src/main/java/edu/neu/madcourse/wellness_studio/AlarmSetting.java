@@ -1,5 +1,6 @@
 package edu.neu.madcourse.wellness_studio;
 
+<<<<<<< HEAD
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -17,12 +18,23 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+=======
+import android.app.AlarmManager;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.NumberPicker;
+>>>>>>> kiracus-main
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+<<<<<<< HEAD
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.w3c.dom.Text;
@@ -31,11 +43,15 @@ import org.w3c.dom.Text;
 import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 
 import java.util.Locale;
+=======
+import java.sql.Time;
+>>>>>>> kiracus-main
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 
 public class AlarmSetting extends AppCompatActivity {
+<<<<<<< HEAD
     // test
     private final static String TAG = "alarmSetting";
 
@@ -55,12 +71,21 @@ public class AlarmSetting extends AppCompatActivity {
 
 
     @SuppressLint("NonConstantResourceId")
+=======
+
+    TimePicker sleepTimePicker, wakeupTimePicker;
+    static String sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    Button saveButton;
+    ImageButton homeBtn, exerciseBtn, sleepBtn, leaderboardBtn;
+
+>>>>>>> kiracus-main
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_alarm_time);
 
+<<<<<<< HEAD
         saveButton = findViewById(R.id.change_save_btn);
         sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
 
@@ -93,12 +118,22 @@ public class AlarmSetting extends AppCompatActivity {
         } else {
             wakeupAlarmChangeTV.setText(wakeupAlarmReopenUpdate);
         }
+=======
+        sleepTimePicker = (TimePicker) findViewById(R.id.sleep_timePicker);
+        sleepTimePicker.setIs24HourView(true);
+
+        wakeupTimePicker = (TimePicker) findViewById(R.id.wakeup_timePicker);
+        wakeupTimePicker.setIs24HourView(true);
+
+        saveButton = findViewById(R.id.change_save_btn);
+>>>>>>> kiracus-main
 
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
                 isSave = !isSave;
                 if (isSave) {
                     saveChanges(v);
@@ -148,11 +183,18 @@ public class AlarmSetting extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+=======
+
+                Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
+                saveChanges();
+                Intent intent = new Intent(AlarmSetting.this, WakeupSleepGoal.class);
+>>>>>>> kiracus-main
 
             }
         });
 
 
+<<<<<<< HEAD
 
         stopAlarmSpinner = findViewById(R.id.to_stop_alarm_spinner);
         ArrayAdapter<CharSequence> stopAdapter = ArrayAdapter.createFromResource(this,
@@ -209,10 +251,29 @@ public class AlarmSetting extends AppCompatActivity {
 
 
 
+=======
+        homeBtn = findViewById(R.id.imageButton_home);
+        exerciseBtn = findViewById(R.id.imageButton_exercise);
+        sleepBtn = findViewById(R.id.imageButton_sleep);
+        leaderboardBtn = findViewById(R.id.imageButton_leaderboard);
+        homeBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Greeting.class)));
+
+        // set click listeners for buttons
+        exerciseBtn.setOnClickListener(v -> goToLightExercise());
+        //exerciseGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LightExercises.class)));
+        sleepBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class)));
+        leaderboardBtn.setOnClickListener(v -> startActivity(new Intent(AlarmSetting.this, Leaderboard.class)));
+
+
+    }
+
+
+>>>>>>> kiracus-main
     private void goToLightExercise() {
         startActivity(new Intent(AlarmSetting.this, LightExercises.class));
     }
 
+<<<<<<< HEAD
 
 
     public void saveChanges(View v) {
@@ -280,5 +341,41 @@ public class AlarmSetting extends AppCompatActivity {
     private void goToLeaderboard() {
         startActivity(new Intent(AlarmSetting.this, Leaderboard.class));
     }
+=======
+    public void getCurrentSleepAlarm() {
+        sleepTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                sleepAlarmHour = hourOfDay + "";
+                sleepAlarmMin = minute + "";
+
+            }
+        });
+
+    }
+
+    public void getCurrentWakeupAlarm() {
+        wakeupTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                wakeupAlarmHour = hourOfDay + "";
+                wakeupAlarmMin = minute + "";
+            }
+        });
+
+
+    }
+
+    public void saveChanges() {
+        getCurrentSleepAlarm();
+        getCurrentWakeupAlarm();
+
+    }
+
+
+
+
+
+>>>>>>> kiracus-main
 
 }
