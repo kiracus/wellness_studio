@@ -51,6 +51,8 @@ public class FriendsList extends AppCompatActivity {
     RecyclerView friendListRecyclerView;
     FriendListAdapter friendListAdapter;
     List<String> friendEmailList;
+    List<String> localFriendList;
+    List<String> userList;
 
     public String friendEmailData = "";
     String userIdFriend = "";
@@ -100,6 +102,8 @@ public class FriendsList extends AppCompatActivity {
         });
 
         friendEmailList = new ArrayList<>();
+        localFriendList = new ArrayList<>();
+        userList = new ArrayList<>();
         friendListRecyclerView = findViewById(R.id.friendsListRecyclerView);
         friendListRecyclerView.setHasFixedSize(true);
         friendListAdapter = new FriendListAdapter(FriendsList.this, friendEmailList);
@@ -134,6 +138,8 @@ public class FriendsList extends AppCompatActivity {
 //                                Log.d("FRIENDLIST", ds2.getKey());
                                 if (ds2.getKey().equals(ds.getKey())) {
                                     friendEmailList.add(ds2.child("email").getValue(String.class));
+                                    localFriendList.add(ds2.child("email").getValue(String.class));
+                                    userList.add(ds2.child("email").getValue(String.class));
                                     friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
                                     friendListAdapter.notifyItemInserted(friendEmailList.size());
 
@@ -212,13 +218,21 @@ public class FriendsList extends AppCompatActivity {
 
                 }
             });
+            // Make sure input isn't blank
             if (createEmailOnData.equals("")) {
+                dialog.dismiss();
                 errorAddFriend();
             }
-
-            // TODO
-            //  Check for duplicates
-
+            // Check if user is already friends with provided user
+            else if (friendEmailList.contains(createEmailOnData)) {
+                dialog.dismiss();
+                errorDuplicateFriend();
+            }
+            // Make sure email provided belongs to valid account
+            else if (!userList.contains(createEmailOnData)) {
+                dialog.dismiss();
+                errorAddInvalidFriend();
+            }
             else {
                 dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -234,7 +248,7 @@ public class FriendsList extends AppCompatActivity {
                         if (!userFound) {
                             errorAddInvalidFriend();
                         }
-                        if (!snapshot.child(String.valueOf(userIdFriend)).exists()) {
+                        else if (!snapshot.child(String.valueOf(userIdFriend)).exists()) {
                             errorAddInvalidFriend();
                         }
                         else {
@@ -271,19 +285,19 @@ public class FriendsList extends AppCompatActivity {
 
     private void cancelAddFriend() {
         dialog.dismiss();
-        Utils.postToast("Add friend cancelled.", FriendsList.this);
+        Utils.postToastLong("Add friend cancelled.", FriendsList.this);
     }
 
     private void errorAddFriend() {
-        Utils.postToast(ADD_FRIEND_ERROR_MSG, FriendsList.this);
+        Utils.postToastLong(ADD_FRIEND_ERROR_MSG, FriendsList.this);
     }
 
     private void errorAddInvalidFriend() {
-        Utils.postToast(ADD__INVALID_FRIEND_ERROR_MSG, FriendsList.this);
+        Utils.postToastLong(ADD__INVALID_FRIEND_ERROR_MSG, FriendsList.this);
     }
 
     private void errorDuplicateFriend() {
-        Utils.postToast(ADD__DUPLICATE_FRIEND_ERROR_MSG, FriendsList.this);
+        Utils.postToastLong(ADD__DUPLICATE_FRIEND_ERROR_MSG, FriendsList.this);
     }
 
     // TODO
