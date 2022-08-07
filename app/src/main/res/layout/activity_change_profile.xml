@@ -63,34 +63,42 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/profile_header">
 
-        <ImageButton
-            android:id="@+id/imageButton_change_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_img_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="20dp"
-            app:srcCompat="@drawable/ic_baseline_person_24" />
+            app:cardCornerRadius="50dp">
 
-        <TextView
-            android:id="@+id/imageButton_text"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="55dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:shadowColor="@color/black"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="10"
-            android:text="click here to \nchange image" />
+            <ImageView
+                android:id="@+id/imageButton_change_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:foreground="@drawable/image_overlay"
+                app:srcCompat="@drawable/default_avatar" />
+
+            <TextView
+                android:id="@+id/imageButton_text"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:shadowColor="@color/black"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="5"
+                android:text="click here to \nchange image" />
+
+        </androidx.cardview.widget.CardView>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
