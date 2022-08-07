@@ -187,34 +187,38 @@ public class Leaderboard extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot ds2 : snapshot.getChildren()) {
                                 if (ds2.getKey().equals(ds.getKey())) {
-                                    if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
-                                        friendEmailList.add(ds2.child("name").getValue(String.class));
-                                        Log.d("FRIENDLIST", ds2.getKey());
-                                        // TODO figure this part out + delete follwing line of code
-                                        friendWeeklyCount.add(String.valueOf(3));
-
-                                        DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
-                                        DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds2.getKey());
-                                        getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                int count = 0;
-                                                for (DataSnapshot ds3 : snapshot.getChildren()) {
-                                                    if (ds3.getKey().equals(date)) {
-                                                        count = ds3.getValue(Integer.class);
-                                                        Log.d("LEADERBOARD", String.valueOf(count));
-                                                        friendWeeklyCount.add(String.valueOf(count));
+                                    try {
+                                        if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
+                                            friendEmailList.add(ds2.child("name").getValue(String.class));
+                                            Log.d("FRIENDLIST", ds2.getKey());
+                                            // TODO figure this part out + delete follwing line of code
+                                            friendWeeklyCount.add(String.valueOf(3));
+                                            DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
+                                            DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds2.getKey());
+                                            Log.d("DEBUG", String.valueOf(db2.child("weeklyOverviews").child(ds2.getKey())));
+                                            getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    int count = 0;
+                                                    for (DataSnapshot ds3 : snapshot.getChildren()) {
+                                                        if (ds3.getKey().equals(date)) {
+                                                            count = ds3.getValue(Integer.class);
+                                                            Log.d("DEBUG", String.valueOf(count));
+                                                            friendWeeklyCount.add(String.valueOf(count));
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                            }
-                                        });
-                                        leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
-                                        leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                                                }
+                                            });
+                                            leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                                            leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                                        }
+                                    } catch (Exception e) {
+                                        Log.d("Error", String.valueOf(e));
                                     }
                                 }
                             }

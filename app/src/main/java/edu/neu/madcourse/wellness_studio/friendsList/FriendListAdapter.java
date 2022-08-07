@@ -73,7 +73,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 //                }
 //            });
 
-            // TODO fix incorrect deletion
+            // TODO make item disappear after deleting friend
             v.findViewById(R.id.deleteFriendButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,10 +90,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                             assert user != null;
                             Log.d("demo", "Current user " + user.userId);
 
-                            DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference dbUserRef = dbRoot.child("users");
-                            DatabaseReference dbCurrentUser = dbRoot.child("users");
-                            dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            DatabaseReference dbRt = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference dbRt2 = FirebaseDatabase.getInstance().getReference();
+
+                            DatabaseReference dbUser = dbRt.child("users");
+                            DatabaseReference dbCurrent = dbRt2.child("users");
+                            dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -110,14 +112,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                 }
                             });
 
-                            dbCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            dbCurrent.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds2 : snapshot.getChildren()) {
                                         if (!Objects.equals(friendId, "") && ds2.getKey().equals(user.userId)) {
                                             Log.d("demo", "Current user " + ds2.child("friends").child(friendId).getValue());
 //
-                                            dbCurrentUser.child(user.userId)
+                                            dbCurrent.child(user.userId)
                                                     .child("friends")
                                                     .child(friendId)
                                                     .removeValue();
@@ -164,8 +166,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                     Log.d("demo", "Current user " + user.userId);
 
                     DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference dbRoot2 = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference dbUserRef = dbRoot.child("users");
-                    DatabaseReference dbCurrentUser = dbRoot.child("users");
+                    DatabaseReference dbCurrentUser = dbRoot2.child("users");
                     dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
