@@ -77,6 +77,9 @@ public class ChangeProfile extends AppCompatActivity {
     // user info
     protected Boolean hasOnlineAccount = false;
 
+    // current week
+    String date;
+
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +124,9 @@ public class ChangeProfile extends AppCompatActivity {
                     return false;
             }
         });
+        // get current week
+        date = UserService.getFirstDayOfWeek();
+
 
         // show username
         usernameInputET.setText(UserService.getNickname(db));
@@ -226,12 +232,18 @@ public class ChangeProfile extends AppCompatActivity {
                                     newUserRef.child("img").setValue(user.profileImg);
                                     newUserRef.child("friends").setValue("");
 
+                                    // Create weeklyOverview field for user
+                                    DatabaseReference dbOverview = FirebaseDatabase.getInstance().getReference();
+                                    DatabaseReference weeklyOverviews = dbOverview.child("weeklyOverviews");
+                                    weeklyOverviews.child(uid).child(date).setValue(0);
+
                                     // Set online ID in local db
                                     user.setUserId(uid);
-                                    UserService.updateUserInfo(db, user);
 
                                     // Log user in online upon account creation
                                     mAuth.signInWithEmailAndPassword(user.email, user.password);
+                                    user.setHasLoggedInOnline(true);
+                                    UserService.updateUserInfo(db, user);
                                 }
 
                                 @Override
