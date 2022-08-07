@@ -117,7 +117,7 @@ public class ChangeProfile extends AppCompatActivity {
         usernameHintTV = findViewById(R.id.username_hint);
 
         // try set profile picture from local storage
-        boolean loadRes = loadImageForProfile();
+        boolean loadRes = UserService.loadImageForProfile(profileImg);
         if (!loadRes) {
             loadImageFromAssets();
         }
@@ -380,20 +380,20 @@ public class ChangeProfile extends AppCompatActivity {
 //        }
     }
 
-    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
-    private boolean loadImageForProfile() {
-        File filepath = Environment.getExternalStorageDirectory();
-        File dir = new File(filepath.getAbsolutePath()
-                + "/WellnessStudio/user_avatar.jpg");
-        if (dir.exists()) {
-            Bitmap bitmap =
-                    BitmapFactory.decodeFile(dir.getAbsolutePath());
-            profileImg.setImageBitmap(bitmap);
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
+//    private boolean loadImageForProfile(ImageView imageView) {
+//        File filepath = Environment.getExternalStorageDirectory();
+//        File dir = new File(filepath.getAbsolutePath()
+//                + "/WellnessStudio/user_avatar.jpg");
+//        if (dir.exists()) {
+//            Bitmap bitmap =
+//                    BitmapFactory.decodeFile(dir.getAbsolutePath());
+//            imageView.setImageBitmap(bitmap);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     // load image from assets/ to profile image view
     private void loadImageFromAssets() {

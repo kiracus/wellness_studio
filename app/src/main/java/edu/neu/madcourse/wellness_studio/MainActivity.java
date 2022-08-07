@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
@@ -110,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         dayOfWeekTV = findViewById(R.id.day_of_week_TV);
         dateTV = findViewById(R.id.date_TV);
         monthTV = findViewById(R.id.month_TV);
+
+//        loadProfileImg(profileBtn);
 
         // set click listeners for buttons
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
@@ -212,27 +217,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // or the nav bar would act very strange
+    // always set selected item, or the nav bar would act very strange
     @Override
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        loadProfileImg(profileBtn);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        int seletedItemId = bottomNavigationView.getSelectedItemId();
-//        if (R.id.nav_home != seletedItemId) {
-//            setHomeItem(MainActivity.this);
-//        } else {
-//            super.onBackPressed();
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                profileBtn.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
+    }
+
+//    // load image from assets/ to profile image view
+//    private void loadImageFromAssets() {
+//        try {
+//            InputStream inputStream = getAssets().open("user_avatar.jpg");
+//            Drawable drawable = Drawable.createFromStream(inputStream, null);
+//            profileBtn.setImageDrawable(drawable);
+//            Log.v(TAG, "load from assets.");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.v(TAG, "can not load picture from assets");
+//            return;
 //        }
-//    }
-//
-//    public static void setHomeItem(Activity activity) {
-//        BottomNavigationView navView = (BottomNavigationView)
-//                activity.findViewById(R.id.bottom_navigation);
-//        navView.setSelectedItemId(R.id.nav_home);
 //    }
 
     // ========   helpers to start new activity  ===================

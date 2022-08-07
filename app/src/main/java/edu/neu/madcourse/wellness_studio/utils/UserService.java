@@ -1,13 +1,18 @@
 package edu.neu.madcourse.wellness_studio.utils;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.lights.Light;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -310,6 +315,22 @@ public class UserService {
         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
         int year = mCalendar.get(Calendar.YEAR);
         return year + "-" + to2CharString(month) + "-" + to2CharString(day);
+    }
+
+
+    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
+    public static boolean loadImageForProfile(ImageView imageView) {
+        File filepath = Environment.getExternalStorageDirectory();
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/user_avatar.jpg");
+        if (dir.exists()) {
+            Bitmap bitmap =
+                    BitmapFactory.decodeFile(dir.getAbsolutePath());
+            imageView.setImageBitmap(bitmap);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
