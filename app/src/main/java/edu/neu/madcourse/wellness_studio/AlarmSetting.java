@@ -108,6 +108,8 @@ public class AlarmSetting extends AppCompatActivity {
                 isSave = !isSave;
                 if (isSave) {
 
+
+
                     Intent intent = new Intent();
                     intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
                     intent.putExtra(WAKEUP_ALARM_KEY_NAME, wakeupAlarmUpdate);
