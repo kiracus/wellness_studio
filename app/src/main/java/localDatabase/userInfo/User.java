@@ -45,6 +45,9 @@ public class User {
     @ColumnInfo(name = "wakeUpAlarm")
     public String wakeUpAlarm;
 
+    @ColumnInfo(name = "exerciseAlarmOn",defaultValue = "false")
+    public Boolean exerciseAlarmOn;
+
     public int getUser_info_id() {
         return user_info_id;
     }
@@ -133,4 +136,7 @@ public class User {
         this.wakeUpAlarm = wakeUpAlarm;
     }
 
+    public Boolean getExerciseAlarmOn() { return exerciseAlarmOn; }
+
+    public void setExerciseAlarmOn(Boolean exerciseAlarmOn) { this.exerciseAlarmOn = exerciseAlarmOn; }
 }

@@ -27,6 +27,7 @@ public class LightExercise {
     @ColumnInfo(name = "exerciseStatus")
     public ExerciseStatus exerciseStatus;
 
+    //refers to the focus area
     @ColumnInfo(name = "currentSet")
     public ExerciseSet currentSet;
 

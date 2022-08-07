@@ -202,8 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
         alarmStatusTV.setText(sleepAlarmStr + "  to  " + wakeupAlarmStr);
 
-
-
     }
 
     // or the nav bar would act very strange
