@@ -37,10 +37,10 @@
         app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@drawable/ic_baseline_person_24" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerForFocusArea"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<!--    <androidx.viewpager2.widget.ViewPager2-->
+<!--        android:id="@+id/viewPagerForFocusArea"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
 
 <!--    <TextView-->
 <!--        android:id="@+id/timeTextView"-->
@@ -110,7 +110,7 @@
         app:layout_constraintVertical_bias="0.975" />
 
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
+        android:id="@+id/horizontalScrollViewToChooseFocusArea"
         android:layout_width="300dp"
         android:layout_height="273dp"
         android:layout_marginBottom="60dp"
@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="110dp"
-                android:text="23:00"
+                android:text="00:00"
                 android:textColor="@color/black"
                 android:textSize="40dp"
                 android:textStyle="bold" />
@@ -218,12 +218,11 @@
             </ImageView>
 
             <ImageView
-                android:id="@+id/setting_dot_lightExercises"
+                android:id="@+id/setting_reminder_lightExercises"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="250dp"
                 android:layout_marginTop="20dp"
-                android:onClick="popTimePicker"
                 app:srcCompat="@drawable/ic_baseline_alarm_24" />
 
 
