@@ -192,10 +192,9 @@ public class Leaderboard extends AppCompatActivity {
                                             friendEmailList.add(ds2.child("name").getValue(String.class));
                                             Log.d("FRIENDLIST", ds2.getKey());
                                             // TODO figure this part out + delete follwing line of code
-                                            friendWeeklyCount.add(String.valueOf(3));
+                                            // friendWeeklyCount.add(String.valueOf(3));
                                             DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
                                             DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds2.getKey());
-                                            Log.d("DEBUG", String.valueOf(db2.child("weeklyOverviews").child(ds2.getKey())));
                                             getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -203,8 +202,9 @@ public class Leaderboard extends AppCompatActivity {
                                                     for (DataSnapshot ds3 : snapshot.getChildren()) {
                                                         if (ds3.getKey().equals(date)) {
                                                             count = ds3.getValue(Integer.class);
-                                                            Log.d("DEBUG", String.valueOf(count));
                                                             friendWeeklyCount.add(String.valueOf(count));
+                                                            leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                                                            leaderboardAdapter.notifyItemInserted(friendEmailList.size());
                                                         }
                                                     }
                                                 }
@@ -214,11 +214,10 @@ public class Leaderboard extends AppCompatActivity {
 
                                                 }
                                             });
-                                            leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
-                                            leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+
                                         }
                                     } catch (Exception e) {
-                                        Log.d("Error", String.valueOf(e));
+                                        Log.d("Error populating leaderboard", String.valueOf(e));
                                     }
                                 }
                             }
