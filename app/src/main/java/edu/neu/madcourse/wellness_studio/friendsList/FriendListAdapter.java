@@ -78,6 +78,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+                    Log.d("POSITION TO BEGIN", String.valueOf(pos));
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Are you sure you wish to delete this friend?");
 
@@ -99,9 +101,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds : snapshot.getChildren()) {
-                                        if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
-                                            friendId = ds.getKey();
-                                            Log.d("demo", "ID OF USER TO DELETE " + friendId);
+                                        try {
+                                            if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
+                                                friendId = ds.getKey();
+                                                Log.d("demo", "ID OF USER TO DELETE " + friendId);
+                                            }
+                                        } catch (Exception e){
+
                                         }
                                     }
                                 }
@@ -123,6 +129,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                     .child("friends")
                                                     .child(friendId)
                                                     .removeValue();
+                                            friendsList.remove(pos);
+                                            notifyItemRemoved(pos);
+                                            notifyItemRangeRemoved(pos, friendsList.size());
+                                            dialog.dismiss();
+
                                         }
                                     }
                                 }
@@ -132,7 +143,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
                                 }
                             });
-                            dialog.dismiss();
+                            Log.d("POSITION TO DELETE", String.valueOf(pos));
+
                         }
                     });
 
@@ -225,7 +237,5 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         public void bindThisData(String thePersonToBind) {
             friendEmail.setText(thePersonToBind);
         }
-
-
     }
 }
