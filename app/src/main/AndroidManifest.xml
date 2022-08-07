@@ -3,7 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="edu.neu.madcourse.wellness_studio">
 
+
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+
 
     <application
         android:allowBackup="true"
@@ -57,10 +62,16 @@
         <activity android:name=".AlarmSetting">
 
         </activity>
+        
+        <activity android:name=".WakeupAlarmRingActivity"/>
 
         <receiver android:name=".lightExercises.AlarmReceiver"/>
 
         <receiver android:name=".lightExercises.AlarmReceiver" />
+
+        <receiver android:name=".AlarmWakeupReceiver"/>
+        <receiver android:name=".AlarmSleepReceiver"/>
+        <service android:name=".AlarmService" />
 
     </application>
 

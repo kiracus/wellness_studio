@@ -3,6 +3,7 @@ package edu.neu.madcourse.wellness_studio.lightExercises;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -31,6 +32,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import java.sql.Date;
@@ -40,9 +42,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
+<<<<<<< HEAD
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
+=======
+import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
+import edu.neu.madcourse.wellness_studio.profile.Profile;
+>>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
@@ -51,8 +60,15 @@ import localDatabase.userInfo.User;
 import localDatabase.userInfo.UserDao;
 
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
+<<<<<<< HEAD
     private String TAG = "LightExercises";
     AppDatabase db;
+=======
+    // for testing
+    private final static String TAG = "exercise";
+
+    AppDatabase appDatabase;
+>>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
     int hour, min = -1;
     int currentStep = 0;
 
@@ -61,8 +77,13 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     ImageView armImageView;
     ImageView backImageView;
     ImageView legImageView;
+<<<<<<< HEAD
     HorizontalScrollView scrollViewForFocusedArea;
     HashMap<Integer, Boolean> stepProgressCompletion = new HashMap<Integer, Boolean>();
+=======
+    ImageView profileImageView;
+    BottomNavigationView bottomNavigationView;
+>>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 
     ImageView setting_reminder_lightExercises;
 
@@ -70,6 +91,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     PendingIntent pendingIntent;
     AlarmManager alarmManager;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +122,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         String exerciseAlarm = UserService.getExerciseReminderAlarm(db);
         Boolean exerciseAlarmOn = UserService.getExerciseAlarmOn(db);
 
+<<<<<<< HEAD
         if (lightExercise == null) {
             Log.d("myApp", "db is null");
             UserService.createNewLightExercise(db);
@@ -132,6 +155,38 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 timeTextView.setText(time);
                 setAlarm();
             }
+=======
+        profileImageView = findViewById(R.id.imageView_profile);
+        profileImageView.setOnClickListener(v -> goToProfile());
+
+        // set bottom nav bar
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_exercise);
+        bottomNavigationView.getMenu().findItem(R.id.nav_exercise).setEnabled(false);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    goToHome();
+                    return true;
+                case R.id.nav_exercise:
+                    return false;
+                case R.id.nav_sleep:
+                    goToSleepGoal();
+                    return true;
+                case R.id.nav_leaderboard:
+                    goToLeaderboard();
+                    return true;
+                default:
+                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    return false;
+            }
+        });
+
+        stateProgressBar.setStateDescriptionData(new String[]{"Step 1", "Step 2", "Step 3", "Step 4"});
+        while (currentStep <= 4) {
+            setStateProgressBar();
+            currentStep++;
+>>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
         }
 
     }
@@ -331,5 +386,23 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 Utils.postToast("All sets completed for today!", getApplicationContext());
             }
         });
+    }
+
+    // helpers for launching activities
+    private void goToLeaderboard() {
+        startActivity(new Intent(LightExercises.this, Leaderboard.class));
+    }
+
+    private void goToSleepGoal() {
+        startActivity(new Intent(LightExercises.this, WakeupSleepGoal.class));
+    }
+
+    private void goToHome() {
+        startActivity(new Intent(LightExercises.this, MainActivity.class));
+    }
+
+    private void goToProfile() {
+        Log.v(TAG, "go to profile called");
+        startActivity(new Intent(LightExercises.this, Profile.class));
     }
 }

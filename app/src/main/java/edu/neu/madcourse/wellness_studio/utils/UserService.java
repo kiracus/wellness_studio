@@ -2,11 +2,20 @@ package edu.neu.madcourse.wellness_studio.utils;
 
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import android.hardware.lights.Light;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
@@ -107,10 +116,10 @@ public class UserService {
     public static LightExercise getLightExerciseByDate(AppDatabase db, String dateInput) {
         LightExercise le =  db.lightExerciseDao().getLightExerciseByDate(dateInput);
         if (le == null) {
-            Log.v(TAG, "no le log for today, creating one");
+            //Log.v(TAG, "no le log for today, creating one");
             le = createNewLightExercise(db, dateInput);
         }
-        Log.v(TAG, "returning le obj of date: " + le.date);
+        //Log.v(TAG, "returning le obj of date: " + le.date);
         return le;
     }
 
@@ -143,10 +152,10 @@ public class UserService {
             le.setStepThreeCompleted(false);
             le.setStepFourCompleted(false);
             db.lightExerciseDao().insertLightExercise(le);
-            Log.v(TAG, "new le obj created for date: " + date);
+            //Log.v(TAG, "new le obj created for date: " + date);
         } else {
             le = getLightExerciseByDate(db, date);
-            Log.v(TAG, "CANNOT CREATE -> le obj already exists on: " + date);
+            //Log.v(TAG, "CANNOT CREATE -> le obj already exists on: " + date);
         }
 
         return le;
@@ -166,7 +175,7 @@ public class UserService {
 
     public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "update status: " + status.toString());
+            //Log.v(TAG, "update status: " + status.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(status, date);
         }
     }
@@ -190,10 +199,10 @@ public class UserService {
     // get a list of dates(yyyy-mm-dd) when le goal is finished in given month
     public static List<String> getFinishedDatesOfMonth(AppDatabase db, String yearMonth) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "looking for dates finished in month: " + yearMonth);
+            //Log.v(TAG, "looking for dates finished in month: " + yearMonth);
             return db.lightExerciseDao().getFinishedDatesOfMonth(yearMonth+"%");
         } else {
-            Log.v(TAG, "no available le data in month: " + yearMonth);
+            //Log.v(TAG, "no available le data in month: " + yearMonth);
             return null;
         }
     }
@@ -202,10 +211,13 @@ public class UserService {
     public static Boolean getGoalFinishedByDate(AppDatabase db, String date) {
         Boolean res = db.lightExerciseDao().getGoalFinishedByDate(date);
         if (res == null) {
+            // no record for that day so create one
+            createNewLightExercise(db, date);
             return false;
         } else return res;
     }
 
+<<<<<<< HEAD
     public static String getExerciseReminderAlarm(AppDatabase db) {
         String res = db.userDao().getExerciseReminderAlarm();
         if (res == null) {
@@ -233,6 +245,30 @@ public class UserService {
             db.userDao().setExerciseAlarmOn(exerciseAlarmOn);
         }
     }
+=======
+    public static int getWeeklyFinishedCount(AppDatabase db) {
+        Calendar mCalendar = Calendar.getInstance();
+        int counts = 0;
+        for (int i = 1; i < 8; i++) {  // count from day 1 of this week to day 7
+            mCalendar.set(Calendar.DAY_OF_WEEK, i);
+            int month = mCalendar.get(Calendar.MONTH) + 1;
+            int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+            int year = mCalendar.get(Calendar.YEAR);
+            String dayKey = year + "-" + to2CharString(month) + "-" + to2CharString(day);
+            if (UserService.getGoalFinishedByDate(db, dayKey)) {  // should not be null
+                counts++;
+            }
+            Log.v(TAG, "checking goal status on " + dayKey + ", current counts: " + counts);
+        }
+        return counts;
+    }
+
+    // transfer an integer to a 2-char string, add 0 before single digit number
+    private static String to2CharString(int num) {
+        return num<10 ? "0"+num : ""+num;
+    }
+
+>>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
     // ================================================
     // =============   sleep goal   ===============
 
@@ -279,8 +315,35 @@ public class UserService {
 
     // update online db when goal is finished for some date
     // will be called from profile and the light exercise
-    public static void updateWeeklyExerciseCounts(String uid, int counts) {
-        // TODO
+    public static void updateWeeklyCounts(AppDatabase db, int counts) {
+        String uid = db.userDao().getUID();
+        DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference dbWeekRef = dbRoot.child("weeklyOverviews").child(uid);
+        String dateKey = getFirstDayOfWeek();
+
+        dbWeekRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dbWeekRef.child(dateKey).setValue(counts);
+                Log.v(TAG, "online counts for week " + dateKey + " is updated to : " + counts);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "updateWeeklyCounts onCancelled error: " + error);
+            }
+        });
+
+    }
+
+    // return the first day of current week in string form yyyy-mm-dd
+    public static String getFirstDayOfWeek() {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.DAY_OF_WEEK, 1);
+        int month = mCalendar.get(Calendar.MONTH) + 1;
+        int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+        int year = mCalendar.get(Calendar.YEAR);
+        return year + "-" + to2CharString(month) + "-" + to2CharString(day);
     }
 
 }
