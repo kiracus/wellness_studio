@@ -70,6 +70,11 @@
         app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintBottom_toTopOf="@id/horizontalScrollView">
 
+<!--    <androidx.viewpager2.widget.ViewPager2-->
+<!--        android:id="@+id/viewPagerForFocusArea"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -202,7 +207,7 @@
     </androidx.cardview.widget.CardView>
 
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
+        android:id="@+id/horizontalScrollViewToChooseFocusArea"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/progress_bar_container"
@@ -326,6 +331,28 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintVertical_bias="0.07" />-->
 
+            <TextView
+                android:id="@+id/light_exercises_alarm_TxtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/light_exercises_alarm_TxtView"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold">
+            </TextView>
+
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="110dp"
+                android:text="00:00"
+                android:textColor="@color/black"
+                android:textSize="40dp"
+                android:textStyle="bold" />
 
 <!--    <ImageView-->
 <!--        android:id="@+id/profile_image"-->
@@ -371,6 +398,26 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:text="Switch"-->
 <!--         />-->
+
+            <ImageView
+                android:id="@+id/setting_reminder_lightExercises"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="250dp"
+                android:layout_marginTop="20dp"
+                app:srcCompat="@drawable/ic_baseline_alarm_24" />
+
+
+            <Switch
+                android:id="@+id/reminderSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/light_exercises_alarm_switch_button"
+                android:layout_marginLeft="240dp"
+                android:layout_marginTop="120dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
 
 
