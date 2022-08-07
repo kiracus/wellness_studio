@@ -47,7 +47,6 @@ public interface UserDao {
     @Query("SELECT hasLoggedInOnline FROM UserInfoTable LIMIT 1")
     Boolean getOnlineStatus();
 
-<<<<<<< HEAD
     // update to reminder by date
     @Query("UPDATE UserInfoTable SET exerciseAlarm = :exerciseAlarm")
     void setExerciseAlarm(String exerciseAlarm);
@@ -57,9 +56,8 @@ public interface UserDao {
 
     @Query("UPDATE UserInfoTable SET exerciseAlarmOn = :exerciseAlarmOn")
     void setExerciseAlarmOn(Boolean exerciseAlarmOn);
-=======
+
     @Query("SELECT userId FROM userinfotable LIMIT 1")
     String getUID();
 
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 }

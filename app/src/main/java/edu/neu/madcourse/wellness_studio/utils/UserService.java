@@ -217,7 +217,6 @@ public class UserService {
         } else return res;
     }
 
-<<<<<<< HEAD
     public static String getExerciseReminderAlarm(AppDatabase db) {
         String res = db.userDao().getExerciseReminderAlarm();
         if (res == null) {
@@ -245,7 +244,7 @@ public class UserService {
             db.userDao().setExerciseAlarmOn(exerciseAlarmOn);
         }
     }
-=======
+
     public static int getWeeklyFinishedCount(AppDatabase db) {
         Calendar mCalendar = Calendar.getInstance();
         int counts = 0;
@@ -268,7 +267,6 @@ public class UserService {
         return num<10 ? "0"+num : ""+num;
     }
 
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
     // ================================================
     // =============   sleep goal   ===============
 

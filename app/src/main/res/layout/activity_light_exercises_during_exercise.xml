@@ -127,43 +127,6 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <com.kofigyan.stateprogressbar.StateProgressBar
-        android:id="@+id/light_exercises_state_progress_bar_during_exercise"
-        android:layout_width="365dp"
-        android:layout_height="36dp"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/progressTxtView"
-        app:layout_constraintEnd_toEndOf="@+id/progressTxtView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/progressTxtView"
-        app:layout_constraintVertical_bias="0.468"
-        app:spb_animateToCurrentProgressState="true"
-        app:spb_checkStateCompleted="true"
-        app:spb_currentStateDescriptionColor="#0F9D58"
-        app:spb_currentStateNumber="one"
-        app:spb_maxStateNumber="four"
-        app:spb_stateBackgroundColor="#BDBDBD"
-        app:spb_stateDescriptionColor="#808080"
-        app:spb_stateForegroundColor="#0F9D58"
-        app:spb_stateNumberBackgroundColor="#808080"
-        app:spb_stateNumberForegroundColor="#eeeeee" />
-
-    <TextView
-        android:id="@+id/progressTxtView"
-        android:layout_width="376dp"
-        android:layout_height="108dp"
-        android:background="@drawable/border"
-        android:lines="4"
-        android:text="Today's Progress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.542"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.902" />
-
     <CheckBox
         android:id="@+id/exerciseCompletecheckBox"
         android:layout_width="wrap_content"

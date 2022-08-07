@@ -44,14 +44,11 @@ import java.util.Locale;
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-<<<<<<< HEAD
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
-=======
 import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
@@ -60,15 +57,8 @@ import localDatabase.userInfo.User;
 import localDatabase.userInfo.UserDao;
 
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
-<<<<<<< HEAD
     private String TAG = "LightExercises";
     AppDatabase db;
-=======
-    // for testing
-    private final static String TAG = "exercise";
-
-    AppDatabase appDatabase;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
     int hour, min = -1;
     int currentStep = 0;
 
@@ -77,14 +67,10 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
     ImageView armImageView;
     ImageView backImageView;
     ImageView legImageView;
-<<<<<<< HEAD
     HorizontalScrollView scrollViewForFocusedArea;
     HashMap<Integer, Boolean> stepProgressCompletion = new HashMap<Integer, Boolean>();
-=======
     ImageView profileImageView;
     BottomNavigationView bottomNavigationView;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
-
     ImageView setting_reminder_lightExercises;
 
     StateProgressBar stateProgressBar;
@@ -122,14 +108,13 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         String exerciseAlarm = UserService.getExerciseReminderAlarm(db);
         Boolean exerciseAlarmOn = UserService.getExerciseAlarmOn(db);
 
-<<<<<<< HEAD
         if (lightExercise == null) {
             Log.d("myApp", "db is null");
             UserService.createNewLightExercise(db);
         }
         //set existing progress to light exercise activity
         else {
-            if(currentSet != null) {
+            if (currentSet != null) {
                 // Scrolling to the focused set, can't be on main thread, won't work
                 scrollViewForFocusedArea.post(new Runnable() {
                     @Override
@@ -139,23 +124,24 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                     }
                 });
             }
-            if(!lightExercise.getExerciseStatus().equals(ExerciseStatus.NOT_STARTED)) {
+            if (!lightExercise.getExerciseStatus().equals(ExerciseStatus.NOT_STARTED)) {
                 //load progress bar with completed steps
-                getStepProgressCompletion(lightExercise.getStepOneCompleted(), lightExercise.getStepTwoCompleted(), lightExercise.getStepThreeCompleted(),lightExercise.getStepFourCompleted());
-                if(stepProgressCompletion!= null) {
+                getStepProgressCompletion(lightExercise.getStepOneCompleted(), lightExercise.getStepTwoCompleted(), lightExercise.getStepThreeCompleted(), lightExercise.getStepFourCompleted());
+                if (stepProgressCompletion != null) {
                     setProgressBarProgress();
                 }
             }
-            if(exerciseAlarmOn != null) {
+            if (exerciseAlarmOn != null) {
                 reminderSwitch.setChecked(exerciseAlarmOn);
             }
-            if(!exerciseAlarm.equals("--:--") && exerciseAlarmOn) {
+            if (!exerciseAlarm.equals("--:--") && exerciseAlarmOn) {
                 convertMiliSecondsToHourAndMin(Long.parseLong(exerciseAlarm));
-                String time  = String.format(Locale.getDefault(),"%02d:%02d",hour,min);
+                String time = String.format(Locale.getDefault(), "%02d:%02d", hour, min);
                 timeTextView.setText(time);
                 setAlarm();
             }
-=======
+        }
+
         profileImageView = findViewById(R.id.imageView_profile);
         profileImageView.setOnClickListener(v -> goToProfile());
 
@@ -181,14 +167,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                     return false;
             }
         });
-
-        stateProgressBar.setStateDescriptionData(new String[]{"Step 1", "Step 2", "Step 3", "Step 4"});
-        while (currentStep <= 4) {
-            setStateProgressBar();
-            currentStep++;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
-        }
-
     }
 
     private void scrollToCurrentSet(ExerciseSet currentSet) {
