@@ -166,7 +166,7 @@ public class FriendsList extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dss: snapshot.getChildren()) {
-                    userList.add(dss.getKey());
+                    userList.add(dss.child("email").getValue(String.class));
                 }
             }
 
@@ -281,10 +281,7 @@ public class FriendsList extends AppCompatActivity {
 
                     }
                 });
-
             }
-
-
         });
         cancelAddFriendButton.setOnClickListener(v -> cancelAddFriend());
     }

@@ -198,14 +198,13 @@ public class Leaderboard extends AppCompatActivity {
                                         getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                int count;
+                                                int count = 0;
                                                 for (DataSnapshot ds3 : snapshot.getChildren()) {
-                                                    Log.d("FRIENDLIST", date);
-                                                    count = ds3.getValue(Integer.class);
-                                                    Log.d("FRIENDLIST", String.valueOf(count));
-
-                                                    friendWeeklyCount.add(String.valueOf(count));
-
+                                                    if (ds3.getKey().equals(date)) {
+                                                        count = ds3.getValue(Integer.class);
+                                                        Log.d("LEADERBOARD", String.valueOf(count));
+                                                        friendWeeklyCount.add(String.valueOf(count));
+                                                    }
                                                 }
                                             }
 
