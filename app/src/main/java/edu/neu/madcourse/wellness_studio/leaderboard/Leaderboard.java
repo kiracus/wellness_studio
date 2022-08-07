@@ -147,14 +147,10 @@ public class Leaderboard extends AppCompatActivity {
         int dayEnd = mCalendar.get(Calendar.DAY_OF_MONTH);
         int yearEnd = mCalendar.get(Calendar.YEAR);
 
-//        currentWeek.setText("Week from " + monthStart + "-" + dayStart + "-" + yearStart + " to " +
-//                monthEnd + "-" + dayEnd + "-" + yearEnd);
-
         currentWeek.setText(monthStart + " / " + dayStart + " / " + yearStart + "  to  " +
                 monthEnd + " / " + dayEnd + " / " + yearEnd);
 
         date = UserService.getFirstDayOfWeek();
-        Log.d("FRIENDLIST", date);
 
         // Instantiate array lists
         friendEmailList = new ArrayList<>();
@@ -170,73 +166,69 @@ public class Leaderboard extends AppCompatActivity {
 
         // Populate lists with cloud data
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(user.userId).child("friends");
-
-        dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // friendEmailList.clear();
-                for (DataSnapshot ds: snapshot.getChildren()) {
-//                    Log.d("FRIENDLIST", "key + ");
-//                    Log.d("FRIENDLIST", ds.getKey());
-
-                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference allUsers = db.child("users");
-                    allUsers.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds2 : snapshot.getChildren()) {
-                                if (ds2.getKey().equals(ds.getKey())) {
-                                    try {
-                                        if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
-                                            friendEmailList.add(ds2.child("name").getValue(String.class));
-                                            Log.d("FRIENDLIST", ds2.getKey());
-                                            // TODO figure this part out + delete follwing line of code
-                                            // friendWeeklyCount.add(String.valueOf(3));
-                                            DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
-                                            DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds2.getKey());
-                                            getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    int count = 0;
-                                                    for (DataSnapshot ds3 : snapshot.getChildren()) {
-                                                        if (ds3.getKey().equals(date)) {
-                                                            count = ds3.getValue(Integer.class);
-                                                            friendWeeklyCount.add(String.valueOf(count));
-                                                            leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
-                                                            leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+        try {
+            DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(user.userId).child("friends");
+            dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+//
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference allUsers = db.child("users");
+                        allUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds2 : snapshot.getChildren()) {
+                                    if (ds2.getKey().equals(ds.getKey())) {
+                                        try {
+                                            if (ds.child("shareTo").getValue(Boolean.class).equals(true)) {
+                                                DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
+                                                DatabaseReference getCounts = db2.child("weeklyOverviews").child(ds.getKey());
+                                                getCounts.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        int count = 0;
+                                                        for (DataSnapshot ds3 : snapshot.getChildren()) {
+                                                            if (ds3.getKey().equals(date)) {
+                                                                count = ds3.getValue(Integer.class);
+                                                                friendEmailList.add(ds2.child("name").getValue(String.class));
+                                                                friendWeeklyCount.add(String.valueOf(count));
+                                                                leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                                                                leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                                                            }
                                                         }
                                                     }
-                                                }
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                }
-                                            });
+                                                    }
+                                                });
 
+                                            }
+                                        } catch (Exception e) {
+                                            Log.d("Error populating leaderboard", String.valueOf(e));
                                         }
-                                    } catch (Exception e) {
-                                        Log.d("Error populating leaderboard", String.valueOf(e));
                                     }
                                 }
                             }
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
 
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        } catch (Exception e){
+            Log.d("Error d/t no online account", String.valueOf(e));
+        }
     }
+
 
     public void createLoginDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
