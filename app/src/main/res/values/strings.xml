@@ -19,12 +19,12 @@
     <string name="light_exercises_guide">Swipe and choose a set to start.</string>
     <string name="during_exercises_guide">Swipe to check next step.</string>
     <string name="light_exercises_alarm_switch_button">ON</string>
-<!--    <string name=""></string>-->
+    <!--    <string name=""></string>-->
     <string name="light_exercises_alarm_TxtView">WORKOUT</string>
     <string name="progressTxtView">Progress of Today</string>
 
 
-<!--    bottom navigations-->
+    <!--    bottom navigations-->
     <string name="home">Home</string>
     <string name="exercise">Exercise</string>
     <string name="sleep">Sleep</string>

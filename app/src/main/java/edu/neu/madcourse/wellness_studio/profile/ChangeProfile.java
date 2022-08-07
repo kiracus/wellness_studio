@@ -1,17 +1,26 @@
 package edu.neu.madcourse.wellness_studio.profile;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +34,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
@@ -49,16 +65,17 @@ public class ChangeProfile extends AppCompatActivity {
     protected final static String AUTH_INFO_SAVED = "Saved successfully.";
     protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later";
 
-
     // VI
-    ImageButton profileImgBtn, saveBtn, cancelBtn;
+    ImageButton saveBtn, cancelBtn;
     EditText usernameInputET, emailInputET, passwordInputET;
     TextView usernameHintTV;
     BottomNavigationView bottomNavigationView;
+    ImageView profileImg;
 
     // db
     protected AppDatabase db;
     protected User user;
+    protected OutputStream outputStream;
 
     // Cloud
     DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
@@ -90,7 +107,7 @@ public class ChangeProfile extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // get VI components
-        profileImgBtn = findViewById(R.id.imageButton_change_img);
+        profileImg = findViewById(R.id.imageButton_change_img);
         saveBtn = findViewById(R.id.imageButton_save);
         cancelBtn = findViewById(R.id.imageButton_cancel);
 
@@ -98,6 +115,12 @@ public class ChangeProfile extends AppCompatActivity {
         emailInputET = findViewById(R.id.email_input_ET);
         passwordInputET = findViewById(R.id.password_input_ET);
         usernameHintTV = findViewById(R.id.username_hint);
+
+        // try set profile picture from local storage
+        boolean loadRes = loadImageForProfile();
+        if (!loadRes) {
+            loadImageFromAssets();
+        }
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         // set bottom nav, should have no activated item
@@ -144,17 +167,14 @@ public class ChangeProfile extends AppCompatActivity {
 
 
         // select image, process img and save in local, show img, flag img changed
-        profileImgBtn.setOnClickListener(new View.OnClickListener() {
+        profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.v(TAG, "you are clicking the change profile img button");
                 // show prompt to select new img
-
-                // process img to 100*100
-
-                // save img in local
-
-                // img changed flag on
-                hasChangedImg = true;
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 3);  // call onActivityResult
             }
         });
 
@@ -183,10 +203,15 @@ public class ChangeProfile extends AppCompatActivity {
                     emailInput = emailInputET.getText().toString();
                     passwordInput = passwordInputET.getText().toString();
 
-                    if (emailInput.equals("") && passwordInput.equals("")) {
+                    Log.v(TAG, "[" + emailInput + "]");
+                    Log.v(TAG, passwordInput);
+
+                    if (emailInput.matches("") && passwordInput.matches("")) {
                         // no input, ignore
-                    } else if (emailInput.equals("") || passwordInput.equals("")) {
+                        Log.v(TAG, "both empty");
+                    } else if (emailInput.matches("") || passwordInput.matches("")) {
                         // only one has input
+                        Log.v(TAG, "one empty");
                         Utils.postToast(MISS_INFO_TOAST, ChangeProfile.this);
                     } else {  // both have input, check if valid
                         if (!Utils.checkValidEmail(emailInput) || !Utils.checkValidPassword(passwordInput)) {
@@ -243,21 +268,23 @@ public class ChangeProfile extends AppCompatActivity {
                     }
                 }
 
-                // Write to cloud
-                UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // can change, update everytime profile data saved
-                        DatabaseReference saveUser = UsersRef.child(user.userId);
-                        saveUser.child("name").setValue(user.nickname);
-                        saveUser.child("img").setValue(user.profileImg);
-                    }
+                // if user is online, Write to cloud
+                if (UserService.getOnlineStatus(db)) {
+                    UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            // can change, update everytime profile data saved
+                            DatabaseReference saveUser = UsersRef.child(user.userId);
+                            saveUser.child("name").setValue(user.nickname);
+                            saveUser.child("img").setValue(user.profileImg);
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
 
                 // update local use info
                 UserService.updateUserInfo(db, user);
@@ -278,6 +305,108 @@ public class ChangeProfile extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            Uri selectedImg = data.getData();
+            profileImg.setImageURI(selectedImg);  // show selected img
+            Log.v(TAG, "have set new img");
+
+            // get bitmap then save it to local storage
+            try {
+                Bitmap bitmap =
+                        MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImg);
+                saveImg(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // img changed flag on
+            hasChangedImg = true;
+        }
+    }
+
+    private void saveImg(Bitmap bitmap) {
+        OutputStream output;
+        String recentImageInCache;
+        File filepath = Environment.getExternalStorageDirectory();
+
+        // Create a new folder in SD Card
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/");
+        boolean res = dir.mkdirs();
+        Log.v(TAG, "mkdir result: " + res);
+
+        // Create a name for the saved image
+        File file = new File(dir, "user_avatar.jpg");
+        try {
+            output = new FileOutputStream(file);
+            Log.v(TAG, "image saved to internal storage");
+            // Compress into png format image from 0% - 100%
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+            output.flush();
+            output.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Log.v(TAG, "error when saving image");
+        }
+
+
+//        String filename = System.currentTimeMillis() + ".jpg";
+//        File filepath = Environment.getExternalStorageDirectory();
+//        File dir = new File(filepath.getAbsolutePath() + "/Wellness_profile/");
+//        Boolean res = dir.mkdir();
+//        Log.v(TAG, res+"");
+//        if (res) {
+//            try {
+//                outputStream = new FileOutputStream(new File(dir, filename));
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            assert bitmap != null;
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//            Log.v(TAG, "image saved to internal storage");
+//            try {
+//                outputStream.flush();
+//                outputStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+    }
+
+    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
+    private boolean loadImageForProfile() {
+        File filepath = Environment.getExternalStorageDirectory();
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/user_avatar.jpg");
+        if (dir.exists()) {
+            Bitmap bitmap =
+                    BitmapFactory.decodeFile(dir.getAbsolutePath());
+            profileImg.setImageBitmap(bitmap);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // load image from assets/ to profile image view
+    private void loadImageFromAssets() {
+        try {
+            InputStream inputStream = getAssets().open("user_avatar.jpg");
+            Drawable drawable = Drawable.createFromStream(inputStream, null);
+            profileImg.setImageDrawable(drawable);
+            Log.v(TAG, "load from assets.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.v(TAG, "can not load picture from assets");
+            return;
+        }
     }
 
     // ========   helpers to start new activity  ===================
