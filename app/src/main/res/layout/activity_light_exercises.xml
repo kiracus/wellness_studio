@@ -25,12 +25,12 @@
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Light Exercises"
                 android:background="@color/blue"
-                app:titleTextColor="@color/white"
                 android:paddingStart="30dp"
                 android:paddingEnd="10dp"
-                android:theme="@style/AppTheme.AppBarOverlay" />
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:title="Light Exercises"
+                app:titleTextColor="@color/white" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.cardview.widget.CardView
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:layout_constraintTop_toBottomOf="@id/header_title"
-        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView">
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollViewToChooseFocusArea">
 
 <!--    <androidx.viewpager2.widget.ViewPager2-->
 <!--        android:id="@+id/viewPagerForFocusArea"-->
@@ -106,7 +106,7 @@
                     android:layout_weight="1" />
 
                 <ImageView
-                    android:id="@+id/setting_dot_lightExercises"
+                    android:id="@+id/setting_reminder_lightExercises"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="20dp"
@@ -128,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
                     android:layout_marginStart="40dp"
-                    android:text="23:00"
+                    android:text="00:00"
                     android:textColor="@color/black"
                     android:textSize="40sp"
                     android:textStyle="bold" />
@@ -153,56 +153,6 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/light_exercises_alarm_TxtView"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginStart="70dp"-->
-        <!--                android:layout_marginTop="20dp"-->
-        <!--                android:text="@string/light_exercises_alarm_TxtView"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="25sp"-->
-        <!--                android:textStyle="bold">-->
-        <!--            </TextView>-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/timeTextView"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginLeft="50dp"-->
-        <!--                android:layout_marginTop="110dp"-->
-        <!--                android:text="23:00"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="40dp"-->
-        <!--                android:textStyle="bold" />-->
-
-        <!--            <ImageView-->
-        <!--                android:layout_width="50dp"-->
-        <!--                android:layout_height="50dp"-->
-        <!--                android:layout_marginLeft="10dp"-->
-        <!--                android:layout_marginTop="10dp"-->
-        <!--                app:srcCompat="@drawable/ic_baseline_exercise_24" />-->
-
-        <!--            <ImageView-->
-        <!--                android:id="@+id/setting_dot_lightExercises"-->
-        <!--                android:layout_width="50dp"-->
-        <!--                android:layout_height="50dp"-->
-        <!--                android:layout_marginLeft="250dp"-->
-        <!--                android:layout_marginTop="20dp"-->
-        <!--                android:onClick="popTimePicker"-->
-        <!--                app:srcCompat="@drawable/ic_baseline_alarm_24" />-->
-
-        <!--            <Switch-->
-        <!--                android:id="@+id/reminderSwitch"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="@string/light_exercises_alarm_switch_button"-->
-        <!--                android:layout_marginLeft="240dp"-->
-        <!--                android:layout_marginTop="120dp"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="20sp"-->
-        <!--                android:textStyle="bold" />-->
 
     </androidx.cardview.widget.CardView>
 
@@ -257,7 +207,7 @@
         android:textColor="@color/deep_blue"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/alarm_cardView"
-        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollViewToChooseFocusArea"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -265,7 +215,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/progress_bar_container"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollViewToChooseFocusArea"
         app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
         android:orientation="vertical">
 
@@ -315,110 +265,4 @@
             app:labelVisibilityMode="labeled"/>
 
     </LinearLayout>
-
-<!--    <TextView-->
-<!--        android:id="@+id/light_exercies_title_txtView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/light_exercises_title"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="25sp"-->
-<!--        android:textStyle="bold"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.189"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.07" />-->
-
-            <TextView
-                android:id="@+id/light_exercises_alarm_TxtView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/light_exercises_alarm_TxtView"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold">
-            </TextView>
-
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="110dp"
-                android:text="00:00"
-                android:textColor="@color/black"
-                android:textSize="40dp"
-                android:textStyle="bold" />
-
-<!--    <ImageView-->
-<!--        android:id="@+id/profile_image"-->
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_margin="20dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.6"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/light_exercies_title_txtView"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.022"-->
-<!--        app:srcCompat="@drawable/ic_baseline_person_24" />-->
-
-<!--    <androidx.viewpager2.widget.ViewPager2-->
-<!--        android:id="@+id/viewPagerForFocusArea"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/timeTextView"-->
-<!--        android:layout_width="205dp"-->
-<!--        android:layout_height="93dp"-->
-<!--        android:text="Reminder"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.184"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.197" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/button"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="12dp"-->
-    <!--            android:onClick="popTimePicker"-->
-    <!--            android:text="Button" />-->
-
-<!--        <Switch-->
-<!--        android:id="@+id/reminderSwitch"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Switch"-->
-<!--         />-->
-
-            <ImageView
-                android:id="@+id/setting_reminder_lightExercises"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="250dp"
-                android:layout_marginTop="20dp"
-                app:srcCompat="@drawable/ic_baseline_alarm_24" />
-
-
-            <Switch
-                android:id="@+id/reminderSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/light_exercises_alarm_switch_button"
-                android:layout_marginLeft="240dp"
-                android:layout_marginTop="120dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-<<<<<<< HEAD
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
@@ -22,18 +21,12 @@ import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import java.sql.Array;
 import java.util.HashMap;
-=======
 import android.widget.ImageButton;
 import android.widget.ImageView;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
-
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-<<<<<<< HEAD
 import edu.neu.madcourse.wellness_studio.utils.Utils;
-=======
 import edu.neu.madcourse.wellness_studio.profile.Profile;
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 import localDatabase.enums.ExerciseSet;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -107,7 +100,6 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         return focusArea;
     }
 
-<<<<<<< HEAD
     //load exercise based on user chosen focus area
     public void loadExerciseSets(ExerciseSet focusArea) {
         if (focusArea == ExerciseSet.ARM) {
@@ -257,7 +249,6 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         }
         sendAnIntentForProgressbar(currentSetPosition);
     }
-=======
 
     // helper to launch activities
     private void goToLightExercise() {
@@ -267,6 +258,4 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
     private void goToProfile() {
         startActivity(new Intent(LightExercises_DuringExercise.this, Profile.class));
     }
-
->>>>>>> b13536133be86f5b2cd3bdbb99ca6475eedfeda5
 }
