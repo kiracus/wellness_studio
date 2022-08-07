@@ -44,7 +44,7 @@ public class WakeupAlarmRingActivity extends AppCompatActivity {
                 int wakeupAlarmHour, wakeupAlarmMin;
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.add(Calendar.MINUTE, 10);
+                calendar.add(Calendar.MINUTE, 5);
 
                 AlarmManager alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(getApplicationContext(), AlarmWakeupReceiver.class);
