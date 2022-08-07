@@ -28,9 +28,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
@@ -72,12 +74,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     private FirebaseAuth mAuth;
     private FirebaseUser fUser;
 
-    private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
 
     // calendar
     Calendar calendar;
-    protected static int MONTH = 0;
     protected static HashMap<Object, Property> propertyMap;
     protected static HashMap<Integer, Object> dateMap;
     protected int selected = -1;
@@ -89,17 +89,14 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        Log.v(TAG, "oncreate of profile called");
-
         // initialize db instance
         db = AppDatabase.getDbInstance(this.getApplicationContext());
 
-        // Initialize Firebase Auth
+        // initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        // initialize calendar instance, get currdate
         calendar = Calendar.getInstance();
-        MONTH = calendar.get(Calendar.MONTH);
-        Log.v(TAG, "current month: " + (MONTH+1));
         String currdate = Utils.getCurrentDate();
 
         // get VI components
@@ -111,9 +108,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         profileImgIV = findViewById(R.id.profile_img);
         nicknameTV = findViewById(R.id.nickname_profile);
         goalFinishedCB = findViewById(R.id.goal_finished_checker);
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        // set bottom nav, leaderboard as activated
+
+        // set bottom nav, home as activated
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -130,7 +127,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                     goToLeaderboard();
                     return true;
                 default:
-                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    //Log.v(TAG, "Invalid bottom navigation item clicked.");
                     return false;
             }
         });
@@ -140,7 +137,6 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
         // set buttons
         settingBtn.setOnClickListener(v -> startActivity(new Intent(Profile.this, ChangeProfile.class)));
-
 
         // set calendar
         // initialize hashmap to hold properties,
@@ -152,99 +148,109 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         // initialize hashmap holding dates with description and properties
         // map day (int) to str desc of property
         dateMap = new HashMap<>();
-        dateMap.put(calendar.get(Calendar.DAY_OF_MONTH), CURRENT);  // today is the current date
 
         // get a list of dates with finished goal status
-        Log.v(TAG, "checking dates in month : " + currdate.substring(0, 7));
         List<String> checkedDates = UserService.getFinishedDatesOfMonth(db, currdate.substring(0, 7));
-        // Log.v(TAG, checkedDates.toString());
 
         // mark checked date as property "CHECKED" (green)
         if (checkedDates != null) {
-            // Log.v(TAG, checkedDates.toString());
             for (String date : checkedDates) {
                 Integer d = Integer.parseInt(date.substring(8));
                 dateMap.put(d, CHECKED);
             }
         }
+        // mark today as current
+        dateMap.put(calendar.get(Calendar.DAY_OF_MONTH), CURRENT);
+
+        // upload local weekly counts if online
+        updateOnlineCounts();
 
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.PREVIOUS, this);
         customCalendar.setOnNavigationButtonClickedListener(CustomCalendar.NEXT, this);
 
         customCalendar.setDate(calendar, dateMap);
 
+        // when a date is selected:
+        // 1) mark different color for the selected date
+        // 2) show goal status at the checkbox
+        // 3) change the prev selected date back to some proper view
         customCalendar.setOnDateSelectedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(View view, Calendar selectedDate, Object desc) {
+                // get which date is selected
                 int date = selectedDate.get(Calendar.DAY_OF_MONTH);
                 int month = selectedDate.get(Calendar.MONTH) + 1;
                 int year = selectedDate.get(Calendar.YEAR);
+                String monthStr = to2CharString(month);
+                // Log.v(TAG, "selected date: " + year + " | " + month + " | " + date);
 
                 // get date key for checking db
-                String monthStr = month<10 ? "0"+month : ""+month;  // add "0" if only 1 digit
-                String dateStr = date<10 ? "0"+date : ""+date;
-                String dateKey = year + "-" + monthStr + "-" + dateStr;
+                String dateKey = year + "-" + monthStr + "-" + to2CharString(date);
                 //Log.v(TAG, "date key is : " + dateKey);
                 //Log.v(TAG, "is finished : " + UserService.getGoalFinishedByDate(db, dateKey));
 
-                Log.v(TAG, "monthStr : " + monthStr);
-                Log.v(TAG, "month in curr date : " + currdate.substring(5,7));
-
-
                 // disable checkbox if not current month
-                if (!monthStr.equals(currdate.substring(5,7))) {
-                    //goalFinishedCB.setEnabled(false);
-                } else {
-                    // current month, show selected color
-                    //goalFinishedCB.setEnabled(true);
+                if (isCurrentMonth(dateKey) != 0) {
+                    // disable checkbox
+                    goalFinishedCB.setEnabled(false);
+                    Utils.postToast("You can only change status of current month", Profile.this);
+
+                } else {  // modifying current month
+                    goalFinishedCB.setEnabled(true);
                     selected = date;
                     dateMap.put(selected, SELECTED);
 
-                    // change prev selected view back
-                    if (selectedPrev != (-1)) {
-                        dateMap.put(selectedPrev, DEFAULT);
+                    // a future date of curr month is selected, show a short toast
+                    if (isFuture(dateKey)) {
+                        goalFinishedCB.setEnabled(false);
+                        Utils.postToast("Note that you can not mark finished for a future date!", Profile.this);
                     }
 
-                    // mark prev selected
-                    selectedPrev = selected;
+                    // change prev selected view back
+                    if (selectedPrev != (-1)) {
+                        String prevDateKey = currdate.substring(0, 8) + to2CharString(selectedPrev);
+                        // is selectedPrev current date?
+                        if (selectedPrev == Integer.parseInt(currdate.substring(8))) {
+                            dateMap.put(selectedPrev, CURRENT);
+                        }
+                        // is selectedPrev now finished?
+                        else if (UserService.getGoalFinishedByDate(db, prevDateKey)) {
+                            dateMap.put(selectedPrev, CHECKED);
+                        }
+                        else dateMap.put(selectedPrev, DEFAULT);
+                    }
 
+                    // mark selectedPrev and update calendar view
+                    selectedPrev = selected;
                     customCalendar.setDate(calendar, dateMap);  // reset view
                 }
 
-                // set checkbox view
+                // set checkbox view every time a date is selected
                 Boolean isFinished = UserService.getGoalFinishedByDate(db, dateKey);
-                if (isFinished) {
-                    goalFinishedCB.setChecked(true);
-                } else {
-                    goalFinishedCB.setChecked(false);
-                }
+                goalFinishedCB.setChecked(isFinished);
 
-                // set checkbox listener, if tomorrow or after or other month, refuse, else approve
+                // set checkbox listener, only approve change if it's current month and not future
                 goalFinishedCB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // change view by the prev view
-                        if (!monthStr.equals(currdate.substring(5,7))) {
-                            //Utils.postToast("You can only change status of current month", Profile.this);
-
-                            UserService.updateExerciseGoalStatus(db, !isFinished, dateKey);
-                            String isFinishedStr = isFinished? "Not Finished" : "Finished";
-                            Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
+                        // not current month or future, refuse, show toast
+                        if (isCurrentMonth(dateKey) != 0 || isFuture(dateKey)) {
+                            Utils.postToast("You can only change status of current month", Profile.this);
+//                            UserService.updateExerciseGoalStatus(db, !isFinished, dateKey);
+//                            String isFinishedStr = isFinished? "Not Finished" : "Finished";
+//                            Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
                             // reload calendar view
 
-
-
-                        } else {
-                            // approve change on goal status
-                            if (isFinished) {
-                                goalFinishedCB.setChecked(false);
-                            } else {
-                                goalFinishedCB.setChecked(true);
-                            }
+                        } else {  // current month
+                            // approve change on goal status, update checker
+                            goalFinishedCB.setChecked(!isFinished);
                             // update db
                             UserService.updateExerciseGoalStatus(db, !isFinished, dateKey);
                             String isFinishedStr = isFinished? "Not Finished" : "Finished";
                             Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
+
+                            // update online db
+                            updateOnlineCounts();
                         }
                     }
                 });
@@ -262,15 +268,14 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
             public void onClick(View v) {
                 // change view by the prev view
                 Boolean isFinished = UserService.getGoalFinishedByDate(db, currdate);
-                if (isFinished) {
-                    goalFinishedCB.setChecked(false);
-                } else {
-                    goalFinishedCB.setChecked(true);
-                }
+                goalFinishedCB.setChecked(!isFinished);
+
                 // update db
                 UserService.updateExerciseGoalStatus(db, !isFinished, currdate);
                 String isFinishedStr = isFinished? "Not Finished" : "Finished";
                 Utils.postToast("Change status of " + currdate + " to " + isFinishedStr, Profile.this);
+                // update online db
+                updateOnlineCounts();
                 }
         });
 
@@ -305,7 +310,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
-                    Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
+                    // Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
                 }
             }
         });
@@ -319,10 +324,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 //        Log.v(TAG, "new month: " + (newMonth.get(Calendar.MONTH)+1));
         String year = newMonth.get(Calendar.YEAR)+"";
         int monthInt = newMonth.get(Calendar.MONTH)+1;
-        String month = monthInt<10 ? "0"+monthInt : ""+monthInt;
+        String month = to2CharString(monthInt);
 
         String newYearMonth = year + "-" + month;
-        Log.v(TAG, "new year and month: " + newYearMonth);
+        // Log.v(TAG, "new year and month: " + newYearMonth);
 
         Map<Integer, Object>[] arr = new Map[2];
         arr[0] = new HashMap<>();
@@ -373,8 +378,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         propertyMap.put(SELECTED, propSelected);
     }
 
+
+    // show a login dialog if user clicks login button
     public void createLoginDialog() {
-        dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopupView = getLayoutInflater().inflate(R.layout.activity_login, null);
 
         Button loginButton= (Button) contactPopupView.findViewById(R.id.loginBtn);
@@ -425,11 +432,59 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         });
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-//    }
+
+    // transfer an integer to a 2-char string, add 0 before single digit number
+    private String to2CharString(int num) {
+        return num<10 ? "0"+num : ""+num;
+    }
+
+
+    // if user is online, update online db
+    private void updateOnlineCounts() {
+        if (Objects.requireNonNull(UserService.getCurrentUser(db)).getHasLoggedInOnline()) {
+            int currWeeklyCounts = UserService.getWeeklyFinishedCount(db);
+            UserService.updateWeeklyCounts(db, currWeeklyCounts);
+        }
+    }
+
+    // parse date / month / year from a yyyy-mm-dd date
+    private String getDate(String currdate) {
+        return currdate.substring(8);
+    }
+
+    private String getMonth(String currdate) {
+        return currdate.substring(5, 7);
+    }
+
+    private String getYear(String currdate) {
+        return currdate.substring(0, 4);
+    }
+
+    // check if a date (yyyy-mm-dd) is future
+    private Boolean isFuture(String date) {
+        String[] elems = date.split("-");
+        String[] currElems = Utils.getCurrentDate().split("-");
+        int dateInt = Integer.parseInt(elems[0]) * 10000 +
+                Integer.parseInt(elems[1]) * 100 +
+                Integer.parseInt(elems[2]);
+        int currDateInt = Integer.parseInt(currElems[0]) * 10000 +
+                Integer.parseInt(currElems[1]) * 100 +
+                Integer.parseInt(currElems[2]);
+        return dateInt > currDateInt;
+    }
+
+    // check if a date is in current month
+    // return -1 if past, 0 if current, 1 if future
+    private int isCurrentMonth(String date) {
+        String[] elems = date.split("-");
+        String[] currElems = Utils.getCurrentDate().split("-");
+        int dateInt = Integer.parseInt(elems[0]) * 100 +
+                Integer.parseInt(elems[1]);
+        int currDateInt = Integer.parseInt(currElems[0]) * 100 +
+                Integer.parseInt(currElems[1]);
+        int delta = dateInt - currDateInt;
+        return Integer.compare(delta, 0);
+    }
 
     // ========   helpers to start new activity  ===================
 
