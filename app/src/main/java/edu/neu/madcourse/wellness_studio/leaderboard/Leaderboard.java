@@ -32,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
@@ -193,10 +195,13 @@ public class Leaderboard extends AppCompatActivity {
                                                                 count = ds3.getValue(Integer.class);
                                                                 friendEmailList.add(ds2.child("name").getValue(String.class));
                                                                 friendWeeklyCount.add(String.valueOf(count));
+
                                                                 leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
                                                                 leaderboardAdapter.notifyItemInserted(friendEmailList.size());
                                                             }
                                                         }
+//                                                        Collections.sort(friendWeeklyCount);
+//                                                        leaderboardAdapter.notifyDataSetChanged();
                                                     }
 
                                                     @Override
