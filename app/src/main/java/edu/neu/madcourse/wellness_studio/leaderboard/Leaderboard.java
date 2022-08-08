@@ -270,6 +270,9 @@ public class Leaderboard extends AppCompatActivity {
                                             Utils.postToast("Login successful.", Leaderboard.this);
                                             user.setHasLoggedInOnline(true);
                                             UserService.updateUserInfo(db, user);
+
+                                            // TODO update other user info if no local info (email, uid)
+
                                             dialog.dismiss();
                                         }
 

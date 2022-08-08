@@ -331,7 +331,13 @@ public class UserService {
     public static void updateWeeklyCounts(AppDatabase db, int counts) {
         String uid = db.userDao().getUID();
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbWeekRef = dbRoot.child("weeklyOverviews").child(uid);
+        DatabaseReference dbWeeksRef = dbRoot.child("weeklyOverviews");
+
+        if (uid == null) {
+            Log.v(TAG, "[null uid!] can not update weekly counts");
+            return;
+        }
+        DatabaseReference dbWeekRef = dbWeeksRef.child(uid);
         String dateKey = getFirstDayOfWeek();
 
         dbWeekRef.addListenerForSingleValueEvent(new ValueEventListener() {

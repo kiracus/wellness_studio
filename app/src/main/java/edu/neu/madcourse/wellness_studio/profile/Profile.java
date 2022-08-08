@@ -257,8 +257,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                             String isFinishedStr = isFinished? "Not Finished" : "Finished";
                             Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
 
-                            // update online db
-                            updateOnlineCounts();
+                            // update online db if is at current week, if not ignore
+                            if (isCurrentWeek(dateKey)) {
+                                updateOnlineCounts();
+                            }
                         }
                     }
                 });
@@ -282,7 +284,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 UserService.updateExerciseGoalStatus(db, !isFinished, currdate);
                 String isFinishedStr = isFinished? "Not Finished" : "Finished";
                 Utils.postToast("Change status of " + currdate + " to " + isFinishedStr, Profile.this);
-                // update online db
+
                 updateOnlineCounts();
                 }
         });
@@ -444,7 +446,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                             // for test, load everytime
                                             if (true) {
                                                 Log.v(TAG, "downloading info from db");
-                                                loadUserInfoFromOnline(mAuth.getCurrentUser().getUid());
+                                                loadUserInfoFromOnline(email);
                                             }
 
                                             dialog.dismiss();
@@ -513,6 +515,20 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         return Integer.compare(delta, 0);
     }
 
+    // check if a date is in current week, called before update online db counts
+    private boolean isCurrentWeek(String date) {
+        String firstDayOfWeek = UserService.getFirstDayOfWeek();
+        String[] firstDayElems = Utils.getCurrentDate().split("-");
+        String[] elems = date.split("-");
+        int firstDayInt = Integer.parseInt(firstDayElems[0]) * 10000 +
+                Integer.parseInt(firstDayElems[1]) * 100 +
+                Integer.parseInt(firstDayElems[2]);
+        int dayInt = Integer.parseInt(elems[0]) * 10000 +
+                Integer.parseInt(elems[1]) * 100 +
+                Integer.parseInt(elems[2]);
+        return dayInt >= firstDayInt && !isFuture(date);  // should not happen because we blocked future call
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -537,28 +553,13 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // download userinfo from firebase realtime db
     // called after login if no local uid is saved in local
-    private void loadUserInfoFromOnline(String uid) {
-        Log.v(TAG, "loading, using uid: " + uid);
+    private void loadUserInfoFromOnline(String email) {
+        Log.v(TAG, "loading, using email: " + email);
         User user = UserService.getCurrentUser(db);
-        user.setUserId(uid);
-        DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbUserEmailRef = dbRoot.child("users").child(uid).child("email");
+        user.setEmail(email);
+        DatabaseReference dbUsersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        dbUserEmailRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String userEmail = snapshot.getValue(String.class);
-                Log.v(TAG, "email: " + userEmail);
-                user.setEmail(userEmail);
-                user.setHasOnlineAccount(true);
-                UserService.updateUserInfo(db, user);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        // TODO should save the uid locally
 
     }
 
