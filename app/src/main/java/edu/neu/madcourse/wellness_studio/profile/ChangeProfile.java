@@ -1,20 +1,32 @@
 package edu.neu.madcourse.wellness_studio.profile;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -171,10 +183,16 @@ public class ChangeProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "you are clicking the change profile img button");
-                // show prompt to select new img
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 3);  // call onActivityResult
+                if (checkStoragePermission()) {
+                    Log.v(TAG, "has permission to access storage, ask user to select img");
+                    // show prompt to select new img
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 3);  // call onActivityResult
+                } else {
+                    Log.v(TAG, "no permission to access storage, asking for it");
+                    requestStoragePermission();
+                }
             }
         });
 
@@ -329,6 +347,81 @@ public class ChangeProfile extends AppCompatActivity {
         }
     }
 
+    // check if has permission to access storage (called when change profile is clicked
+    private boolean checkStoragePermission() {
+        Log.v(TAG,"checking permission");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            int read = ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            int write = ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            return read == PackageManager.PERMISSION_GRANTED &&
+                    write == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return Environment.isExternalStorageManager();
+        }
+    }
+
+    // request permission to access storage
+    private void requestStoragePermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,
+                                  Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    101);
+        } else {
+            try {
+                Log.v(TAG, "request storage permission: above R");
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+                intent.setData(uri);
+                storageActivityResultLauncher.launch(intent);
+            } catch (Exception e) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                storageActivityResultLauncher.launch(intent);
+            }
+        }
+    }
+
+    private ActivityResultLauncher<Intent> storageActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+
+                    } else {
+                        if (Environment.isExternalStorageManager()) {
+                            UserService.loadImageForProfile(profileImg);
+                        } else {
+                            Utils.postToast("access denied", ChangeProfile.this);
+                        }
+                    }
+                }
+            }
+    );
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0) {
+                boolean resForWrite = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean resForRead = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (resForRead && resForWrite) {
+                    UserService.loadImageForProfile(profileImg);
+                } else {
+                    Utils.postToast("No permission to storage, can not load profile image.", ChangeProfile.this);
+                }
+            }
+        }
+    }
+
     private void saveImg(Bitmap bitmap) {
         OutputStream output;
         String recentImageInCache;
@@ -354,30 +447,6 @@ public class ChangeProfile extends AppCompatActivity {
             e.printStackTrace();
             Log.v(TAG, "error when saving image");
         }
-
-
-//        String filename = System.currentTimeMillis() + ".jpg";
-//        File filepath = Environment.getExternalStorageDirectory();
-//        File dir = new File(filepath.getAbsolutePath() + "/Wellness_profile/");
-//        Boolean res = dir.mkdir();
-//        Log.v(TAG, res+"");
-//        if (res) {
-//            try {
-//                outputStream = new FileOutputStream(new File(dir, filename));
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//
-//            assert bitmap != null;
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//            Log.v(TAG, "image saved to internal storage");
-//            try {
-//                outputStream.flush();
-//                outputStream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 //    // load profile img from sdcard/WellnessStudio/user_avatar.jpg

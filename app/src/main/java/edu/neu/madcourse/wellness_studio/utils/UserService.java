@@ -320,17 +320,27 @@ public class UserService {
 
     // load profile img from sdcard/WellnessStudio/user_avatar.jpg
     public static boolean loadImageForProfile(ImageView imageView) {
+        Bitmap bitmap;
         File filepath = Environment.getExternalStorageDirectory();
         File dir = new File(filepath.getAbsolutePath()
                 + "/WellnessStudio/user_avatar.jpg");
         if (dir.exists()) {
-            Bitmap bitmap =
-                    BitmapFactory.decodeFile(dir.getAbsolutePath());
-            imageView.setImageBitmap(bitmap);
-            return true;
+            try {
+                bitmap =
+                        BitmapFactory.decodeFile(dir.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+                // System.out.println(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.v(TAG, "in catch, when loading from storage");
+                return false;
+            }
         } else {
+            Log.v(TAG, "no dir, when loading from storage");
             return false;
         }
+
+        return bitmap != null;
     }
 
 }
