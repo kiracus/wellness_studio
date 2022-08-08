@@ -98,13 +98,6 @@ public class MainActivity extends AppCompatActivity {
         dateTV = findViewById(R.id.date_TV);
         monthTV = findViewById(R.id.month_TV);
 
-//        if (checkStoragePermission()) {
-//            Log.v(TAG, " !!!!! " + checkStoragePermission());
-//            loadProfileImg(profileBtn);
-//        } else {
-//            loadImageFromAssets(profileBtn);
-//        }
-
         // set click listeners for buttons
         sleepGoBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WakeupSleepGoal.class)));
         profileBtn.setOnClickListener(v -> goToProfile());
@@ -211,11 +204,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         loadProfileImg(profileBtn);
-//        if (checkStoragePermission()) {
-//            loadProfileImg(profileBtn);
-//        } else {
-//            loadImageFromAssets(profileBtn);
-//        }
     }
 
     // check if has permission to access storage (called when load profile picture
@@ -237,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
     // load profile img from sdcard, if can't load from assets/
     private void loadProfileImg(ImageView imageView) {
         boolean res = UserService.loadImageForProfile(imageView);
-        Log.v(TAG, "res in load ProfileImg in main: " + res);
+        // Log.v(TAG, "res in load ProfileImg in main: " + res);
         if (!res) {
             Log.v(TAG, "load Image from storage returns false, try assets/");
             try {

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -36,6 +37,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
@@ -45,6 +48,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.io.File;
@@ -94,8 +100,14 @@ public class ChangeProfile extends AppCompatActivity {
     DatabaseReference UsersRef = dbRoot.child("users");
     String uid = "";
 
+
     // Firebase Auth
     private FirebaseAuth mAuth;
+
+    // Firebase storage
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    Uri pickedImgUri;
 
     // user input
     protected String nicknameInput;
@@ -118,6 +130,10 @@ public class ChangeProfile extends AppCompatActivity {
         // initialize auth instance
         mAuth = FirebaseAuth.getInstance();
 
+        // initialize storage
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
         // get VI components
         profileImg = findViewById(R.id.imageButton_change_img);
         saveBtn = findViewById(R.id.imageButton_save);
@@ -128,7 +144,7 @@ public class ChangeProfile extends AppCompatActivity {
         passwordInputET = findViewById(R.id.password_input_ET);
         usernameHintTV = findViewById(R.id.username_hint);
 
-        // try set profile picture from local storage
+        // try set profile picture from local storage, if result is false load from assets/
         boolean loadRes = UserService.loadImageForProfile(profileImg);
         if (!loadRes) {
             loadImageFromAssets();
@@ -175,9 +191,6 @@ public class ChangeProfile extends AppCompatActivity {
             passwordInputET.setTextColor(Color.GRAY);
         }
 
-        // TODO set profile pic, if none use some default img from assets
-
-
         // select image, process img and save in local, show img, flag img changed
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +213,6 @@ public class ChangeProfile extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                // check if img changed, if yes change db
 
                 // in case user name has input, check if it's valid
                 nicknameInput = usernameInputET.getText().toString();
@@ -288,6 +300,7 @@ public class ChangeProfile extends AppCompatActivity {
 
                 // if user is online, Write to cloud
                 if (UserService.getOnlineStatus(db)) {
+
                     UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -332,6 +345,31 @@ public class ChangeProfile extends AppCompatActivity {
             Uri selectedImg = data.getData();
             profileImg.setImageURI(selectedImg);  // show selected img
             Log.v(TAG, "have set new img");
+
+            Log.v(TAG, "is user online? " + UserService.getOnlineStatus(db));
+
+            // if user is online, upload it and get an URL from online storage
+            if (UserService.getOnlineStatus(db)) {
+                Log.v(TAG, "user is online, try uploading...");
+                String userUID = UserService.getCurrentUser(db).getUserId();
+                StorageReference imgRef = storageRef.child("images/" + userUID);
+                imgRef.putFile(selectedImg)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Log.v(TAG, "profile img uploaded");
+                                // get a URL to the uploaded content
+                                // Uri imgUrl = taskSnapshot.getUploadSessionUri();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // unsuccessful uploads
+                                Log.v(TAG, "unsuccessful upload");
+                            }
+                        });
+            }
 
             // get bitmap then save it to local storage
             try {
@@ -431,7 +469,7 @@ public class ChangeProfile extends AppCompatActivity {
         File dir = new File(filepath.getAbsolutePath()
                 + "/WellnessStudio/");
         boolean res = dir.mkdirs();
-        Log.v(TAG, "mkdir result: " + res);
+        // Log.v(TAG, "mkdir result: " + res);
 
         // Create a name for the saved image
         File file = new File(dir, "user_avatar.jpg");
@@ -449,20 +487,6 @@ public class ChangeProfile extends AppCompatActivity {
         }
     }
 
-//    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
-//    private boolean loadImageForProfile(ImageView imageView) {
-//        File filepath = Environment.getExternalStorageDirectory();
-//        File dir = new File(filepath.getAbsolutePath()
-//                + "/WellnessStudio/user_avatar.jpg");
-//        if (dir.exists()) {
-//            Bitmap bitmap =
-//                    BitmapFactory.decodeFile(dir.getAbsolutePath());
-//            imageView.setImageBitmap(bitmap);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 
     // load image from assets/ to profile image view
     private void loadImageFromAssets() {
@@ -474,7 +498,6 @@ public class ChangeProfile extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             Log.v(TAG, "can not load picture from assets");
-            return;
         }
     }
 

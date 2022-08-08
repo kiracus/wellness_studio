@@ -27,6 +27,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -287,7 +292,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
             @Override
             public void onClick(View v) {
                 // get online status
-                if (!UserService.getOnlineStatus(db)) {
+                if (UserService.getOnlineStatus(db)) {
                     FirebaseAuth.getInstance().signOut();
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_login_24);
                     UserService.changeOnlineStatus(db);
@@ -312,8 +317,12 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 // Check if user is signed in (non-null) and update UI accordingly.
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
+                    Log.v(TAG, "fuser: user is online");
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
-                    // Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
+                    UserService.setUserOnline(db);
+                } else {
+                    Log.v(TAG, "fuser: user is offline");
+                    UserService.setUserOffline(db);
                 }
             }
         });
@@ -423,6 +432,19 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                             Utils.postToast("Login successful.", Profile.this);
                                             UserService.changeOnlineStatus(db);
                                             profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+
+//                                            // if no uid is saved locally, update it
+//                                            if (UserService.getCurrentUser(db).getUserId() == null) {
+//                                                Log.v(TAG, "null uid, downloading info from db");
+//                                                loadUserInfoFromOnline(mAuth.getCurrentUser().getUid());
+//                                            }
+
+                                            // for test, load everytime
+                                            if (true) {
+                                                Log.v(TAG, "downloading info from db");
+                                                loadUserInfoFromOnline(mAuth.getCurrentUser().getUid());
+                                            }
+
                                             dialog.dismiss();
                                         }
 
@@ -509,6 +531,33 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 Log.v(TAG, "can not load picture from assets");
             }
         }
+    }
+
+    // download userinfo from firebase realtime db
+    // called after login if no local uid is saved in local
+    private void loadUserInfoFromOnline(String uid) {
+        Log.v(TAG, "loading, using uid: " + uid);
+        User user = UserService.getCurrentUser(db);
+        user.setUserId(uid);
+        DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference dbUserEmailRef = dbRoot.child("users").child(uid).child("email");
+
+        dbUserEmailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String userEmail = snapshot.getValue(String.class);
+                Log.v(TAG, "email: " + userEmail);
+                user.setEmail(userEmail);
+                user.setHasOnlineAccount(true);
+                UserService.updateUserInfo(db, user);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     // ========   helpers to start new activity  ===================

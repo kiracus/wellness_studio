@@ -273,14 +273,24 @@ public class UserService {
     public static void changeOnlineStatus(AppDatabase db) {
         User user = db.userDao().getUser();
         if (user.getHasLoggedInOnline()) {
-            user.setHasLoggedInOnline(false);
-            updateUserInfo(db, user);
-            Log.v(TAG, "[DB] user is marked logged out.");
+            setUserOffline(db);
         } else {
-            user.setHasLoggedInOnline(true);
-            updateUserInfo(db, user);
-            Log.v(TAG, "[DB] user is marked logged in.");
+            setUserOnline(db);
         }
+    }
+
+    public static void setUserOnline(AppDatabase db) {
+        User user = db.userDao().getUser();
+        user.setHasLoggedInOnline(true);
+        updateUserInfo(db, user);
+        Log.v(TAG, "[DB] user is marked logged in.");
+    }
+
+    public static void setUserOffline(AppDatabase db) {
+        User user = db.userDao().getUser();
+        user.setHasLoggedInOnline(false);
+        updateUserInfo(db, user);
+        Log.v(TAG, "[DB] user is marked logged out.");
     }
 
 
