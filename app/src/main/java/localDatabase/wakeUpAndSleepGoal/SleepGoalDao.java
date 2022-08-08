@@ -17,7 +17,7 @@ public interface SleepGoalDao {
     void insertSleepGoal(SleepGoal ...sleepGoals);
 
     @Update
-    void updateSleepGoal(SleepGoal leepGoal);
+    void updateSleepGoal(SleepGoal sleepGoal);
 
     @Delete
     void deleteSleepGoal(SleepGoal sleepGoal);

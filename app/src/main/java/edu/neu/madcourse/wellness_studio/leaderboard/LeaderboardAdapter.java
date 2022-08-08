@@ -41,5 +41,6 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardViewHold
     public int getItemCount() {
         //Log.d(TAG, "getItemCount: " + friendsList.size());
         return friendEmailList.size();
+        // return friendWeeklyCount.size();
     }
 }

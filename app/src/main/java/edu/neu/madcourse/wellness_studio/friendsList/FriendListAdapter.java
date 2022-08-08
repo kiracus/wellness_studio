@@ -1,16 +1,19 @@
 package edu.neu.madcourse.wellness_studio.friendsList;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +29,7 @@ import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
+import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
 import localDatabase.userInfo.User;
 
@@ -33,11 +37,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
     List<String> friendsList;
     private final Context context;
+    ToggleButton exerciseShareButton;
 
 
     public FriendListAdapter(Context context, List<String> friendsList) {
         this.context = context;
         this.friendsList = friendsList;
+        setHasStableIds(true);
     }
 
     @SuppressLint("InflateParams")
@@ -62,10 +68,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         TextView friendEmail;
         String friendId = "";
 
+
         FriendListViewHolder(View v) {
             super(v);
             friendEmail = v.findViewById(R.id.friendListEmail);
-
+            exerciseShareButton = v.findViewById(R.id.exerciseShareButton);
 
               // When clicking on whole row, give user option to delete friend or cancel
 //            v.setOnClickListener(new View.OnClickListener() {
@@ -75,11 +82,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 //                }
 //            });
 
-            // TODO fix incorrect deletion
             v.findViewById(R.id.deleteFriendButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+                    Log.d("POSITION TO BEGIN", String.valueOf(pos));
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Are you sure you wish to delete this friend?");
 
@@ -92,16 +100,21 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                             assert user != null;
                             Log.d("demo", "Current user " + user.userId);
 
-                            DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference dbUserRef = dbRoot.child("users");
-                            DatabaseReference dbCurrentUser = dbRoot.child("users");
-                            dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            DatabaseReference dbRt = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference dbRt2 = FirebaseDatabase.getInstance().getReference();
+
+                            DatabaseReference dbUser = dbRt.child("users");
+                            DatabaseReference dbCurrent = dbRt2.child("users");
+                            dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds : snapshot.getChildren()) {
-                                        if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
-                                            friendId = ds.getKey();
-                                            Log.d("demo", "ID OF USER TO DELETE " + friendId);
+                                        try {
+                                            if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
+                                                friendId = ds.getKey();
+                                            }
+                                        } catch (Exception e){
+
                                         }
                                     }
                                 }
@@ -112,17 +125,22 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                 }
                             });
 
-                            dbCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            dbCurrent.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot ds2 : snapshot.getChildren()) {
                                         if (!Objects.equals(friendId, "") && ds2.getKey().equals(user.userId)) {
                                             Log.d("demo", "Current user " + ds2.child("friends").child(friendId).getValue());
 //
-                                            dbCurrentUser.child(user.userId)
+                                            dbCurrent.child(user.userId)
                                                     .child("friends")
                                                     .child(friendId)
                                                     .removeValue();
+                                            friendsList.remove(pos);
+                                            notifyItemRemoved(pos);
+                                            notifyItemRangeRemoved(pos, friendsList.size());
+                                            dialog.dismiss();
+                                            refresh();
                                         }
                                     }
                                 }
@@ -132,7 +150,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
                                 }
                             });
-                            dialog.dismiss();
                         }
                     });
 
@@ -152,13 +169,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             });
 
             // When clicking on button, share/un-share exercise with friend
-            v.findViewById(R.id.exerciseShareButton).setOnClickListener(new View.OnClickListener() {
+            exerciseShareButton.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-//                    Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
-//                    Log.d("demo", "OnClick results in user email " + friendsList.get(pos));
+                    Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
+                    Log.d("demo", "OnClick results in user email " + friendsList.get(pos));
 
                     AppDatabase appDatabase = AppDatabase.getDbInstance(context);
                     User user = UserService.getCurrentUser(appDatabase);
@@ -166,8 +184,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                     Log.d("demo", "Current user " + user.userId);
 
                     DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference dbRoot2 = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference dbUserRef = dbRoot.child("users");
-                    DatabaseReference dbCurrentUser = dbRoot.child("users");
+                    DatabaseReference dbCurrentUser = dbRoot2.child("users");
                     dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -198,6 +217,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child("friends")
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(false);
+                                        Utils.postToastLong("You have stopped sharing your exercise goal with this user.", context);
+                                        refresh();
                                     } else {
                                         dbUserRef.child(user.userId)
                                                 .child("friends")
@@ -207,6 +228,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child("friends")
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(true);
+                                        Utils.postToastLong("You started sharing your exercise goal with this user.", context);
+                                        refresh();
                                     }
                                 }
                             }
@@ -225,6 +248,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             friendEmail.setText(thePersonToBind);
         }
 
-
+        public void refresh() {
+            ((Activity)context).finish();
+            ((Activity)context).overridePendingTransition(0,0);
+            ((Activity)context).startActivity(((Activity)context).getIntent());
+            ((Activity)context).overridePendingTransition(0,0);
+        }
     }
+
 }

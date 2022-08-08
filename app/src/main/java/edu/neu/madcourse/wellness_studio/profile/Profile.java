@@ -292,7 +292,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
             @Override
             public void onClick(View v) {
                 // get online status
-                if (UserService.getOnlineStatus(db)) {
+                User user = UserService.getCurrentUser(db);
+                assert user != null;
+                if (user.hasLoggedInOnline) {
                     FirebaseAuth.getInstance().signOut();
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_login_24);
                     UserService.changeOnlineStatus(db);

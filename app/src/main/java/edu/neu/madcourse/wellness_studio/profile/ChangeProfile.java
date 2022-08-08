@@ -76,12 +76,12 @@ public class ChangeProfile extends AppCompatActivity {
     // test
     protected static String TAG = "setting";
 
-    protected final static String NAME_HINT = "Username should only contains alphabet and digits.";
+    protected final static String NAME_HINT = "Username should only contain alphabet and digits.";
     protected final static String NAME_TOAST = "Please enter a valid username within 25 chars.";
     protected final static String MISS_INFO_TOAST = "Please enter both email and password to create account.";
-    protected final static String INVALID_INFO_TOAST = "Please enter valid email and password";
+    protected final static String INVALID_INFO_TOAST = "Please enter valid email and password.";
     protected final static String AUTH_INFO_SAVED = "Saved successfully.";
-    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later";
+    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later.";
 
     // VI
     ImageButton saveBtn, cancelBtn;
@@ -117,6 +117,9 @@ public class ChangeProfile extends AppCompatActivity {
 
     // user info
     protected Boolean hasOnlineAccount = false;
+
+    // current week
+    String date;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -172,6 +175,9 @@ public class ChangeProfile extends AppCompatActivity {
                     return false;
             }
         });
+        // get current week
+        date = UserService.getFirstDayOfWeek();
+
 
         // show username
         usernameInputET.setText(UserService.getNickname(db));
@@ -281,12 +287,18 @@ public class ChangeProfile extends AppCompatActivity {
                                     newUserRef.child("img").setValue(user.profileImg);
                                     newUserRef.child("friends").setValue("");
 
+                                    // Create weeklyOverview field for user
+                                    DatabaseReference dbOverview = FirebaseDatabase.getInstance().getReference();
+                                    DatabaseReference weeklyOverviews = dbOverview.child("weeklyOverviews");
+                                    weeklyOverviews.child(uid).child(date).setValue(0);
+
                                     // Set online ID in local db
                                     user.setUserId(uid);
-                                    UserService.updateUserInfo(db, user);
 
                                     // Log user in online upon account creation
                                     mAuth.signInWithEmailAndPassword(user.email, user.password);
+                                    user.setHasLoggedInOnline(true);
+                                    UserService.updateUserInfo(db, user);
                                 }
 
                                 @Override

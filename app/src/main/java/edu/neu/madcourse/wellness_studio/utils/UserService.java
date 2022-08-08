@@ -152,6 +152,10 @@ public class UserService {
             le.setDate(date);
             le.setExerciseStatus(ExerciseStatus.NOT_STARTED);
             le.setCurrentSet(ExerciseSet.NOT_SELECTED);
+            le.setStepOneCompleted(false);
+            le.setStepTwoCompleted(false);
+            le.setStepThreeCompleted(false);
+            le.setStepFourCompleted(false);
             db.lightExerciseDao().insertLightExercise(le);
             //Log.v(TAG, "new le obj created for date: " + date);
         } else {
@@ -216,6 +220,34 @@ public class UserService {
             createNewLightExercise(db, date);
             return false;
         } else return res;
+    }
+
+    public static String getExerciseReminderAlarm(AppDatabase db) {
+        String res = db.userDao().getExerciseReminderAlarm();
+        if (res == null) {
+            return "--:--";
+        } else
+            return res;
+    }
+
+    // update exercise reminder in User table
+    public static void updateExerciseReminder(AppDatabase db, String exerciseAlarm) {
+        if (checkIfUserExists(db)) {
+            Log.v(TAG, "updating exercise reminder: " + exerciseAlarm);
+            db.userDao().setExerciseAlarm(exerciseAlarm);
+        }
+    }
+
+    public static Boolean getExerciseAlarmOn(AppDatabase db) {
+        return db.userDao().exerciseAlarmOn();
+    }
+
+    // update exercise reminder on or off in User table
+    public static void updateExerciseReminderOn(AppDatabase db, Boolean exerciseAlarmOn) {
+        if (checkIfUserExists(db)) {
+            Log.v(TAG, "updating exercise reminder: " + exerciseAlarmOn);
+            db.userDao().setExerciseAlarmOn(exerciseAlarmOn);
+        }
     }
 
     public static int getWeeklyFinishedCount(AppDatabase db) {

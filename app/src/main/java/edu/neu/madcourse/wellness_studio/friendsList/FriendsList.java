@@ -121,10 +121,10 @@ public class FriendsList extends AppCompatActivity {
         // Cloud
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
         DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(userId).child("friends");
-
         dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     Log.d("FRIENDLIST", "key + ");
@@ -140,8 +140,6 @@ public class FriendsList extends AppCompatActivity {
                                     friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
                                     friendListAdapter.notifyItemInserted(friendEmailList.size());
 
-//                                    Log.d("FRIENDLIST", "friends + ");
-//                                    Log.d("FRIENDLIST", friendEmailList.get(0));
                                 }
                             }
                         }
@@ -166,7 +164,7 @@ public class FriendsList extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dss: snapshot.getChildren()) {
-                    userList.add(dss.getKey());
+                    userList.add(dss.child("email").getValue(String.class));
                 }
             }
 
@@ -197,8 +195,9 @@ public class FriendsList extends AppCompatActivity {
         dialog.show();
 
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbUserRef = dbRoot.child("users");
+        DatabaseReference dbRoot2 = FirebaseDatabase.getInstance().getReference();
         DatabaseReference getFriends = dbRoot.child("users");
+        DatabaseReference dbUserRef = dbRoot2.child("users");
 
 
         /// iterate over cloud db and find friend id by email
@@ -211,18 +210,12 @@ public class FriendsList extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot ds1 : snapshot.getChildren()) {
                         String key = ds1.getKey();
-//                        Log.d("FRIENDLIST", "key + ");
-//                        Log.d("FRIENDLIST", key);
                         String email = ds1.child("email").getValue(String.class);
                         userList.add(ds1.child("email").getValue(String.class));
 
-//                        Log.d("FRIENDLIST", "email + ");
-//                        Log.d("FRIENDLIST", email);
-
+                        assert email != null;
                         if (email.equals(createEmailOnData)) {
                             userIdFriend = key;
-//                            Log.d("FRIENDLIST", "userIdFriend + ");
-//                            Log.d("FRIENDLIST", userIdFriend);
                         }
                     }
                 }
@@ -232,11 +225,13 @@ public class FriendsList extends AppCompatActivity {
 
                 }
             });
+
             // Make sure input isn't blank
             if (createEmailOnData.equals("")) {
                 dialog.dismiss();
                 errorAddFriend();
             }
+
             // Make sure email provided belongs to valid account
             else if (!userList.contains(createEmailOnData)) {
                 dialog.dismiss();
@@ -246,8 +241,6 @@ public class FriendsList extends AppCompatActivity {
                 dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // Checks if friend exists
-                        // friendEmailList.clear();
                         Boolean userFound = false;
                         for (DataSnapshot ds: snapshot.getChildren()) {
                             if (ds.getKey().equals(userIdFriend)) {
@@ -272,8 +265,12 @@ public class FriendsList extends AppCompatActivity {
                             Utils.postToast("Successfully added friend: " + createEmailOnData, FriendsList.this);
                             friendEmailList.add(createEmailOnData);
                             dialog.dismiss();
+                            friendListAdapter.notifyItemInserted(friendEmailList.size());
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+                            overridePendingTransition(0, 0);
                         }
-                        friendListAdapter.notifyItemInserted(friendEmailList.size());
                     }
 
                     @Override
@@ -281,10 +278,7 @@ public class FriendsList extends AppCompatActivity {
 
                     }
                 });
-
             }
-
-
         });
         cancelAddFriendButton.setOnClickListener(v -> cancelAddFriend());
     }

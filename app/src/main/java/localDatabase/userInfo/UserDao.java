@@ -8,6 +8,8 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import localDatabase.enums.ExerciseStatus;
+
 @Dao
 public interface UserDao {
     @Query("SELECT * FROM UserInfoTable")
@@ -30,6 +32,9 @@ public interface UserDao {
     @Query ("SELECT wakeUpAlarm FROM UserInfoTable LIMIT 1")
     String getWakeupAlarm();
 
+    @Query ("SELECT exerciseAlarm FROM UserInfoTable LIMIT 1")
+    String getExerciseReminderAlarm();
+
     @Query("SELECT nickname FROM UserInfoTable LIMIT 1")
     String getUserNickname();
 
@@ -41,6 +46,16 @@ public interface UserDao {
 
     @Query("SELECT hasLoggedInOnline FROM UserInfoTable LIMIT 1")
     Boolean getOnlineStatus();
+
+    // update to reminder by date
+    @Query("UPDATE UserInfoTable SET exerciseAlarm = :exerciseAlarm")
+    void setExerciseAlarm(String exerciseAlarm);
+
+    @Query ("SELECT exerciseAlarmOn FROM UserInfoTable LIMIT 1")
+    Boolean exerciseAlarmOn();
+
+    @Query("UPDATE UserInfoTable SET exerciseAlarmOn = :exerciseAlarmOn")
+    void setExerciseAlarmOn(Boolean exerciseAlarmOn);
 
     @Query("SELECT userId FROM userinfotable LIMIT 1")
     String getUID();

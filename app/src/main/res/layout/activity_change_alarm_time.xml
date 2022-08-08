@@ -354,7 +354,7 @@
                     android:id="@+id/alarm_type_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="270dp"
+                    android:layout_marginLeft="240dp"
                     android:layout_marginTop="30dp"
                     android:spinnerMode="dropdown" />
 
@@ -362,7 +362,7 @@
                     android:id="@+id/to_stop_alarm_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="270dp"
+                    android:layout_marginLeft="240dp"
                     android:layout_marginTop="60dp"
                     android:spinnerMode="dropdown" />
 

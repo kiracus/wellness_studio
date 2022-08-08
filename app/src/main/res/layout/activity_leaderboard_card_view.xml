@@ -32,7 +32,7 @@
             <ProgressBar
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:id="@+id/weeklyProgressBar"
-                android:layout_width="235dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="18dp"
                 android:layout_marginEnd="18dp"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="22dp"
-                android:layout_weight="1"
+                android:layout_weight=".5"
                 android:layout_marginBottom="18dp"
                 android:text="#"
                 android:textColor="@color/black"
