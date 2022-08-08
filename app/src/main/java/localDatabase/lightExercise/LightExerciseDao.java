@@ -60,6 +60,28 @@ public interface LightExerciseDao {
     @Query("SELECT date FROM LightExerciseTable WHERE exerciseGoalFinished = 1 AND date LIKE :yearMonthInput LIMIT 31")
     List<String> getFinishedDatesOfMonth(String yearMonthInput);
 
+    // update goal finished or not by date
+    @Query("UPDATE LightExerciseTable SET exerciseStatus = :exerciseStatus WHERE date = :dateInput")
+    void setExerciseStatus(ExerciseStatus exerciseStatus, String dateInput);
 
+    // update step1Completion status by date
+    @Query("UPDATE LightExerciseTable SET step1Completion = :stepOneCompleted WHERE date = :date")
+    void setStepOneCompleted(Boolean stepOneCompleted, String date);
+
+    // update step1Completion status by date
+    @Query("UPDATE LightExerciseTable SET step2Completion = :stepOneCompleted WHERE date = :date")
+    void setStepTwoCompleted(Boolean stepOneCompleted, String date);
+
+    // update step1Completion status by date
+    @Query("UPDATE LightExerciseTable SET step3Completion = :stepOneCompleted WHERE date = :date")
+    void setStepThreeCompleted(Boolean stepOneCompleted, String date);
+
+    // update step1Completion status by date
+    @Query("UPDATE LightExerciseTable SET step4Completion = :stepOneCompleted WHERE date = :date")
+    void setStepFourCompleted(Boolean stepOneCompleted, String date);
+
+    // update to currentStep by date
+    @Query("UPDATE LightExerciseTable SET currentStep = :currentStep WHERE date = :dateInput")
+    void setLightExerciseStepByDate(String currentStep, String dateInput);
 }
 

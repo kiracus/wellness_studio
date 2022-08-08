@@ -20,27 +20,37 @@ import android.widget.RadioGroup;
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import java.sql.Array;
+import java.util.Date;
 import java.util.HashMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
+import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
+import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
+import localDatabase.enums.ExerciseStatus;
+import localDatabase.lightExercise.LightExercise;
+import localDatabase.userInfo.User;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 import pl.droidsonroids.gif.GifTexImage2D;
 
 public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
+    private String TAG = "LightExercises_DuringExercise";
+    AppDatabase db;
+    LightExercise lightExercise;
+
     ExerciseSet focusArea;
     Boolean isChecked;
     int currentSetPosition = 0;
     //temp variable, conect to db
-    Boolean stepCompleted1 = false;
-    Boolean stepCompleted2 = false;
-    Boolean stepCompleted3 = false;
-    Boolean stepCompleted4 = false;
+    Boolean stepCompleted1;
+    Boolean stepCompleted2;
+    Boolean stepCompleted3;
+    Boolean stepCompleted4;
     HashMap<Integer, Boolean> stepProgressCompletion = new HashMap<Integer, Boolean>();
 
     GifDrawable gifDrawable1;
@@ -64,6 +74,8 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light_exercises_during_exercise);
 
+        db = AppDatabase.getDbInstance(this.getApplicationContext());
+
         // VI components - buttons
         backBtn = findViewById(R.id.imageButton_back);
         profileIV = findViewById(R.id.imageView_profile);
@@ -83,9 +95,33 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         stateProgressBar = findViewById(R.id.light_exercises_state_progress_bar_during_exercise);
 
         loadExerciseSets(focusArea);
+
         checkBoxOnChangeListener(exerciseCompletecheckBox);
         scrollViewOnChangeListener(scrollViewForExerciseSets);
-        Log.d("myApp", "gif1ImageView: " + gif1ImageView);
+
+        //connect to db and load previous data
+        lightExercise = UserService.getCurrentLightExercise(db);
+        ExerciseStatus currentExerciseStatus = lightExercise.getExerciseStatus();
+        Log.d(TAG,"get current currentExerciseStatus from db: " + currentExerciseStatus);
+
+        stepCompleted1 = lightExercise.getStepOneCompleted();
+        stepCompleted2 = lightExercise.getStepTwoCompleted();
+        stepCompleted3 = lightExercise.getStepThreeCompleted();
+        stepCompleted4 = lightExercise.getStepFourCompleted();
+        Log.d(TAG,"get current stepCompleted1 from db: " + stepCompleted1);
+        Log.d(TAG,"get current stepCompleted2 from db: " + stepCompleted2);
+        Log.d(TAG,"get current stepCompleted3 from db: " + stepCompleted3);
+        Log.d(TAG,"get current stepCompleted4 from db: " + stepCompleted4);
+
+        if(lightExercise != null && !currentExerciseStatus.equals(ExerciseStatus.NOT_STARTED)) {
+            if(lightExercise.getCurrentStep() != null) {
+                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
+                Log.d(TAG,"get current step from db: " + lightExercise.getCurrentStep());
+                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
+                //automatically scroll to position x
+                //setCompleteButton
+            }
+        }
     }
 
 
@@ -147,13 +183,12 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
                         Log.d("myApp", "currentSetPosition: " +  currentSetPosition);
                         currentSetPosition = latestSetPosition;
                     }
-                    // perform logic
+                    // perform logic and save changes to db
+                    setCurrentSetCompletionStatus(currentSetPosition);
                     setProgressBarStatus(currentSetPosition);
-                    if(stepCompleted1 && stepCompleted2 && stepCompleted3 && stepCompleted4) {
-                        stateProgressBar.setAllStatesCompleted(true);
-                        Utils.postToast("All sets completed for today!", getApplicationContext());
-                        //update state to complete
-                    }
+                    UserService.updateCurrentStep(db,currentSetPosition);
+                    UserService.updateStepCompletion(db,currentSetPosition,true);
+                    updateExerciseStatus(currentSetPosition);
                 }
             }
         });
@@ -165,10 +200,10 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
             @Override
             public void onScrollChanged() {
                  int latestSetPosition = getCurrentSetPosition(horizontalScrollView.getScrollX(),4,800);
-                 if(latestSetPosition != currentSetPosition) {
+                 if(latestSetPosition != currentSetPosition && latestSetPosition != -1) {
                      boolean latestSetCompletion = getCurrentSetCompletionStatus(latestSetPosition);
                      //if current set is not completed and checkBox is checked, uncheck the checkbox
-                     if(!latestSetCompletion &&exerciseCompletecheckBox.isChecked()) {
+                     if(!latestSetCompletion && exerciseCompletecheckBox.isChecked()) {
                          exerciseCompletecheckBox.toggle();
                      }
                      // if current set is completed and checkBox is not checked, check the checkbox
@@ -183,7 +218,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
     }
 
 
-    private int getCurrentSetPosition (int scrollX, int totalSets, int widthOfEachPic) {
+    private int getCurrentSetPosition(int scrollX, int totalSets, int widthOfEachPic) {
         int i;
         for(i = 0; i < totalSets; i++) {
             int leftBoundary = i * widthOfEachPic;
@@ -214,40 +249,44 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         return false;
     }
 
-
-    public void sendAnIntentForProgressbar(int currentSetPosition) {
-        stepProgressCompletion.put(currentSetPosition, true);
-        Intent intent = new Intent(this,LightExercises.class);
-        intent.putExtra("setsCompletionProgress", stepProgressCompletion);
-        startActivity(intent);
+    public void setCurrentSetCompletionStatus(int currentSetPosition) {
+        if(currentSetPosition == 1) {
+             stepCompleted1 = true;
+        }
+        if(currentSetPosition == 2) {
+            stepCompleted2 = true;
+        }
+        if(currentSetPosition == 3) {
+            stepCompleted3 = true;
+        }
+        if(currentSetPosition == 4) {
+            stepCompleted4 = true;
+        }
     }
 
-
     public void setProgressBarStatus(int currentSetPosition) {
-        if(currentSetPosition == 1 & stepCompleted1 == false) {
+        if(currentSetPosition == 1 && stepCompleted1) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
-            stepCompleted1 = true;
             Utils.postToast("Set 1 completed!", getApplicationContext());
-
         }
-        if(currentSetPosition == 2 & stepCompleted2 == false) {
+        if(currentSetPosition == 2 && stepCompleted2) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
-            stepCompleted2 = true;
             Utils.postToast("Set 2 completed!", getApplicationContext());
 
         }
-        if(currentSetPosition == 3 & stepCompleted3 == false) {
+        if(currentSetPosition == 3 && stepCompleted3) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
-            stepCompleted3 = true;
             Utils.postToast("Set 3 completed!", getApplicationContext());
 
         }
-        if(currentSetPosition == 4 & stepCompleted4 == false) {
+        if(currentSetPosition == 4 && stepCompleted4) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
-            stepCompleted4 = true;
             Utils.postToast("Set 4 completed!", getApplicationContext());
         }
-        sendAnIntentForProgressbar(currentSetPosition);
+        if(stepCompleted1 && stepCompleted2 && stepCompleted3 && stepCompleted4) {
+            stateProgressBar.setAllStatesCompleted(true);
+            Utils.postToast("All sets completed for today!", getApplicationContext());
+        }
     }
 
     // helper to launch activities
@@ -257,5 +296,23 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
     private void goToProfile() {
         startActivity(new Intent(LightExercises_DuringExercise.this, Profile.class));
+    }
+
+    public void updateExerciseStatus(int currentSetPosition) {
+        if(currentSetPosition == 0) {
+            UserService.updateExerciseStatus(db,ExerciseStatus.NOT_STARTED, Utils.getCurrentDate());
+            Log.d(TAG,"updateExerciseStatus" + ExerciseStatus.NOT_STARTED);
+        }
+        if(currentSetPosition <= 4 && !stepCompleted4) {
+            UserService.updateExerciseStatus(db,ExerciseStatus.NOT_FINISHED, Utils.getCurrentDate());
+            Log.d(TAG,"updateExerciseStatus" + ExerciseStatus.NOT_FINISHED);
+        }
+        if(currentSetPosition == 4 && stepCompleted1 && stepCompleted2 && stepCompleted3 && stepCompleted4) {
+            UserService.updateExerciseStatus(db,ExerciseStatus.COMPLETED, Utils.getCurrentDate());
+            UserService.updateExerciseGoalStatus(db,true,Utils.getCurrentDate());
+            Log.d(TAG,"updateExerciseStatus" + ExerciseStatus.COMPLETED);
+        }
+        Log.d(TAG,"updateExerciseStatus: " + currentSetPosition);
+
     }
 }
