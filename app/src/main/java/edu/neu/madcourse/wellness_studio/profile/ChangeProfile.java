@@ -42,12 +42,12 @@ public class ChangeProfile extends AppCompatActivity {
     // test
     protected static String TAG = "setting";
 
-    protected final static String NAME_HINT = "Username should only contains alphabet and digits.";
+    protected final static String NAME_HINT = "Username should only contain alphabet and digits.";
     protected final static String NAME_TOAST = "Please enter a valid username within 25 chars.";
     protected final static String MISS_INFO_TOAST = "Please enter both email and password to create account.";
-    protected final static String INVALID_INFO_TOAST = "Please enter valid email and password";
+    protected final static String INVALID_INFO_TOAST = "Please enter valid email and password.";
     protected final static String AUTH_INFO_SAVED = "Saved successfully.";
-    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later";
+    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later.";
 
 
     // VI

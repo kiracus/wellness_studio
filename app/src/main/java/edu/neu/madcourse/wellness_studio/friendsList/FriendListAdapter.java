@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +27,7 @@ import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
+import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;
 import localDatabase.userInfo.User;
 
@@ -31,6 +35,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
     List<String> friendsList;
     private final Context context;
+    ToggleButton exerciseShareButton;
 
 
     public FriendListAdapter(Context context, List<String> friendsList) {
@@ -60,10 +65,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         TextView friendEmail;
         String friendId = "";
 
+
         FriendListViewHolder(View v) {
             super(v);
             friendEmail = v.findViewById(R.id.friendListEmail);
-
+            exerciseShareButton = v.findViewById(R.id.exerciseShareButton);
 
               // When clicking on whole row, give user option to delete friend or cancel
 //            v.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +79,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 //                }
 //            });
 
-            // TODO make item disappear after deleting friend
             v.findViewById(R.id.deleteFriendButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -133,7 +138,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                             notifyItemRemoved(pos);
                                             notifyItemRangeRemoved(pos, friendsList.size());
                                             dialog.dismiss();
-
                                         }
                                     }
                                 }
@@ -143,8 +147,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
                                 }
                             });
-                            Log.d("POSITION TO DELETE", String.valueOf(pos));
-
                         }
                     });
 
@@ -164,13 +166,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             });
 
             // When clicking on button, share/un-share exercise with friend
-            v.findViewById(R.id.exerciseShareButton).setOnClickListener(new View.OnClickListener() {
+            exerciseShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
 
-//                    Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
-//                    Log.d("demo", "OnClick results in user email " + friendsList.get(pos));
+                    Log.d("demo", "OnClick Share/Unshare for user" + getAdapterPosition());
+                    Log.d("demo", "OnClick results in user email " + friendsList.get(pos));
 
                     AppDatabase appDatabase = AppDatabase.getDbInstance(context);
                     User user = UserService.getCurrentUser(appDatabase);
@@ -211,6 +213,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child("friends")
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(false);
+                                        Utils.postToastLong("You have stopped sharing your exercise goal with this user.", context);
                                     } else {
                                         dbUserRef.child(user.userId)
                                                 .child("friends")
@@ -220,6 +223,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child("friends")
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(true);
+                                        Utils.postToastLong("You started sharing your exercise goal with this user.", context);
+
                                     }
                                 }
                             }
