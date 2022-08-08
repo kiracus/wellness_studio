@@ -57,7 +57,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    String isSnooze, isWakeupSensorUse, isSleepSensorUse;
+    public static String isSnooze, isWakeupSensorUse, isSleepSensorUse;
     long wakeupMillis, sleepMillis;
 
 
