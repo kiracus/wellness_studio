@@ -1,9 +1,11 @@
 package edu.neu.madcourse.wellness_studio.friendsList;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -41,6 +43,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
     public FriendListAdapter(Context context, List<String> friendsList) {
         this.context = context;
         this.friendsList = friendsList;
+        setHasStableIds(true);
     }
 
     @SuppressLint("InflateParams")
@@ -109,7 +112,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                         try {
                                             if (ds.child("email").getValue(String.class).equals(friendsList.get(pos))) {
                                                 friendId = ds.getKey();
-                                                Log.d("demo", "ID OF USER TO DELETE " + friendId);
                                             }
                                         } catch (Exception e){
 
@@ -138,6 +140,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                             notifyItemRemoved(pos);
                                             notifyItemRangeRemoved(pos, friendsList.size());
                                             dialog.dismiss();
+                                            refresh();
                                         }
                                     }
                                 }
@@ -167,6 +170,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
             // When clicking on button, share/un-share exercise with friend
             exerciseShareButton.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
@@ -214,6 +218,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(false);
                                         Utils.postToastLong("You have stopped sharing your exercise goal with this user.", context);
+                                        refresh();
                                     } else {
                                         dbUserRef.child(user.userId)
                                                 .child("friends")
@@ -224,7 +229,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                                                 .child(user.userId)
                                                 .child("shareFrom").setValue(true);
                                         Utils.postToastLong("You started sharing your exercise goal with this user.", context);
-
+                                        refresh();
                                     }
                                 }
                             }
@@ -242,5 +247,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
         public void bindThisData(String thePersonToBind) {
             friendEmail.setText(thePersonToBind);
         }
+
+        public void refresh() {
+            ((Activity)context).finish();
+            ((Activity)context).overridePendingTransition(0,0);
+            ((Activity)context).startActivity(((Activity)context).getIntent());
+            ((Activity)context).overridePendingTransition(0,0);
+        }
     }
+
 }
