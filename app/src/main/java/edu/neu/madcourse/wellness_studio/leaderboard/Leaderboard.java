@@ -166,13 +166,33 @@ public class Leaderboard extends AppCompatActivity {
         leaderboardRecyclerView.setAdapter(leaderboardAdapter);
         leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
 
-        // Populate lists with cloud data
+
+        // Add current user to leaderboard
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
+
         try {
+            DatabaseReference myCount = dbRoot.child("weeklyOverviews");
+            myCount.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    friendWeeklyCount.add(String.valueOf(snapshot.child(user.userId).child(date).getValue(Integer.class)));
+                    friendEmailList.add(user.nickname + " (Me)");
+                    leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                    leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            Log.d("DEBUG ---- ", String.valueOf(friendEmailList.size()));
             DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(user.userId).child("friends");
             dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                     for (DataSnapshot ds : snapshot.getChildren()) {
 //
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -195,7 +215,6 @@ public class Leaderboard extends AppCompatActivity {
                                                                 count = ds3.getValue(Integer.class);
                                                                 friendEmailList.add(ds2.child("name").getValue(String.class));
                                                                 friendWeeklyCount.add(String.valueOf(count));
-
                                                                 leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
                                                                 leaderboardAdapter.notifyItemInserted(friendEmailList.size());
                                                             }
