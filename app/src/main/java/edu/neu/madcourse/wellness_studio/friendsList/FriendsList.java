@@ -140,8 +140,6 @@ public class FriendsList extends AppCompatActivity {
                                     friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
                                     friendListAdapter.notifyItemInserted(friendEmailList.size());
 
-//                                    Log.d("FRIENDLIST", "friends + ");
-//                                    Log.d("FRIENDLIST", friendEmailList.get(0));
                                 }
                             }
                         }

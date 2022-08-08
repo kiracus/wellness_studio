@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // set greeting message in header
-        greetingTV.setText("Hello, " + nickname + " !");
+        greetingTV.setText("Hello, " + nickname + "!");
 
         // show current date
         currdate = Utils.getCurrentDate();
