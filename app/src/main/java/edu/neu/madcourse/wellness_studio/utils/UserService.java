@@ -1,13 +1,18 @@
 package edu.neu.madcourse.wellness_studio.utils;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.lights.Light;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -78,6 +83,14 @@ public class UserService {
 
     public static String getNickname(AppDatabase db) {
         return db.userDao().getUserNickname();
+    }
+
+    public static void updateUserImg(AppDatabase db, String imgUri) {
+        User user = getCurrentUser(db);
+        assert user != null;
+        user.setProfileImg(imgUri);
+        Log.v(TAG, "update user img uri: " + imgUri);
+        updateUserInfo(db, user);
     }
 
     public static String showUserInfo(AppDatabase db) {
@@ -300,14 +313,24 @@ public class UserService {
     public static void changeOnlineStatus(AppDatabase db) {
         User user = db.userDao().getUser();
         if (user.getHasLoggedInOnline()) {
-            user.setHasLoggedInOnline(false);
-            updateUserInfo(db, user);
-            Log.v(TAG, "[DB] user is marked logged out.");
+            setUserOffline(db);
         } else {
-            user.setHasLoggedInOnline(true);
-            updateUserInfo(db, user);
-            Log.v(TAG, "[DB] user is marked logged in.");
+            setUserOnline(db);
         }
+    }
+
+    public static void setUserOnline(AppDatabase db) {
+        User user = db.userDao().getUser();
+        user.setHasLoggedInOnline(true);
+        updateUserInfo(db, user);
+        Log.v(TAG, "[DB] user is marked logged in.");
+    }
+
+    public static void setUserOffline(AppDatabase db) {
+        User user = db.userDao().getUser();
+        user.setHasLoggedInOnline(false);
+        updateUserInfo(db, user);
+        Log.v(TAG, "[DB] user is marked logged out.");
     }
 
 
@@ -316,7 +339,13 @@ public class UserService {
     public static void updateWeeklyCounts(AppDatabase db, int counts) {
         String uid = db.userDao().getUID();
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference dbWeekRef = dbRoot.child("weeklyOverviews").child(uid);
+        DatabaseReference dbWeeksRef = dbRoot.child("weeklyOverviews");
+
+        if (uid == null) {
+            Log.v(TAG, "[null uid!] can not update weekly counts");
+            return;
+        }
+        DatabaseReference dbWeekRef = dbWeeksRef.child(uid);
         String dateKey = getFirstDayOfWeek();
 
         dbWeekRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -342,6 +371,32 @@ public class UserService {
         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
         int year = mCalendar.get(Calendar.YEAR);
         return year + "-" + to2CharString(month) + "-" + to2CharString(day);
+    }
+
+
+    // load profile img from sdcard/WellnessStudio/user_avatar.jpg
+    public static boolean loadImageForProfile(ImageView imageView) {
+        Bitmap bitmap;
+        File filepath = Environment.getExternalStorageDirectory();
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/user_avatar.jpg");
+        if (dir.exists()) {
+            try {
+                bitmap =
+                        BitmapFactory.decodeFile(dir.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+                // System.out.println(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.v(TAG, "in catch, when loading from storage");
+                return false;
+            }
+        } else {
+            Log.v(TAG, "no dir, when loading from storage");
+            return false;
+        }
+
+        return bitmap != null;
     }
 
 }

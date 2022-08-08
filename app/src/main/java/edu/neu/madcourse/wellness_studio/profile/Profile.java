@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,7 +27,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -249,8 +257,10 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                             String isFinishedStr = isFinished? "Not Finished" : "Finished";
                             Utils.postToast("Change status of " + dateKey + " to " + isFinishedStr, Profile.this);
 
-                            // update online db
-                            updateOnlineCounts();
+                            // update online db if is at current week, if not ignore
+                            if (isCurrentWeek(dateKey)) {
+                                updateOnlineCounts();
+                            }
                         }
                     }
                 });
@@ -274,7 +284,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 UserService.updateExerciseGoalStatus(db, !isFinished, currdate);
                 String isFinishedStr = isFinished? "Not Finished" : "Finished";
                 Utils.postToast("Change status of " + currdate + " to " + isFinishedStr, Profile.this);
-                // update online db
+
                 updateOnlineCounts();
                 }
         });
@@ -311,8 +321,12 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 // Check if user is signed in (non-null) and update UI accordingly.
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
+                    Log.v(TAG, "fuser: user is online");
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
-                    // Log.v(TAG, "user UID: " + fUser.getUid());  // TODO delete this
+                    UserService.setUserOnline(db);
+                } else {
+                    Log.v(TAG, "fuser: user is offline");
+                    UserService.setUserOffline(db);
                 }
             }
         });
@@ -422,6 +436,19 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                             Utils.postToast("Login successful.", Profile.this);
                                             UserService.changeOnlineStatus(db);
                                             profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
+
+//                                            // if no uid is saved locally, update it
+//                                            if (UserService.getCurrentUser(db).getUserId() == null) {
+//                                                Log.v(TAG, "null uid, downloading info from db");
+//                                                loadUserInfoFromOnline(mAuth.getCurrentUser().getUid());
+//                                            }
+
+                                            // for test, load everytime
+                                            if (true) {
+                                                Log.v(TAG, "downloading info from db");
+                                                loadUserInfoFromOnline(email);
+                                            }
+
                                             dialog.dismiss();
                                         }
 
@@ -486,6 +513,54 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 Integer.parseInt(currElems[1]);
         int delta = dateInt - currDateInt;
         return Integer.compare(delta, 0);
+    }
+
+    // check if a date is in current week, called before update online db counts
+    private boolean isCurrentWeek(String date) {
+        String firstDayOfWeek = UserService.getFirstDayOfWeek();
+        String[] firstDayElems = Utils.getCurrentDate().split("-");
+        String[] elems = date.split("-");
+        int firstDayInt = Integer.parseInt(firstDayElems[0]) * 10000 +
+                Integer.parseInt(firstDayElems[1]) * 100 +
+                Integer.parseInt(firstDayElems[2]);
+        int dayInt = Integer.parseInt(elems[0]) * 10000 +
+                Integer.parseInt(elems[1]) * 100 +
+                Integer.parseInt(elems[2]);
+        return dayInt >= firstDayInt && !isFuture(date);  // should not happen because we blocked future call
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfileImg(profileImgIV);
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
+    }
+
+    // download userinfo from firebase realtime db
+    // called after login if no local uid is saved in local
+    private void loadUserInfoFromOnline(String email) {
+        Log.v(TAG, "loading, using email: " + email);
+        User user = UserService.getCurrentUser(db);
+        user.setEmail(email);
+        DatabaseReference dbUsersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        // TODO should save the uid locally
+
     }
 
     // ========   helpers to start new activity  ===================

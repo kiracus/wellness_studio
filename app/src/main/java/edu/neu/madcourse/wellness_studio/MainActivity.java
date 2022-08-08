@@ -1,11 +1,17 @@
 package edu.neu.madcourse.wellness_studio;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +22,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
@@ -31,7 +39,7 @@ import localDatabase.userInfo.User;
 
 public class MainActivity extends AppCompatActivity {
     // test
-    private final static String TAG = "main";
+    private final static String TAG = "mainact";
 
     // VI
     BottomNavigationView bottomNavigationView;
@@ -75,27 +83,6 @@ public class MainActivity extends AppCompatActivity {
         assert user != null;  // should not happen though because we'll return if user is null
         nickname = user.getNickname();
 
-//        // use some test data for current user TODO delete this
-//        user.setSleepAlarm("22:50");
-//        user.setWakeUpAlarm("08:10");
-//        user.setExerciseAlarm("20:00");
-//        UserService.updateUserInfo(db, user);
-//
-//        // test set some dummy data for le TODO delete this
-//        String prefix = "2022-07-2";
-//        String prefix2 = "2022-06-1";
-//        for (int i=0; i<=9; i++) {
-//            UserService.createNewLightExercise(db, prefix2+i);
-//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix2+i);
-//            UserService.updateExerciseGoalStatus(db, true, prefix2+i);
-//        }
-//        for (int i=0; i<=7; i++) {
-//            UserService.createNewLightExercise(db, prefix+i);
-//            UserService.updateExerciseStatus(db, ExerciseStatus.COMPLETED, prefix+i);
-//            UserService.updateExerciseGoalStatus(db, true, prefix+i);
-//        }
-
-
         // get VI components
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -117,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
         // set bottom nav, currently at home so disable home item
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
-//        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_home:
@@ -212,28 +198,61 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // or the nav bar would act very strange
+    // always set selected item, or the nav bar would act very strange
     @Override
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        loadProfileImg(profileBtn);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        int seletedItemId = bottomNavigationView.getSelectedItemId();
-//        if (R.id.nav_home != seletedItemId) {
-//            setHomeItem(MainActivity.this);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
-//
-//    public static void setHomeItem(Activity activity) {
-//        BottomNavigationView navView = (BottomNavigationView)
-//                activity.findViewById(R.id.bottom_navigation);
-//        navView.setSelectedItemId(R.id.nav_home);
-//    }
+    // check if has permission to access storage (called when load profile picture
+    private boolean checkStoragePermission() {
+        Log.v(TAG,"checking permission in main");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            int read = ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            int write = ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return ( read == PackageManager.PERMISSION_GRANTED &&
+                    write == PackageManager.PERMISSION_GRANTED );
+
+        } else {
+            return Environment.isExternalStorageManager();
+        }
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        // Log.v(TAG, "res in load ProfileImg in main: " + res);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
+    }
+
+    // load image from assets/ to profile image view
+    private void loadImageFromAssets(ImageView imageView) {
+        try {
+            InputStream inputStream = getAssets().open("user_avatar.jpg");
+            Drawable drawable = Drawable.createFromStream(inputStream, null);
+            imageView.setImageDrawable(drawable);
+            Log.v(TAG, "load from assets.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.v(TAG, "can not load picture from assets");
+            return;
+        }
+    }
 
     // ========   helpers to start new activity  ===================
 
