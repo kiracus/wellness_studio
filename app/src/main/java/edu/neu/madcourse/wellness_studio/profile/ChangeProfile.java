@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.Objects;
+
 import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
@@ -47,7 +49,7 @@ public class ChangeProfile extends AppCompatActivity {
     protected final static String MISS_INFO_TOAST = "Please enter both email and password to create account.";
     protected final static String INVALID_INFO_TOAST = "Please enter valid email and password.";
     protected final static String AUTH_INFO_SAVED = "Saved successfully.";
-    protected final static String AUTH_INFO_NOT_SAVED = "Saved failed. Try again later.";
+    protected final static String AUTH_INFO_NOT_SAVED = "An account already exists with that email address.";
 
 
     // VI
@@ -198,71 +200,83 @@ public class ChangeProfile extends AppCompatActivity {
                         if (!Utils.checkValidEmail(emailInput) || !Utils.checkValidPassword(passwordInput)) {
                             Utils.postToast(INVALID_INFO_TOAST, ChangeProfile.this);
                         } else {
-                            // valid, update user info, create account
-                            // online account
-                            user.setEmail(emailInput);
-                            user.setPassword(passwordInput); // TODO save a token?
-                            user.setHasOnlineAccount(true);
+                            try {
+                                // valid, update user info, create account
+                                // online account
+                                // Create user with Firebase Auth
+                                mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+                                                    Utils.postToast(AUTH_INFO_SAVED, ChangeProfile.this);
+                                                    // Create online id and pass to save
+                                                    UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            // can't change, only update once if new online account created
+                                                            DatabaseReference saveKey = UsersRef.push();
+                                                            uid = saveKey.getKey();
+                                                            DatabaseReference newUserRef = UsersRef.child(uid);
+                                                            newUserRef.child("name").setValue(user.nickname);
+                                                            newUserRef.child("email").setValue(emailInput);
+                                                            newUserRef.child("img").setValue(user.profileImg);
+                                                            newUserRef.child("friends").setValue("");
 
-                            // Create user with Firebase Auth
-                            mAuth.createUserWithEmailAndPassword(user.email, user.password)
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task)
-                                        {
-                                            if (task.isSuccessful()) {
-                                                Utils.postToast(AUTH_INFO_SAVED, ChangeProfile.this);
+                                                            // Create weeklyOverview field for user
+                                                            DatabaseReference dbOverview = FirebaseDatabase.getInstance().getReference();
+                                                            DatabaseReference weeklyOverviews = dbOverview.child("weeklyOverviews");
+                                                            weeklyOverviews.child(uid).child(date).setValue(0);
+
+                                                            // Set online ID in local db
+                                                            user.setUserId(uid);
+
+                                                            // Log user in online upon account creation
+                                                            mAuth.signInWithEmailAndPassword(emailInput, passwordInput);
+                                                            user.setHasLoggedInOnline(true);
+                                                            UserService.updateUserInfo(db, user);
+
+                                                            user.setEmail(emailInput);
+                                                            user.setPassword(passwordInput);
+                                                            user.setHasOnlineAccount(true);
+
+                                                            UserService.updateUserInfo(db, user);
+                                                            goToProfile();
+                                                            finish();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                } else {
+                                                    Utils.postToast(AUTH_INFO_NOT_SAVED, ChangeProfile.this);
+                                                }
                                             }
-                                            else {
-                                                Utils.postToast(AUTH_INFO_NOT_SAVED, ChangeProfile.this);
-                                            }
-                                        }
-                            });
+                                        });
 
-                            // Create online id and pass to save
-                            UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    // can't change, only update once if new online account created
-                                    DatabaseReference saveKey = UsersRef.push();
-                                    uid = saveKey.getKey();
-                                    DatabaseReference newUserRef = UsersRef.child(uid);
-                                    newUserRef.child("name").setValue(user.nickname);
-                                    newUserRef.child("email").setValue(user.email);
-                                    newUserRef.child("img").setValue(user.profileImg);
-                                    newUserRef.child("friends").setValue("");
-
-                                    // Create weeklyOverview field for user
-                                    DatabaseReference dbOverview = FirebaseDatabase.getInstance().getReference();
-                                    DatabaseReference weeklyOverviews = dbOverview.child("weeklyOverviews");
-                                    weeklyOverviews.child(uid).child(date).setValue(0);
-
-                                    // Set online ID in local db
-                                    user.setUserId(uid);
-
-                                    // Log user in online upon account creation
-                                    mAuth.signInWithEmailAndPassword(user.email, user.password);
-                                    user.setHasLoggedInOnline(true);
-                                    UserService.updateUserInfo(db, user);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
+                            }
+                            catch (Exception e){
+                                Log.d("Error, possible duplicate account for provided email.", String.valueOf(e));
+                                Utils.postToast(AUTH_INFO_NOT_SAVED, ChangeProfile.this);
+                            }
                         }
                     }
                 }
-
                 // Write to cloud
                 UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         // can change, update everytime profile data saved
-                        DatabaseReference saveUser = UsersRef.child(user.userId);
-                        saveUser.child("name").setValue(user.nickname);
-                        saveUser.child("img").setValue(user.profileImg);
+                        if (user.userId != null) {
+                            DatabaseReference saveUser = UsersRef.child(user.userId);
+                            saveUser.child("name").setValue(user.nickname);
+                            saveUser.child("img").setValue(user.profileImg);
+                            UserService.updateUserInfo(db, user);
+                            goToProfile();
+                            finish();
+                        }
                     }
 
                     @Override
@@ -270,11 +284,6 @@ public class ChangeProfile extends AppCompatActivity {
 
                     }
                 });
-
-                // update local use info
-                UserService.updateUserInfo(db, user);
-                goToProfile();
-                finish();
             }
         });
 
