@@ -121,10 +121,10 @@ public class FriendsList extends AppCompatActivity {
         // Cloud
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
         DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(userId).child("friends");
-
         dbUserFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     Log.d("FRIENDLIST", "key + ");
@@ -266,6 +266,10 @@ public class FriendsList extends AppCompatActivity {
                             friendEmailList.add(createEmailOnData);
                             dialog.dismiss();
                             friendListAdapter.notifyItemInserted(friendEmailList.size());
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+                            overridePendingTransition(0, 0);
                         }
                     }
 
