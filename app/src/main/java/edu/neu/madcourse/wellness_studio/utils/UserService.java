@@ -85,6 +85,14 @@ public class UserService {
         return db.userDao().getUserNickname();
     }
 
+    public static void updateUserImg(AppDatabase db, String imgUri) {
+        User user = getCurrentUser(db);
+        assert user != null;
+        user.setProfileImg(imgUri);
+        Log.v(TAG, "update user img uri: " + imgUri);
+        updateUserInfo(db, user);
+    }
+
     public static String showUserInfo(AppDatabase db) {
         User user = getCurrentUser(db);
         assert user != null;

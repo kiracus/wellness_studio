@@ -3,24 +3,19 @@ package edu.neu.madcourse.wellness_studio.profile;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -30,7 +25,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -116,6 +110,7 @@ public class ChangeProfile extends AppCompatActivity {
     protected String emailInput;
     protected String passwordInput;
     protected Boolean hasChangedImg = false;
+    protected String prevImg;
 
     // user info
     protected Boolean hasOnlineAccount = false;
@@ -221,7 +216,6 @@ public class ChangeProfile extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-
                 // in case user name has input, check if it's valid
                 nicknameInput = usernameInputET.getText().toString();
                 if (!nicknameInput.equals(user.nickname)) {  // name is changed
@@ -256,8 +250,7 @@ public class ChangeProfile extends AppCompatActivity {
                             Utils.postToast(INVALID_INFO_TOAST, ChangeProfile.this);
                         } else {
                             try {
-                                // valid, update user info, create account
-                                // online account
+                                // both valid, update user info, create online account
                                 // Create user with Firebase Auth
                                 mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
                                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -330,7 +323,9 @@ public class ChangeProfile extends AppCompatActivity {
                             if (user.userId != null) {
                                 DatabaseReference saveUser = UsersRef.child(user.userId);
                                 saveUser.child("name").setValue(user.nickname);
-                                saveUser.child("img").setValue(user.profileImg);
+                                if (hasChangedImg) {  // this flag will be true if user selected a pic
+                                    saveUser.child("img").setValue(user.profileImg);
+                                }
 //                            UserService.updateUserInfo(db, user);
 //                            goToProfile();
 //                            finish();
@@ -348,6 +343,9 @@ public class ChangeProfile extends AppCompatActivity {
                 // in case user is offline and changes img and nickname
                 // always update any user change in local, whether online or not
                 UserService.updateUserInfo(db, user);
+                if (hasChangedImg) {  // if changed img, rename user_avatar_temp to user_avatar.jpg
+                    renameTempFile();
+                }
                 goToProfile();
                 finish();
             }
@@ -358,6 +356,44 @@ public class ChangeProfile extends AppCompatActivity {
             public void onClick(View v) {
                 // check if img changed flag on, if yes discard saved img
                 if (hasChangedImg) {
+                    // revert img URL in local db
+                    user.setProfileImg(prevImg);
+                    // save user_avatar to online db
+                    // if user is online, upload it and get an URL from online storage
+                    if (UserService.getOnlineStatus(db)) {
+                        Log.v(TAG, "user is online, try uploading old avatar...");
+                        String userUID = UserService.getCurrentUser(db).getUserId();
+                        StorageReference imgRef = storageRef.child("images/" + userUID);
+
+                        File filepath = Environment.getExternalStorageDirectory();
+                        File file = new File(filepath.getAbsolutePath()
+                                + "/WellnessStudio/user_avatar.jpg");
+                        Uri imgUri = Uri.fromFile(file);
+
+                        imgRef.putFile(imgUri)
+                                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        Log.v(TAG, "profile img uploaded");
+
+                                        // get a URL to the uploaded content, save in local
+                                        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                UserService.updateUserImg(db, uri.toString());
+                                            }
+                                        });
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // unsuccessful uploads
+                                        Log.v(TAG, "unsuccessful upload");
+                                    }
+                                });
+                    }
 
                 }
                 // go back to profile activity, finish current activity, return
@@ -367,14 +403,18 @@ public class ChangeProfile extends AppCompatActivity {
         });
     }
 
+
+    // called when user selected an image from local storage
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // save prev img URL in case user finally cancel
+        prevImg = UserService.getCurrentUser(db).getProfileImg();
+
         if (resultCode == RESULT_OK && data != null) {
             Uri selectedImg = data.getData();
             profileImg.setImageURI(selectedImg);  // show selected img
             Log.v(TAG, "have set new img");
-
             Log.v(TAG, "is user online? " + UserService.getOnlineStatus(db));
 
             // if user is online, upload it and get an URL from online storage
@@ -387,8 +427,15 @@ public class ChangeProfile extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Log.v(TAG, "profile img uploaded");
-                                // get a URL to the uploaded content
-                                // Uri imgUrl = taskSnapshot.getUploadSessionUri();
+
+                                // get a URL to the uploaded content, save in local
+                                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        UserService.updateUserImg(db, uri.toString());
+                                    }
+                                });
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -404,13 +451,59 @@ public class ChangeProfile extends AppCompatActivity {
             try {
                 Bitmap bitmap =
                         MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImg);
-                saveImg(bitmap);
+                saveImg(bitmap);  // save as temp img (user_avatar_temp.jpg)
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             // img changed flag on
             hasChangedImg = true;
+        }
+    }
+
+    // save img to be user_avatar.jpg in local storage
+    private void saveImg(Bitmap bitmap) {
+        OutputStream output;
+        File filepath = Environment.getExternalStorageDirectory();
+
+        // Create a new folder in SD Card
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/");
+        boolean res = dir.mkdirs();
+        if (!res) {
+            Log.v(TAG, "problem with storage permission, can not mkdir");
+        }
+
+        // Create a name for the saved image
+        File file = new File(dir, "user_avatar_temp.jpg");
+        try {
+            output = new FileOutputStream(file);
+            Log.v(TAG, "image saved to internal storage");
+            // Compress into png format image from 0% - 100%
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+            output.flush();
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.v(TAG, "error when saving image");
+        }
+    }
+
+    private void renameTempFile() {
+        Log.v(TAG, "in renameTempFile");
+        File filepath = Environment.getExternalStorageDirectory();
+        File dir = new File(filepath.getAbsolutePath()
+                + "/WellnessStudio/");
+        if(dir.exists()){
+            Log.v(TAG, "!!!!!! dir exists");
+            File from = new File(dir,"user_avatar_temp.jpg");
+            File to = new File(dir,"user_avatar.jpg");
+            if(from.exists()) {
+                Boolean res = from.renameTo(to);
+                Log.v(TAG, "renaming file temp to user_avatar: " + res);
+            }
+
+
         }
     }
 
@@ -486,33 +579,6 @@ public class ChangeProfile extends AppCompatActivity {
                     Utils.postToast("No permission to storage, can not load profile image.", ChangeProfile.this);
                 }
             }
-        }
-    }
-
-    private void saveImg(Bitmap bitmap) {
-        OutputStream output;
-        String recentImageInCache;
-        File filepath = Environment.getExternalStorageDirectory();
-
-        // Create a new folder in SD Card
-        File dir = new File(filepath.getAbsolutePath()
-                + "/WellnessStudio/");
-        boolean res = dir.mkdirs();
-        // Log.v(TAG, "mkdir result: " + res);
-
-        // Create a name for the saved image
-        File file = new File(dir, "user_avatar.jpg");
-        try {
-            output = new FileOutputStream(file);
-            Log.v(TAG, "image saved to internal storage");
-            // Compress into png format image from 0% - 100%
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-            output.flush();
-            output.close();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            Log.v(TAG, "error when saving image");
         }
     }
 
