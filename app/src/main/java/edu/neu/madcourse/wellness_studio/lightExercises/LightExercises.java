@@ -109,7 +109,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         Boolean exerciseAlarmOn = UserService.getExerciseAlarmOn(db);
 
         if (lightExercise == null) {
-            Log.d("myApp", "db is null");
+            Log.d(TAG, "db is null");
             UserService.createNewLightExercise(db);
         }
         //set existing progress to light exercise activity

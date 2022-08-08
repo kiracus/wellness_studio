@@ -188,7 +188,7 @@ public class UserService {
 
     public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
         if (checkIfLightExerciseExists(db)) {
-            //Log.v(TAG, "update status: " + status.toString());
+            Log.v(TAG, "update status: " + status.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(status, date);
         }
     }
@@ -250,6 +250,30 @@ public class UserService {
         return db.userDao().exerciseAlarmOn();
     }
 
+    public static void updateStepCompletion(AppDatabase db, int currentStep, boolean stepCompleted) {
+        if(currentStep == 1) {
+            db.lightExerciseDao().setStepOneCompleted(stepCompleted,Utils.getCurrentDate());
+        }
+        if(currentStep == 2) {
+            db.lightExerciseDao().setStepTwoCompleted(stepCompleted,Utils.getCurrentDate());
+        }
+        if(currentStep == 3) {
+            db.lightExerciseDao().setStepThreeCompleted(stepCompleted,Utils.getCurrentDate());
+        }
+        if(currentStep == 4) {
+            db.lightExerciseDao().setStepFourCompleted(stepCompleted,Utils.getCurrentDate());
+        }
+        Log.v(TAG, "updating exerciseStepCompletion: " + currentStep);
+    }
+
+    // update current set (for today)
+    public static void updateCurrentStep(AppDatabase db, int currentStep) {
+        if (checkIfLightExerciseExists(db)) {
+            Log.v(TAG, "updating currSet: " + currentStep);
+            db.lightExerciseDao().setLightExerciseStepByDate(String.valueOf(currentStep), Utils.getCurrentDate());
+        }
+    }
+
     // update exercise reminder on or off in User table
     public static void updateExerciseReminderOn(AppDatabase db, Boolean exerciseAlarmOn) {
         if (checkIfUserExists(db)) {
@@ -274,7 +298,6 @@ public class UserService {
         }
         return counts;
     }
-
     // transfer an integer to a 2-char string, add 0 before single digit number
     private static String to2CharString(int num) {
         return num<10 ? "0"+num : ""+num;
