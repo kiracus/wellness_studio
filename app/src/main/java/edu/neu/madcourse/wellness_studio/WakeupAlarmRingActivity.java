@@ -89,6 +89,7 @@ public class WakeupAlarmRingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (WakeupSleepGoal.isSnooze.equals("OFF") ) {
                     Toast.makeText(WakeupAlarmRingActivity.this, "Sorry, you cannot snooze alarm this time, please turn on the snooze next time.", Toast.LENGTH_SHORT).show();
+
                     return;
                 }
 
