@@ -272,7 +272,8 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
             }
         });
 
-        // set checkbox listener if no date is selected
+        // set checkbox and checkbox listener if no date is selected
+        goalFinishedCB.setChecked(UserService.getGoalFinishedByDate(db, currdate));
         goalFinishedCB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,8 +4,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -19,6 +21,8 @@ import android.widget.RadioGroup;
 
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Array;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,8 +100,12 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
         loadExerciseSets(focusArea);
 
+        //set listeners for changes
         checkBoxOnChangeListener(exerciseCompletecheckBox);
         scrollViewOnChangeListener(scrollViewForExerciseSets);
+
+        profileIV.setOnClickListener( v-> goToProfile());
+        loadProfileImg(profileIV);
 
         //connect to db and load previous data
         lightExercise = UserService.getCurrentLightExercise(db);
@@ -115,16 +123,25 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
         if(lightExercise != null && !currentExerciseStatus.equals(ExerciseStatus.NOT_STARTED)) {
             if(lightExercise.getCurrentStep() != null) {
-                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
-                Log.d(TAG,"get current step from db: " + lightExercise.getCurrentStep());
-                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
-                //automatically scroll to position x
-                //setCompleteButton
+                currentSetPosition = Integer.parseInt(lightExercise.getCurrentStep());
+                Log.d(TAG,"get current step from db: " + currentSetPosition);
+                //load progress bar to the most recent completed set from last time
+                setProgressBarStatus(currentSetPosition,false);
+                //automatically scroll to position at where was last most recent set
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCurrentSetPosition(currentSetPosition, 800);
+                    }
+                },100);
+
+                //setCompleteButton on the last completed position when it got scrolled to the most recent completed set
+                if(getCurrentSetCompletionStatus(currentSetPosition)) {
+                    exerciseCompletecheckBox.setChecked(true);
+                }
             }
         }
     }
-
-
 
     //receive focus area intent
     public ExerciseSet receivedAnIntentForChosenFocusedArea() {
@@ -185,7 +202,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
                     }
                     // perform logic and save changes to db
                     setCurrentSetCompletionStatus(currentSetPosition);
-                    setProgressBarStatus(currentSetPosition);
+                    setProgressBarStatus(currentSetPosition,true);
                     UserService.updateCurrentStep(db,currentSetPosition);
                     UserService.updateStepCompletion(db,currentSetPosition,true);
                     updateExerciseStatus(currentSetPosition);
@@ -200,6 +217,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
             @Override
             public void onScrollChanged() {
                  int latestSetPosition = getCurrentSetPosition(horizontalScrollView.getScrollX(),4,800);
+                 Log.d(TAG,"scrollChangePosition: " + latestSetPosition);
                  if(latestSetPosition != currentSetPosition && latestSetPosition != -1) {
                      boolean latestSetCompletion = getCurrentSetCompletionStatus(latestSetPosition);
                      //if current set is not completed and checkBox is checked, uncheck the checkbox
@@ -229,6 +247,25 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
             }
         }
         return -1;
+    }
+
+    public void setCurrentSetPosition(int currentCompletedSetPosition, int widthOfEachPic) {
+        if(currentCompletedSetPosition == 1) {
+            scrollViewForExerciseSets.scrollTo(0, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 1);
+        }
+        if(currentCompletedSetPosition == 2) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 1, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 2);
+        }
+        if(currentCompletedSetPosition == 3) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 2, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 3);
+        }
+        if(currentCompletedSetPosition == 4) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 3,0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 4);
+        }
     }
 
 
@@ -264,28 +301,38 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         }
     }
 
-    public void setProgressBarStatus(int currentSetPosition) {
-        if(currentSetPosition == 1 && stepCompleted1) {
+    //set progress bar, and set if toast will be posted
+    public void setProgressBarStatus(int currentSetPosition, boolean postToast) {
+        if(stepCompleted1) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
-            Utils.postToast("Set 1 completed!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("Set 1 completed!", getApplicationContext());
+            }
+
         }
-        if(currentSetPosition == 2 && stepCompleted2) {
+        if(stepCompleted2) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
-            Utils.postToast("Set 2 completed!", getApplicationContext());
-
+            if(postToast) {
+                Utils.postToast("Set 2 completed!", getApplicationContext());
+            }
         }
-        if(currentSetPosition == 3 && stepCompleted3) {
+        if(stepCompleted3) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
-            Utils.postToast("Set 3 completed!", getApplicationContext());
-
+            if(postToast) {
+                Utils.postToast("Set 3 completed!", getApplicationContext());
+            }
         }
-        if(currentSetPosition == 4 && stepCompleted4) {
+        if(stepCompleted4) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
-            Utils.postToast("Set 4 completed!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("Set 4 completed!", getApplicationContext());
+            }
         }
         if(stepCompleted1 && stepCompleted2 && stepCompleted3 && stepCompleted4) {
             stateProgressBar.setAllStatesCompleted(true);
-            Utils.postToast("All sets completed for today!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("All sets completed for today!", getApplicationContext());
+            }
         }
     }
 
@@ -296,6 +343,23 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
     private void goToProfile() {
         startActivity(new Intent(LightExercises_DuringExercise.this, Profile.class));
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
     }
 
     public void updateExerciseStatus(int currentSetPosition) {

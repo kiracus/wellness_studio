@@ -13,7 +13,12 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
+
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.AlarmClock;
@@ -145,6 +150,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         profileImageView = findViewById(R.id.imageView_profile);
         profileImageView.setOnClickListener(v -> goToProfile());
 
+
         // set bottom nav bar
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_exercise);
@@ -167,6 +173,31 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                     return false;
             }
         });
+    }
+
+    // always set selected item, or the nav bar would act very strange
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.nav_exercise);
+        loadProfileImg(profileImageView);  // and load profile img in case user changes img then go back here
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
     }
 
     private void scrollToCurrentSet(ExerciseSet currentSet) {
@@ -361,7 +392,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
             }
             if(stepProgressCompletion.size() == 4) {
                 stateProgressBar.setAllStatesCompleted(true);
-                Utils.postToast("All sets completed for today!", getApplicationContext());
             }
         });
     }

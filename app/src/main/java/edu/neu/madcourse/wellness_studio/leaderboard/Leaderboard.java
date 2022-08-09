@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -377,6 +380,24 @@ public class Leaderboard extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+        loadProfileImg(profileIV);
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
     }
 
     // ========   helpers to start new activity  ===================

@@ -16,10 +16,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import android.content.Intent;
+<<<<<<< HEAD
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+=======
+import android.graphics.drawable.Drawable;
+>>>>>>> a06a36f400eeeb936e1c70ad0a90740aa5a11d02
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -36,6 +40,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -44,6 +50,7 @@ import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.AlarmReceiver;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
+import edu.neu.madcourse.wellness_studio.utils.UserService;
 
 public class WakeupSleepGoal extends AppCompatActivity {
 
@@ -406,7 +413,28 @@ public class WakeupSleepGoal extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+<<<<<<< HEAD
 
+=======
+        loadProfileImg(profile); // load profile pic here in case user gets here through back button
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
+>>>>>>> a06a36f400eeeb936e1c70ad0a90740aa5a11d02
     }
 
     // ========   helpers to start new activity  ===================
