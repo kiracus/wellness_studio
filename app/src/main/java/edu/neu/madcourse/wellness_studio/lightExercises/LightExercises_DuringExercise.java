@@ -115,9 +115,8 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
         if(lightExercise != null && !currentExerciseStatus.equals(ExerciseStatus.NOT_STARTED)) {
             if(lightExercise.getCurrentStep() != null) {
-                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
+                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()),false);
                 Log.d(TAG,"get current step from db: " + lightExercise.getCurrentStep());
-                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()));
                 //automatically scroll to position x
                 //setCompleteButton
             }
@@ -185,7 +184,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
                     }
                     // perform logic and save changes to db
                     setCurrentSetCompletionStatus(currentSetPosition);
-                    setProgressBarStatus(currentSetPosition);
+                    setProgressBarStatus(currentSetPosition,true);
                     UserService.updateCurrentStep(db,currentSetPosition);
                     UserService.updateStepCompletion(db,currentSetPosition,true);
                     updateExerciseStatus(currentSetPosition);
@@ -200,6 +199,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
             @Override
             public void onScrollChanged() {
                  int latestSetPosition = getCurrentSetPosition(horizontalScrollView.getScrollX(),4,800);
+                 Log.d(TAG,"scrollChangePosition: " + latestSetPosition);
                  if(latestSetPosition != currentSetPosition && latestSetPosition != -1) {
                      boolean latestSetCompletion = getCurrentSetCompletionStatus(latestSetPosition);
                      //if current set is not completed and checkBox is checked, uncheck the checkbox
@@ -264,28 +264,38 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         }
     }
 
-    public void setProgressBarStatus(int currentSetPosition) {
+    //set progress bar, and set if toast will be posted
+    public void setProgressBarStatus(int currentSetPosition, boolean postToast) {
         if(currentSetPosition == 1 && stepCompleted1) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
-            Utils.postToast("Set 1 completed!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("Set 1 completed!", getApplicationContext());
+            }
+
         }
         if(currentSetPosition == 2 && stepCompleted2) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
-            Utils.postToast("Set 2 completed!", getApplicationContext());
-
+            if(postToast) {
+                Utils.postToast("Set 2 completed!", getApplicationContext());
+            }
         }
         if(currentSetPosition == 3 && stepCompleted3) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
-            Utils.postToast("Set 3 completed!", getApplicationContext());
-
+            if(postToast) {
+                Utils.postToast("Set 3 completed!", getApplicationContext());
+            }
         }
         if(currentSetPosition == 4 && stepCompleted4) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
-            Utils.postToast("Set 4 completed!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("Set 4 completed!", getApplicationContext());
+            }
         }
         if(stepCompleted1 && stepCompleted2 && stepCompleted3 && stepCompleted4) {
             stateProgressBar.setAllStatesCompleted(true);
-            Utils.postToast("All sets completed for today!", getApplicationContext());
+            if(postToast) {
+                Utils.postToast("All sets completed for today!", getApplicationContext());
+            }
         }
     }
 
