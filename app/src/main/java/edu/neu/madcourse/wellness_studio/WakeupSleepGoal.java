@@ -16,14 +16,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import android.content.Intent;
-<<<<<<< HEAD
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-=======
+
 import android.graphics.drawable.Drawable;
->>>>>>> a06a36f400eeeb936e1c70ad0a90740aa5a11d02
+
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -413,9 +412,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
-<<<<<<< HEAD
 
-=======
         loadProfileImg(profile); // load profile pic here in case user gets here through back button
     }
 
@@ -434,7 +431,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
                 Log.v(TAG, "can not load picture from assets");
             }
         }
->>>>>>> a06a36f400eeeb936e1c70ad0a90740aa5a11d02
+
     }
 
     // ========   helpers to start new activity  ===================
