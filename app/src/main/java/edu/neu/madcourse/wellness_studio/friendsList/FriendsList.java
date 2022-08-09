@@ -296,12 +296,6 @@ public class FriendsList extends AppCompatActivity {
         Utils.postToastLong(ADD__INVALID_FRIEND_ERROR_MSG, FriendsList.this);
     }
 
-
-    // TODO
-    // Delete friend
-    // Handle share/unshare of exercise w/friends (multiple listeners on list view buttons)
-
-
     // ========   helpers to start new activity  ===================
 
     private void goToHome() {

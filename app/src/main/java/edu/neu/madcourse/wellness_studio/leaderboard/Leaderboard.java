@@ -2,6 +2,7 @@ package edu.neu.madcourse.wellness_studio.leaderboard;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
@@ -128,9 +130,30 @@ public class Leaderboard extends AppCompatActivity {
                 createLoginDialog();
             }
         } else {
-            // Direct user to profile settings to create online account
-            Utils.postToastLong("Create an online account to access the leaderboard!", Leaderboard.this);
-            startActivity(new Intent(Leaderboard.this, ChangeProfile.class));
+            // Direct user to profile settings to create online account or take them to login
+            AlertDialog.Builder builder = new AlertDialog.Builder(Leaderboard.this);
+            builder.setMessage("Create an online account to access the leaderboard. Already have an online account?");
+
+            builder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    createLoginDialog();
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("Register", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                    dialog.dismiss();
+                    startActivity(new Intent(Leaderboard.this, ChangeProfile.class));
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }
 
         refreshBtn.setOnClickListener(v -> refreshLeaderboard());
@@ -171,21 +194,23 @@ public class Leaderboard extends AppCompatActivity {
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
 
         try {
-            DatabaseReference myCount = dbRoot.child("weeklyOverviews");
-            myCount.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    friendWeeklyCount.add(String.valueOf(snapshot.child(user.userId).child(date).getValue(Integer.class)));
-                    friendEmailList.add(user.nickname + " (Me)");
-                    leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
-                    leaderboardAdapter.notifyItemInserted(friendEmailList.size());
-                }
+            if (user.userId != null) {
+                DatabaseReference myCount = dbRoot.child("weeklyOverviews");
+                myCount.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        friendWeeklyCount.add(String.valueOf(snapshot.child(user.userId).child(date).getValue(Integer.class)));
+                        friendEmailList.add(user.nickname + " (Me)");
+                        leaderboardRecyclerView.setLayoutManager(new LinearLayoutManager(Leaderboard.this));
+                        leaderboardAdapter.notifyItemInserted(friendEmailList.size());
+                    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                    }
+                });
+            }
 
             Log.d("DEBUG ---- ", String.valueOf(friendEmailList.size()));
             DatabaseReference dbUserFriendsRef = dbRoot.child("users").child(user.userId).child("friends");
@@ -293,11 +318,42 @@ public class Leaderboard extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Utils.postToast("Login successful.", Leaderboard.this);
                                             user.setHasLoggedInOnline(true);
+                                            user.setHasOnlineAccount(true);
                                             UserService.updateUserInfo(db, user);
 
-                                            // TODO update other user info if no local info (email, uid)
+                                            if (user.email == null || user.userId == null) {
+                                                // Set local email
+                                                user.setEmail(email);
+                                                DatabaseReference dfb = FirebaseDatabase.getInstance().getReference();
+                                                DatabaseReference updateLocal = dfb.child("users");
+                                                updateLocal.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        // Set uid given email
+                                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                                            String key = ds.getKey();
+                                                            String emailFound = ds.child("email").getValue(String.class);
 
+                                                            assert emailFound != null;
+                                                            if (emailFound.equals(email)) {
+                                                                user.setUserId(key);
+                                                                UserService.updateUserInfo(db, user);
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+                                            }
                                             dialog.dismiss();
+                                            finish();
+                                            overridePendingTransition(0, 0);
+                                            startActivity(getIntent());
+                                            overridePendingTransition(0, 0);
                                         }
 
                                         else {
@@ -308,10 +364,6 @@ public class Leaderboard extends AppCompatActivity {
             }
         });
     }
-
-    // TODO
-    // Edit progress bar for each friend + count of days/7
-    // Work on refresh button
 
     public void refreshLeaderboard() {
         finish();
