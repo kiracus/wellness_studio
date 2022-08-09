@@ -392,7 +392,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
             }
             if(stepProgressCompletion.size() == 4) {
                 stateProgressBar.setAllStatesCompleted(true);
-                Utils.postToast("All sets completed for today!", getApplicationContext());
             }
         });
     }
