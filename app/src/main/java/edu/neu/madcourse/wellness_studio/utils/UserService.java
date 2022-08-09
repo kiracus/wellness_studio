@@ -71,7 +71,7 @@ public class UserService {
         user.setHasOnlineAccount(false);
         user.setHasLoggedInOnline(false);
         // user a default avatar in assets folder
-        user.setProfileImg("some/address");
+        // user.setProfileImg("some/address");
 
         createNewUser(db, user);
         Log.v(TAG, showUserInfo(db));

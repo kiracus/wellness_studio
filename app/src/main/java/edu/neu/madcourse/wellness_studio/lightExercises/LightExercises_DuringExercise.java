@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ import android.widget.RadioGroup;
 
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Array;
 import java.util.Date;
 import java.util.HashMap;
@@ -99,6 +102,9 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         checkBoxOnChangeListener(exerciseCompletecheckBox);
         scrollViewOnChangeListener(scrollViewForExerciseSets);
 
+        profileIV.setOnClickListener( v-> goToProfile());
+        loadProfileImg(profileIV);
+
         //connect to db and load previous data
         lightExercise = UserService.getCurrentLightExercise(db);
         ExerciseStatus currentExerciseStatus = lightExercise.getExerciseStatus();
@@ -123,8 +129,6 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
             }
         }
     }
-
-
 
     //receive focus area intent
     public ExerciseSet receivedAnIntentForChosenFocusedArea() {
@@ -296,6 +300,23 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
     private void goToProfile() {
         startActivity(new Intent(LightExercises_DuringExercise.this, Profile.class));
+    }
+
+    // load profile img from sdcard, if can't load from assets/
+    private void loadProfileImg(ImageView imageView) {
+        boolean res = UserService.loadImageForProfile(imageView);
+        if (!res) {
+            Log.v(TAG, "load Image from storage returns false, try assets/");
+            try {
+                InputStream inputStream = getAssets().open("user_avatar.jpg");
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                imageView.setImageDrawable(drawable);
+                Log.v(TAG, "load from assets.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.v(TAG, "can not load picture from assets");
+            }
+        }
     }
 
     public void updateExerciseStatus(int currentSetPosition) {

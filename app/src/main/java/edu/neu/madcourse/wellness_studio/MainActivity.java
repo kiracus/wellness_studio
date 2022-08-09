@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             exerciseGoBtn.setText("GO");
         } else {
             exerciseGoBtn.setText("CONTINUE");
-            exerciseGoBtn.setTextSize(10);
+            exerciseGoBtn.setTextSize(9);
         }
 
         // set exercise go button respond
