@@ -433,21 +433,26 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                             @NonNull Task<AuthResult> task)
                                     {
                                         if (task.isSuccessful()) {
+                                            User user = UserService.getCurrentUser(db);
+                                            assert user != null;
+                                            user.setEmail(email);
+
                                             Utils.postToast("Login successful.", Profile.this);
-                                            UserService.changeOnlineStatus(db);
+                                            user.setHasLoggedInOnline(true);
+                                            user.setHasOnlineAccount(true);
+                                            UserService.updateUserInfo(db, user);
                                             profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
 
-//                                            // if no uid is saved locally, update it
-//                                            if (UserService.getCurrentUser(db).getUserId() == null) {
-//                                                Log.v(TAG, "null uid, downloading info from db");
-//                                                loadUserInfoFromOnline(mAuth.getCurrentUser().getUid());
-//                                            }
+                                            if (user.userId == null) {
+                                                Log.v(TAG, "null uid, downloading info from db");
+                                                loadUserInfoFromOnline(email, user);
+                                            }
 
                                             // for test, load everytime
-                                            if (true) {
-                                                Log.v(TAG, "downloading info from db");
-                                                loadUserInfoFromOnline(email);
-                                            }
+//                                            if (true) {
+//                                                Log.v(TAG, "downloading info from db");
+//                                                loadUserInfoFromOnline(email);
+//                                            }
 
                                             dialog.dismiss();
                                         }
@@ -553,13 +558,33 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // download userinfo from firebase realtime db
     // called after login if no local uid is saved in local
-    private void loadUserInfoFromOnline(String email) {
+    private void loadUserInfoFromOnline(String email, User user) {
         Log.v(TAG, "loading, using email: " + email);
-        User user = UserService.getCurrentUser(db);
-        user.setEmail(email);
-        DatabaseReference dbUsersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        // TODO should save the uid locally
+        DatabaseReference dfb = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference updateLocal = dfb.child("users");
+        updateLocal.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Set uid given email
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String key = ds.getKey();
+                    String emailFound = ds.child("email").getValue(String.class);
+
+                    assert emailFound != null;
+                    if (emailFound.equals(email)) {
+                        user.setUserId(key);
+                        UserService.updateUserInfo(db, user);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
