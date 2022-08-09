@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -96,6 +97,7 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
         loadExerciseSets(focusArea);
 
+        //set listeners for changes
         checkBoxOnChangeListener(exerciseCompletecheckBox);
         scrollViewOnChangeListener(scrollViewForExerciseSets);
 
@@ -115,15 +117,25 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
         if(lightExercise != null && !currentExerciseStatus.equals(ExerciseStatus.NOT_STARTED)) {
             if(lightExercise.getCurrentStep() != null) {
-                setProgressBarStatus(Integer.parseInt(lightExercise.getCurrentStep()),false);
-                Log.d(TAG,"get current step from db: " + lightExercise.getCurrentStep());
-                //automatically scroll to position x
-                //setCompleteButton
+                currentSetPosition = Integer.parseInt(lightExercise.getCurrentStep());
+                Log.d(TAG,"get current step from db: " + currentSetPosition);
+                //load progress bar to the most recent completed set from last time
+                setProgressBarStatus(currentSetPosition,false);
+                //automatically scroll to position at where was last most recent set
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCurrentSetPosition(currentSetPosition, 800);
+                    }
+                },100);
+
+                //setCompleteButton on the last completed position when it got scrolled to the most recent completed set
+                if(getCurrentSetCompletionStatus(currentSetPosition)) {
+                    exerciseCompletecheckBox.setChecked(true);
+                }
             }
         }
     }
-
-
 
     //receive focus area intent
     public ExerciseSet receivedAnIntentForChosenFocusedArea() {
@@ -231,6 +243,25 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
         return -1;
     }
 
+    public void setCurrentSetPosition(int currentCompletedSetPosition, int widthOfEachPic) {
+        if(currentCompletedSetPosition == 1) {
+            scrollViewForExerciseSets.scrollTo(0, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 1);
+        }
+        if(currentCompletedSetPosition == 2) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 1, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 2);
+        }
+        if(currentCompletedSetPosition == 3) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 2, 0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 3);
+        }
+        if(currentCompletedSetPosition == 4) {
+            scrollViewForExerciseSets.scrollTo(widthOfEachPic * 3,0);
+            Log.d(TAG, "setCurrentSetPosition scroll to: " + 4);
+        }
+    }
+
 
     public boolean getCurrentSetCompletionStatus(int currentSetPosition) {
         if(currentSetPosition == 1) {
@@ -266,26 +297,26 @@ public class LightExercises_DuringExercise<pubic> extends AppCompatActivity {
 
     //set progress bar, and set if toast will be posted
     public void setProgressBarStatus(int currentSetPosition, boolean postToast) {
-        if(currentSetPosition == 1 && stepCompleted1) {
+        if(stepCompleted1) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
             if(postToast) {
                 Utils.postToast("Set 1 completed!", getApplicationContext());
             }
 
         }
-        if(currentSetPosition == 2 && stepCompleted2) {
+        if(stepCompleted2) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
             if(postToast) {
                 Utils.postToast("Set 2 completed!", getApplicationContext());
             }
         }
-        if(currentSetPosition == 3 && stepCompleted3) {
+        if(stepCompleted3) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
             if(postToast) {
                 Utils.postToast("Set 3 completed!", getApplicationContext());
             }
         }
-        if(currentSetPosition == 4 && stepCompleted4) {
+        if(stepCompleted4) {
             stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
             if(postToast) {
                 Utils.postToast("Set 4 completed!", getApplicationContext());
