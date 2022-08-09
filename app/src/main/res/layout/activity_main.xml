@@ -210,7 +210,7 @@
             <Button
                 android:id="@+id/button1"
                 style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="90dp"
+                android:layout_width="110dp"
                 android:layout_height="40dp"
                 android:layout_margin="30dp"
                 android:text="GO"
@@ -273,7 +273,7 @@
             <Button
                 android:id="@+id/button2"
                 style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="90dp"
+                android:layout_width="110dp"
                 android:layout_height="40dp"
                 android:layout_margin="30dp"
                 android:text="GO"
