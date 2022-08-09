@@ -16,6 +16,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -57,10 +61,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    public static String isSnooze, isWakeupSensorUse, isSleepSensorUse;
+    public static String isSnooze = "OFF", isWakeupSensorUse = "OFF", isSleepSensorUse = "OFF";
     long wakeupMillis, sleepMillis;
-
-
+    boolean isUserAsleep = false;
+    private SensorManager mSensorManager;
+    private Sensor sensor;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -71,6 +76,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         //notification
         createNotificationChannelSleep();
         createNotificationChannelWakeup();
+
         profile = findViewById(R.id.imageView_profile);
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
@@ -252,8 +258,45 @@ public class WakeupSleepGoal extends AppCompatActivity {
             }
         });
 
+        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        mSensorManager.registerListener(listener, sensor, SensorManager. SENSOR_DELAY_NORMAL);
 
     }
+
+    private SensorEventListener listener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            Calendar sleepCheck = Calendar.getInstance();
+            sleepCheck.setTimeInMillis(sleepMillis);
+            sleepCheck.add(Calendar.MINUTE, 10);
+
+            float value = event.values[0];
+            if (sleepCheck.getTimeInMillis() <= System.currentTimeMillis()) {
+                if (value < 40) {
+                    Log.d("WakeupSleepGoal", "current light" + value);
+                    isUserAsleep = true;
+                    Log.d("WakeupSleepGoal", "user asleep" + isUserAsleep);
+                    if (isUserAsleep) {
+                        mSensorManager.unregisterListener(listener);
+                        cancelSleepAlarm();
+                    }
+                } else {
+                    Calendar sleepAlarmAgain = Calendar.getInstance();
+                    sleepAlarmAgain.setTimeInMillis(sleepMillis);
+                    sleepAlarmAgain.add(Calendar.MINUTE, 11);
+                    int hour, min;
+                    hour = sleepAlarmAgain.get(Calendar.HOUR_OF_DAY);
+                    min = sleepAlarmAgain.get(Calendar.MINUTE);
+                    setSleepAlarm(hour, min);
+                }
+            }
+        }
+    };
 
 
 
@@ -363,6 +406,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_sleep);
+
     }
 
     // ========   helpers to start new activity  ===================
@@ -467,29 +511,5 @@ public class WakeupSleepGoal extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"Wakeup Alarm is off",Toast.LENGTH_SHORT).show();
     }
 
-//    private void cancelWakeupSensor() {
-//    }
-//
-//    private void startWakeupSensor() {
-//    }
-//
-//    private void cancelSleepSensor() {
-//    }
-//
-//    private void startSleepSensor() {
-//        snoozeAlarm();
-//    }
-//
-//    private void snoozeAlarm() {
-//
-//    }
-//
-//    private void cancelSnooze() {
-//
-//    }
-//
-//    private void startSnooze() {
-//
-//
-//    }
+
 }

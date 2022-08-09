@@ -31,13 +31,15 @@ public class AlarmSleepReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_baseline_alarm_24)
                 .setContentTitle("Alarm Alarm Alarm")
                 .setContentText("It is time to sleep!")
-                .setAutoCancel(true)
                 .setSound(alarmSound)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
+
         NotificationManagerCompat notificationCompat = NotificationManagerCompat.from(context);
         notificationCompat.notify(123, builder.build());
+
+
 
 
     }
