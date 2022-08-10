@@ -144,7 +144,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 Log.d("test","hour: " + hour);
                 Log.d("test","min: " + min);
                 timeTextView.setText(time);
-//                setAlarm();
+                setAlarm();
             }
         }
 
@@ -265,7 +265,9 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         }
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,timeAlarmTriggeredInmillis,AlarmManager.INTERVAL_DAY,pendingIntent);
+        //intervalAtMilis: is 1 day, which is 86400000 seconds
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAlarmTriggeredInmillis,86400000,pendingIntent);
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,timeAlarmTriggeredInmillis,AlarmManager.INTERVAL_DAY,pendingIntent);
         Utils.postToast("reminder is on", getApplicationContext());
         //save exerciseReminder into db
     }
