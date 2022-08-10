@@ -21,4 +21,6 @@ public interface SleepGoalDao {
 
     @Delete
     void deleteSleepGoal(SleepGoal sleepGoal);
+
+
 }
