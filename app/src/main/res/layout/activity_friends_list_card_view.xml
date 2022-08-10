@@ -17,17 +17,16 @@
                 android:clickable="false"
                 android:layout_weight="1"
                 android:contentDescription="person icon"
-                android:scaleType="fitStart"
-                android:scaleY=".9"
+                android:scaleY=".8"
                 app:srcCompat="@drawable/ic_person_icon" />
 
             <TextView
                 android:id="@+id/friendListEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="18dp"
-                android:layout_marginEnd="22dp"
+                android:layout_marginEnd="2dp"
                 android:layout_marginBottom="18dp"
                 android:layout_weight="8"
                 android:text="friend"
@@ -36,22 +35,25 @@
 
             <ToggleButton
                 android:id="@+id/exerciseShareButton"
-                android:layout_width="92dp"
+                android:layout_width="77dp"
                 android:layout_height="63dp"
                 android:layout_margin="5dp"
+                android:layout_marginEnd="0dp"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/darker_gray"
+                android:checked="true"
                 android:textOff="Update Share"
                 android:textOn="Update Share"
-                android:checked="true"
+                android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <ImageButton
                 android:id="@+id/deleteFriendButton"
-                android:layout_width="45dp"
+                android:layout_width="26dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:scaleX=".6"
