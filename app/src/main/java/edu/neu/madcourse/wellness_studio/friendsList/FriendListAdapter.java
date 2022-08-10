@@ -7,11 +7,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.net.Uri;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -23,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,13 +45,15 @@ import localDatabase.userInfo.User;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.FriendListViewHolder> {
 
     List<String> friendsList;
+    List<String> imgList;
     private final Context context;
     ToggleButton exerciseShareButton;
 
 
-    public FriendListAdapter(Context context, List<String> friendsList) {
+    public FriendListAdapter(Context context, List<String> friendsList, List<String> imgList) {
         this.context = context;
         this.friendsList = friendsList;
+        this.imgList = imgList;
         setHasStableIds(true);
     }
 
@@ -55,7 +66,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
 
     @Override
     public void onBindViewHolder(@NonNull FriendListViewHolder holder, int position) {
-        holder.bindThisData(friendsList.get(position));
+        holder.bindThisData(friendsList.get(position), imgList.get(position));
     }
 
     @Override
@@ -66,12 +77,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
     public class FriendListViewHolder extends RecyclerView.ViewHolder {
 
         TextView friendEmail;
+        ImageView friendImg;
         String friendId = "";
 
 
         FriendListViewHolder(View v) {
             super(v);
             friendEmail = v.findViewById(R.id.friendListEmail);
+            friendImg = v.findViewById(R.id.personIcon);
             exerciseShareButton = v.findViewById(R.id.exerciseShareButton);
 
               // When clicking on whole row, give user option to delete friend or cancel
@@ -244,7 +257,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             });
         }
 
-        public void bindThisData(String thePersonToBind) {
+        public void bindThisData(String thePersonToBind, String imgUriString) {
+            Picasso.get().setLoggingEnabled(true);
+            Uri imgUri = Uri.parse(imgUriString);
+            Picasso.get().load(imgUri).transform(new CircleTransform()).resize(190,190).into(friendImg);
             friendEmail.setText(thePersonToBind);
         }
 
@@ -253,6 +269,42 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
             ((Activity)context).overridePendingTransition(0,0);
             ((Activity)context).startActivity(((Activity)context).getIntent());
             ((Activity)context).overridePendingTransition(0,0);
+        }
+
+
+    }
+
+    // Circular transformation from source: https://gist.github.com/aprock/6213395
+    public static class CircleTransform implements Transformation {
+        @Override
+        public Bitmap transform(Bitmap img) {
+            int size = Math.min(img.getWidth(), img.getHeight());
+
+            int x = (img.getWidth() - size) / 2;
+            int y = (img.getHeight() - size) / 2;
+
+            Bitmap squareBitmap = Bitmap.createBitmap(img, x, y, size, size);
+            if (squareBitmap != img) {
+                img.recycle();
+            }
+            Bitmap bm = Bitmap.createBitmap(size, size, img.getConfig());
+            Paint paint = new Paint();
+            Canvas canvas = new Canvas(bm);
+            BitmapShader shader = new BitmapShader(squareBitmap,
+                    Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            paint.setShader(shader);
+            paint.setAntiAlias(true);
+
+            float r = size / 2f;
+            canvas.drawCircle(r, r, r, paint);
+
+            squareBitmap.recycle();
+            return bm;
+        }
+
+        @Override
+        public String key() {
+            return "circle";
         }
     }
 

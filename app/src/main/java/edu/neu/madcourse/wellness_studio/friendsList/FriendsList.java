@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,15 +19,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +62,15 @@ public class FriendsList extends AppCompatActivity {
     FriendListAdapter friendListAdapter;
     List<String> friendEmailList;
     List<String> userList;
+    List<String> imgList;
 
     public String friendEmailData = "";
     String userIdFriend = "";
     String userId = "";
 
+    // Firebase storage
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
@@ -109,9 +120,10 @@ public class FriendsList extends AppCompatActivity {
 
         friendEmailList = new ArrayList<>();
         userList = new ArrayList<>();
+        imgList = new ArrayList<>();
         friendListRecyclerView = findViewById(R.id.friendsListRecyclerView);
         friendListRecyclerView.setHasFixedSize(true);
-        friendListAdapter = new FriendListAdapter(FriendsList.this, friendEmailList);
+        friendListAdapter = new FriendListAdapter(FriendsList.this, friendEmailList, imgList);
         friendListRecyclerView.setAdapter(friendListAdapter);
         friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
 
@@ -120,6 +132,10 @@ public class FriendsList extends AppCompatActivity {
         User user = UserService.getCurrentUser(appDatabase);
         assert user != null;
         userId = user.userId;
+
+        // Initialize storage
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
 
         // Cloud
         DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference();
@@ -130,18 +146,42 @@ public class FriendsList extends AppCompatActivity {
 
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                    Log.d("FRIENDLIST", "key + ");
-                    Log.d("FRIENDLIST", ds.getKey());
-
                     DatabaseReference allUsers = db.child("users");
                     allUsers.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot ds2 : snapshot.getChildren()) {
                                 if (ds2.getKey().equals(ds.getKey())) {
-                                    friendEmailList.add(ds2.child("email").getValue(String.class));
-                                    friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
-                                    friendListAdapter.notifyItemInserted(friendEmailList.size());
+                                    try {
+                                        StorageReference imgRef = storageRef.child("images/" + ds2.getKey());
+                                        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                // use the url to load friend's avatar
+                                                Uri currentUri = uri;
+                                                imgList.add(currentUri.toString());
+                                                friendEmailList.add(ds2.child("email").getValue(String.class));
+                                                friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
+                                                friendListAdapter.notifyItemInserted(friendEmailList.size());
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                StorageReference imgRefDefault = storageRef.child("images/933-9332131_profile-picture-default-png.png");
+                                                imgRefDefault.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri uri) {
+                                                        imgList.add(uri.toString());
+                                                        friendEmailList.add(ds2.child("email").getValue(String.class));
+                                                        friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
+                                                        friendListAdapter.notifyItemInserted(friendEmailList.size());
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        Log.d("FriendList", e.toString());
+                                    }
 
                                 }
                             }
@@ -176,6 +216,8 @@ public class FriendsList extends AppCompatActivity {
 
             }
         });
+
+
 
         addFriend.setOnClickListener(v -> createAddFriendDialog());
 
@@ -263,6 +305,7 @@ public class FriendsList extends AppCompatActivity {
                 dialog.dismiss();
                 errorAddInvalidFriend();
             }
+
             else {
                 dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -289,9 +332,31 @@ public class FriendsList extends AppCompatActivity {
                                     .child(userIdFriend)
                                     .child("shareFrom").setValue(true);
                             Utils.postToast("Successfully added friend: " + createEmailOnData, FriendsList.this);
-                            friendEmailList.add(createEmailOnData);
+                            try {
+                                StorageReference imgRef = storageRef.child("images/" + userIdFriend);
+                                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        // use the url to load friend's avatar
+                                        imgList.add(uri.toString());
+                                        friendEmailList.add(createEmailOnData);
+                                        friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
+                                        friendListAdapter.notifyItemInserted(friendEmailList.size());
+                                    }
+                                });
+                            } catch (Exception e) {
+                                StorageReference imgRefDefault = storageRef.child("images/933-9332131_profile-picture-default-png.png");
+                                imgRefDefault.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        imgList.add(uri.toString());
+                                        friendEmailList.add(createEmailOnData);
+                                        friendListRecyclerView.setLayoutManager(new LinearLayoutManager(FriendsList.this));
+                                        friendListAdapter.notifyItemInserted(friendEmailList.size());
+                                    }
+                                });
+                            }
                             dialog.dismiss();
-                            friendListAdapter.notifyItemInserted(friendEmailList.size());
                             finish();
                             overridePendingTransition(0, 0);
                             startActivity(getIntent());
