@@ -35,6 +35,8 @@ import java.util.Locale;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
+import edu.neu.madcourse.wellness_studio.utils.UserService;
+import localDatabase.AppDatabase;
 
 public class AlarmSetting extends AppCompatActivity {
     // test
@@ -66,6 +68,7 @@ public class AlarmSetting extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_alarm_time);
+        AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
 
         saveButton = findViewById(R.id.change_save_btn);
         sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
@@ -76,31 +79,16 @@ public class AlarmSetting extends AppCompatActivity {
                 popSleepTimePicker(v);
             }
         });
-
-        if (sleepAlarmReopenUpdate == null) {
-            sleepAlarmChangeTV.setText(sleepAlarmHour + ":" + sleepAlarmMin);
-        } else {
-            sleepAlarmChangeTV.setText(sleepAlarmReopenUpdate);
-        }
-
-
+        sleepAlarmChangeTV.setText(UserService.getSleepAlarm(db));
 
         wakeupAlarmChangeTV = findViewById(R.id.wakeup_alarm_change_time_TV);
-
         wakeupAlarmChangeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popWakeTimePicker(v);
             }
         });
-
-        if (wakeupAlarmReopenUpdate == null) {
-            wakeupAlarmChangeTV.setText("0"+ wakeupAlarmHour + ":" + sleepAlarmMin);
-        } else {
-            wakeupAlarmChangeTV.setText(wakeupAlarmReopenUpdate);
-        }
-
-
+        wakeupAlarmChangeTV.setText(UserService.getWakeupAlarm(db));
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

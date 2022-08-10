@@ -28,6 +28,7 @@ import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
 import localDatabase.utils.DateConverter;
+import localDatabase.wakeUpAndSleepGoal.SleepGoal;
 
 
 // provide all database related operation, will modify the local database
@@ -305,6 +306,20 @@ public class UserService {
 
     // ================================================
     // =============   sleep goal   ===============
+
+    public static void setSleepAlarm (AppDatabase db, String dateTime) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setSleepAlarm(dateTime);
+            Log.v(TAG, "updating sleep alarm: " + dateTime);
+        }
+    }
+
+    public static void setWakeupAlarm (AppDatabase db, String dateTime) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setWakeupAlarm(dateTime);
+            Log.v(TAG, "updating wakeup alarm: " + dateTime);
+        }
+    }
 
     // set sleep and wakeup alarm
     public static String getSleepAlarm(AppDatabase db) {
