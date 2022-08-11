@@ -48,6 +48,22 @@ public class User {
     @ColumnInfo(name = "exerciseAlarmOn",defaultValue = "false")
     public Boolean exerciseAlarmOn;
 
+    @ColumnInfo(name = "sleepAlarmOn",defaultValue = "false")
+    public Boolean sleepAlarmOn;
+
+    @ColumnInfo(name = "wakeupAlarmOn",defaultValue = "false")
+    public Boolean wakeupAlarmOn;
+
+    @ColumnInfo(name = "sleepAlarmSensorOn",defaultValue = "false")
+    public Boolean sleepAlarmSensorOn;
+
+    @ColumnInfo(name = "wakeupAlarmSensorOn",defaultValue = "false")
+    public Boolean wakeupAlarmSensorOn;
+
+    @ColumnInfo(name = "wakeupAlarmIsSnoozeON",defaultValue = "false")
+    public Boolean wakeupAlarmIsSnoozeON;
+
+
     public int getUser_info_id() {
         return user_info_id;
     }
@@ -139,4 +155,44 @@ public class User {
     public Boolean getExerciseAlarmOn() { return exerciseAlarmOn; }
 
     public void setExerciseAlarmOn(Boolean exerciseAlarmOn) { this.exerciseAlarmOn = exerciseAlarmOn; }
+
+    public Boolean getSleepAlarmOn() {
+        return this.sleepAlarmOn;
+    }
+
+    public void setSleepAlarmOn(Boolean sleepAlarmOn) {
+        this.sleepAlarmOn = sleepAlarmOn;
+    }
+
+    public Boolean getWakeupAlarmOn() {
+        return this.wakeupAlarmOn;
+    }
+
+    public void setWakeupAlarmOn(Boolean wakeupAlarmOn) {
+        this.wakeupAlarmOn = wakeupAlarmOn;
+    }
+
+    public Boolean getSleepAlarmSensorOn() {
+        return this.sleepAlarmSensorOn;
+    }
+
+    public void setSleepAlarmSensorOn(Boolean sleepAlarmSensorOn) {
+        this.sleepAlarmSensorOn = sleepAlarmSensorOn;
+    }
+
+    public Boolean getWakeupAlarmSensorOn() {
+        return this.wakeupAlarmSensorOn;
+    }
+
+    public void setWakeupAlarmSensorOn(Boolean wakeupAlarmSensorOn) {
+        this.wakeupAlarmSensorOn = wakeupAlarmSensorOn;
+    }
+
+    public Boolean getWakeupAlarmIsSnoozeON() {
+        return this.wakeupAlarmIsSnoozeON;
+    }
+
+    public void setWakeupAlarmIsSnoozeON(Boolean wakeupAlarmIsSnoozeON) {
+        this.wakeupAlarmIsSnoozeON = wakeupAlarmIsSnoozeON;
+    }
 }

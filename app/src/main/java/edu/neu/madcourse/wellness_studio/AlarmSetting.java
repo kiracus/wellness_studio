@@ -37,28 +37,23 @@ import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import localDatabase.AppDatabase;
+import localDatabase.userInfo.User;
 
 public class AlarmSetting extends AppCompatActivity {
     // test
     private final static String TAG = "alarmSetting";
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
-    int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    ImageButton saveButton;
+    int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
+    ImageButton saveButton, cancelButton;
     BottomNavigationView bottomNavigationView;
-    public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
-    public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
-    public static final String SNOOZE_VALUE = "snoozeValue";
-    public static final String WAKEUP_SENSOR_USE = "wakeupSensorUse";
-    public static final String SLEEP_SENSOR_USE = "sleepSensorUse";
     String sleepAlarmUpdate, wakeupAlarmUpdate;
-    String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
     Switch  snoozeBtn, allowWakeupSensorUseBtn;
     SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
-    boolean isSave = false, isSnooze = false, isWakeupSensorUse = false, isSleepSensorUse = false;
-    String sleepSensorUse = "OFF", snoozeUse = "OFF", wakeupSensorUse = "OFF";
+    boolean isSnooze, isWakeupSensorUse, isSleepSensorUse;
+
 
 
 
@@ -69,6 +64,11 @@ public class AlarmSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_alarm_time);
         AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
+        wakeupAlarmUpdate = UserService.getWakeupAlarm(db);
+        sleepAlarmUpdate = UserService.getSleepAlarm(db);
+        isSnooze = UserService.getWakeupAlarmIsSnoozeOn(db);
+        isWakeupSensorUse = UserService.getWakeupAlarmSensorOn(db);
+        isSleepSensorUse = UserService.getSleepAlarmSensorOn(db);
 
         saveButton = findViewById(R.id.change_save_btn);
         sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
@@ -93,21 +93,22 @@ public class AlarmSetting extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSave = !isSave;
-                if (isSave) {
+                UserService.updateWakeupAlarm(db,wakeupAlarmUpdate);
+                UserService.updateSleepAlarm(db, sleepAlarmUpdate);
+                UserService.updateSleepSensorOn(db, isSleepSensorUse);
+                UserService.updateWakeupSensorOn(db, isWakeupSensorUse);
+                UserService.updateWakeupIsSnoozeOn(db, isSnooze);
+                Log.d("AlarmSetting", "changes saved");
+                startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
 
-                    Intent intent = new Intent();
-                    intent.putExtra(SLEEP_ALARM_KEY_NAME, sleepAlarmUpdate);
-                    intent.putExtra(WAKEUP_ALARM_KEY_NAME, wakeupAlarmUpdate);
-                    intent.putExtra(SNOOZE_VALUE, snoozeUse);
-                    intent.putExtra(WAKEUP_SENSOR_USE, wakeupSensorUse);
-                    intent.putExtra(SLEEP_SENSOR_USE, sleepSensorUse);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                    Toast.makeText(AlarmSetting.this, "save the changes", Toast.LENGTH_SHORT).show();
-                    isSave = !isSave;
-                }
+            }
+        });
 
+        cancelButton = findViewById(R.id.imageButton_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AlarmSetting.this, WakeupSleepGoal.class));
             }
         });
 
@@ -157,32 +158,28 @@ public class AlarmSetting extends AppCompatActivity {
 
         //snooze
         snoozeBtn = findViewById(R.id.snooze_switch);
+        snoozeBtn.setChecked(isSnooze);
         snoozeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    isSnooze = !isSnooze;
-                    if (isSnooze) {
-                        snoozeUse = "ON";
-                    } else {
-                        snoozeUse = "OFF";
-                    }
+                    isSnooze = true;
+                } else {
+                    isSnooze = false;
                 }
             }
         });
 
         //wakeup sensor
         allowWakeupSensorUseBtn = findViewById(R.id.sensor_use_switch);
+        allowWakeupSensorUseBtn.setChecked(isWakeupSensorUse);
         allowWakeupSensorUseBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    isWakeupSensorUse = !isWakeupSensorUse;
-                    if (isWakeupSensorUse) {
-                        wakeupSensorUse = "ON";
-                    } else {
-                        wakeupSensorUse = "OFF";
-                    }
+                    isWakeupSensorUse = true;
+                } else {
+                    isWakeupSensorUse= false;
                 }
             }
         });
@@ -190,16 +187,14 @@ public class AlarmSetting extends AppCompatActivity {
 
         //sleep sensor
         allowSleepSensorUseBtn = findViewById(R.id.sleep_reminder_allow_sensor_switch);
+        allowSleepSensorUseBtn.setChecked(isSleepSensorUse);
         allowSleepSensorUseBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    isSleepSensorUse = !isSleepSensorUse;
-                    if (isSleepSensorUse) {
-                        sleepSensorUse = "ON";
-                    } else {
-                        sleepSensorUse = "OFF";
-                    }
+                    isSleepSensorUse = true;
+                } else {
+                    isSleepSensorUse = false;
                 }
             }
         });
@@ -246,7 +241,7 @@ public class AlarmSetting extends AppCompatActivity {
                 String time  = String.format(Locale.getDefault(),"%02d:%02d",sleepAlarmHour,sleepAlarmMin);
                 sleepAlarmChangeTV.setText(time);
                 sleepAlarmUpdate = time;
-                sleepAlarmReopenUpdate = time;
+
 
             }
         };
@@ -267,7 +262,6 @@ public class AlarmSetting extends AppCompatActivity {
                 String time  = String.format(Locale.getDefault(),"%02d:%02d",wakeupAlarmHour,wakeupAlarmMin);
                 wakeupAlarmChangeTV.setText(time);
                 wakeupAlarmUpdate = time;
-                wakeupAlarmReopenUpdate = time;
 
             }
         };

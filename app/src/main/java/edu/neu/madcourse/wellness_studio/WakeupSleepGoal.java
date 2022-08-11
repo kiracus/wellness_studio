@@ -60,18 +60,15 @@ public class WakeupSleepGoal extends AppCompatActivity {
     TextView sleepAlarmTV, wakeupAlarmTV, sleepHoursTV;
     ImageView profile, sleepAlarmSetting, wakeupAlarmSetting;
     BottomNavigationView bottomNavigationView;
-    protected String sleepAlarmOnOffCheck = "ALARM OFF", wakeAlarmOnOffCheck = "ALARM OFF";
-    String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate, sleepHoursReopenUpdate;
 
-    ActivityResultLauncher<Intent> startForResult;
     SwitchMaterial sleepAlarmSwitch, wakeupAlarmSwitch;
     PendingIntent pendingIntentSleep, pendingIntentWakeUp;
     AlarmManager alarmManagerSleep, alarmManagerWakeup;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
-    int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    public static String isSnooze = "OFF", isWakeupSensorUse = "OFF", isSleepSensorUse = "OFF";
+    int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     long wakeupMillis, sleepMillis;
     boolean isUserAsleep = false;
+    boolean isWakeupAlarmOn, isSleepAlarmOn;
     private SensorManager mSensorManager;
     private Sensor sensor;
 
@@ -86,121 +83,57 @@ public class WakeupSleepGoal extends AppCompatActivity {
         createNotificationChannelWakeup();
 
         AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
+        Boolean sleepAlarmOn = UserService.getSleepAlarmON(db);
+        Boolean wakeupAlarmOn = UserService.getWakeupAlarmON(db);
+        sleepAlarmUpdate = UserService.getSleepAlarm(db);
+        wakeupAlarmUpdate = UserService.getWakeupAlarm(db);
 
         profile = findViewById(R.id.imageView_profile);
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
-            sleepAlarmTV.setText(UserService.getSleepAlarm(db));
+        sleepAlarmTV.setText(sleepAlarmUpdate);
 
 
         wakeupAlarmTV = findViewById(R.id.wakeup_alarmTime_TV);
-            wakeupAlarmTV.setText(UserService.getWakeupAlarm(db));
+        wakeupAlarmTV.setText(wakeupAlarmUpdate);
 
 
         sleepHoursTV = findViewById(R.id.hours_display);
-        if (sleepHoursReopenUpdate == null) {
-            sleepHoursTV.setText("10 hours, 0 min");
-        } else {
-            sleepHoursTV.setText(sleepHoursReopenUpdate);
-        }
 
         sleepAlarmSetting = findViewById(R.id.setting_dot);
         wakeupAlarmSetting = findViewById(R.id.wakeup_setting_dot);
 
-
-        startForResult = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result != null && result.getResultCode() == AlarmSetting.RESULT_OK) {
-                            if (result.getData() != null &&
-                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null ||
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null ||
-                                    result.getData().getStringExtra(AlarmSetting.SNOOZE_VALUE) != null ||
-                                    result.getData().getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null ||
-                                    result.getData().getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null){
-
-                                Intent data = result.getData();
-                                isSnooze = data.getStringExtra(AlarmSetting.SNOOZE_VALUE);
-                                isSleepSensorUse = data.getStringExtra(AlarmSetting.SLEEP_SENSOR_USE);
-                                isWakeupSensorUse = data.getStringExtra(AlarmSetting.WAKEUP_SENSOR_USE);
-
-
-                                if (data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME) != null) {
-                                    sleepAlarmUpdate = data.getStringExtra(AlarmSetting.SLEEP_ALARM_KEY_NAME);
-                                } else {
-                                    sleepAlarmUpdate = "22:30";
-                                }
-
-                                UserService.setSleepAlarm(db, sleepAlarmUpdate);
-
-                                if (data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null) {
-                                    wakeupAlarmUpdate = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME);
-                                } else {
-                                    wakeupAlarmUpdate = "08:30";
-                                }
-                                UserService.setWakeupAlarm(db, wakeupAlarmUpdate);
-
-                                Log.d("WakeupSleepGoal", "Sleep = " + sleepAlarmUpdate + "Wakeup = " + wakeupAlarmUpdate );
-
-                                if (!TextUtils.isEmpty(sleepAlarmUpdate) && !TextUtils.isEmpty(wakeupAlarmUpdate))
-                                    if (sleepAlarmUpdate != null) {
-                                        sleepAlarmTV.setText(sleepAlarmUpdate);
-                                        sleepAlarmReopenUpdate = sleepAlarmUpdate;
-                                        sleepAlarmHour = getHour(sleepAlarmUpdate);
-                                        sleepAlarmMin = getMin(sleepAlarmUpdate);
-                                        if (sleepAlarmOnOffCheck.equals("ALARM ON")) {
-                                            setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
-                                        }
-                                    }
-
-                                    if (wakeupAlarmUpdate != null) {
-                                        wakeupAlarmTV.setText(wakeupAlarmUpdate);
-                                        wakeupAlarmReopenUpdate = wakeupAlarmUpdate;
-                                        wakeupAlarmHour = getHour(wakeupAlarmUpdate);
-                                        wakeupAlarmMin = getMin(wakeupAlarmUpdate);
-                                        if (wakeAlarmOnOffCheck.equals("ALARM ON")) {
-                                            setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
-                                        }
-                                    }
-
-                                Log.d("WakeupSleepGoal", "wakeupAlarmUpdate" + wakeupAlarmReopenUpdate);
-                                    sleepHoursTV.setText(calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate));
-                                    if (sleepAlarmUpdate == null) {
-                                        sleepHoursReopenUpdate = calculateDiffTime("22:30", wakeupAlarmUpdate);
-                                    } else if (wakeupAlarmUpdate == null) {
-                                        sleepHoursReopenUpdate = calculateDiffTime(sleepAlarmUpdate, "08:30");
-                                    } else {
-                                        sleepHoursReopenUpdate = calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate);
-                                    }
-                            }
-                        } else {
-                            return;
-                        }
-
-                    }
-                });
-
+        if (!sleepAlarmUpdate.equals("--:--") && !wakeupAlarmUpdate.equals("--:--")) {
+            sleepHoursTV.setText((calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate)));
+            wakeupAlarmHour = getHour(wakeupAlarmUpdate);
+            wakeupAlarmMin = getMin(wakeupAlarmUpdate);
+            sleepAlarmHour = getHour(sleepAlarmUpdate);
+            sleepAlarmMin = getMin(sleepAlarmUpdate);
+            if (sleepAlarmOn) {
+                setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
+            }
+            if (wakeupAlarmOn) {
+                setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
+            }
+        } else {
+            sleepHoursTV.setText("0 hour, 0 min");
+        }
 
 
         sleepAlarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WakeupSleepGoal.this, AlarmSetting.class);
-//                startActivity(intent);
-                startForResult.launch(intent);
+                startActivity(intent);
             }
         });
-
-
 
 
         wakeupAlarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WakeupSleepGoal.this, AlarmSetting.class);
-//                startActivity(intent);
-                startForResult.launch(intent);
+                startActivity(intent);
             }
         });
 
@@ -214,31 +147,46 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         //switch
         sleepAlarmSwitch = findViewById(R.id.sleep_alarm_on_off);
+        sleepAlarmSwitch.setChecked(sleepAlarmOn);
         sleepAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
-                    sleepAlarmOnOffCheck = "ALARM ON";
-                    Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On. Time: " + sleepAlarmHour + ":" + sleepAlarmMin , Toast.LENGTH_SHORT).show();
+                    if (UserService.getSleepAlarm(db) != "--:--" && UserService.getWakeupAlarm(db) != "--:--") {
+                        isSleepAlarmOn = true;
+                        setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
+                        UserService.updateSleepAlarmOn(db,isSleepAlarmOn);
+                    } else {
+                        Toast.makeText(WakeupSleepGoal.this, "Please set both sleep and wakeup alarm!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     cancelSleepAlarm();
-                    Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is Off.", Toast.LENGTH_SHORT).show();
-                    sleepAlarmOnOffCheck = "ALARM OFF";
+                    UserService.updateSleepAlarmOn(db,isSleepAlarmOn);
                 }
+
             }
         });
-        wakeupAlarmSwitch = findViewById(R.id.wakeup_alarm_on_off);
 
+
+        wakeupAlarmSwitch = findViewById(R.id.wakeup_alarm_on_off);
+        wakeupAlarmSwitch.setChecked(wakeupAlarmOn);
         wakeupAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
-                    wakeAlarmOnOffCheck = "ALARM ON";
+                    if (UserService.getSleepAlarm(db) != "--:--" && UserService.getWakeupAlarm(db) != "--:--") {
+                        isWakeupAlarmOn = true;
+                        UserService.updateWakeupAlarmOn(db, isWakeupAlarmOn);
+                        setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
+                    } else {
+                        UserService.updateWakeupAlarmOn(db, isWakeupAlarmOn);
+                        Toast.makeText(WakeupSleepGoal.this, "Please set both sleep and wakeup alarm!" , Toast.LENGTH_SHORT).show();
+                    }
                 } else {
+                    isWakeupAlarmOn = false;
+                    UserService.updateWakeupAlarmOn(db, isWakeupAlarmOn);
                     cancelWakeupAlarm();
-                    wakeAlarmOnOffCheck = "ALARM OFF";
+
                 }
             }
         });
@@ -456,30 +404,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
     public void setSleepAlarm(int hour, int min) {
         Intent intent = new Intent(this, AlarmSleepReceiver.class);
-        long millis = convertHourAndMinToMilliSeconds(hour, min);
-        sleepMillis = millis;
-
-        alarmManagerSleep = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        pendingIntentSleep = PendingIntent.getBroadcast(this,0,intent,0);
-        Log.d("myApp","sleep milis" + millis);
-        alarmManagerSleep.setExact(AlarmManager.RTC_WAKEUP,millis,pendingIntentSleep);
-        Toast.makeText(getApplicationContext(),"Sleep Alarm is on Time: " + hour + ":" + min,Toast.LENGTH_SHORT).show();
-    }
-
-    private void setWakeupAlarm(int wakeupAlarmHour, int wakeupAlarmMin) {
-        Intent intent = new Intent(this, AlarmWakeupReceiver.class);
-        long millis = convertHourAndMinToMilliSeconds(wakeupAlarmHour, wakeupAlarmMin);
-        wakeupMillis = millis;
-
-        alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        pendingIntentWakeUp = PendingIntent.getBroadcast(this,1,intent,0);
-        Log.d("myApp","wakeup milis" + millis);
-        alarmManagerWakeup.setExact(AlarmManager.RTC_WAKEUP,millis,pendingIntentWakeUp);
-        Toast.makeText(getApplicationContext(),"Wakeup Alarm is on Time: " + wakeupAlarmHour + ":" + wakeupAlarmMin,Toast.LENGTH_SHORT).show();
-    }
-
-    private long convertHourAndMinToMilliSeconds(int hour, int min) {
-
         Calendar calendarSleep = Calendar.getInstance();
         calendarSleep.setTimeInMillis(System.currentTimeMillis());
         calendarSleep.set(Calendar.HOUR_OF_DAY, hour);
@@ -491,12 +415,47 @@ public class WakeupSleepGoal extends AppCompatActivity {
         if (calendarSleep.getTimeInMillis() <= System.currentTimeMillis()) {
             calendarSleep.set(Calendar.DAY_OF_MONTH, calendarSleep.get(Calendar.DAY_OF_MONTH) + 1);
         }
-        Log.d("myApp","calendar" + calendarSleep.getTime());
         long millis = calendarSleep.getTimeInMillis();
-        return millis;
+        sleepMillis = millis;
 
-
+        alarmManagerSleep = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        pendingIntentSleep = PendingIntent.getBroadcast(this,0,intent,0);
+        Log.d("WakeupSleepGoal","sleep milis" + millis);
+        Log.d("WakeupSleepGoal","calendar" + calendarSleep.getTime());
+        Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On. Time: " + calendarSleep.getTime() , Toast.LENGTH_SHORT).show();
+        alarmManagerSleep.setExact(AlarmManager.RTC_WAKEUP,calendarSleep.getTimeInMillis(),pendingIntentSleep);
+        //everyday
+//        alarmManagerSleep.setRepeating(AlarmManager.RTC_WAKEUP,calendarSleep.getTimeInMillis(),alarmManagerSleep.INTERVAL_DAY ,pendingIntentSleep);
     }
+
+    private void setWakeupAlarm(int hour, int min) {
+        Intent intent = new Intent(this, AlarmWakeupReceiver.class);
+
+        Calendar calendarWakeup = Calendar.getInstance();
+        calendarWakeup.setTimeInMillis(System.currentTimeMillis());
+        calendarWakeup.set(Calendar.HOUR_OF_DAY, hour);
+        calendarWakeup.set(Calendar.MINUTE, min);
+        calendarWakeup.set(Calendar.SECOND, 0);
+        calendarWakeup.set(Calendar.MILLISECOND, 0);
+
+        // if alarm time has already passed, increment day by 1
+        if (calendarWakeup.getTimeInMillis() <= System.currentTimeMillis()) {
+            calendarWakeup.set(Calendar.DAY_OF_MONTH, calendarWakeup.get(Calendar.DAY_OF_MONTH) + 1);
+        }
+
+        long millis = calendarWakeup.getTimeInMillis();
+        wakeupMillis = millis;
+
+        alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        pendingIntentWakeUp = PendingIntent.getBroadcast(this,1,intent,0);
+        Log.d("WakeupSleepGoal","wakeup milis" + millis);
+        Log.d("WakeupSleepGoal","calendar" + calendarWakeup.getTime());
+        Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is On. Time: " + calendarWakeup.getTime() , Toast.LENGTH_SHORT).show();
+        alarmManagerWakeup.setExact(AlarmManager.RTC_WAKEUP,calendarWakeup.getTimeInMillis(),pendingIntentWakeUp);
+        //everyday
+//        alarmManagerWakeup.setRepeating(AlarmManager.RTC_WAKEUP,calendarWakeup.getTimeInMillis(),alarmManagerWakeup.INTERVAL_DAY,pendingIntentWakeUp);
+    }
+
 
     public void cancelSleepAlarm() {
         Intent intent = new Intent(this,AlarmReceiver.class);

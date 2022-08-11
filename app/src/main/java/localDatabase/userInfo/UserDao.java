@@ -38,6 +38,39 @@ public interface UserDao {
     @Query ("UPDATE UserInfoTable SET wakeUpAlarm = :wakeUpAlarm")
     void setWakeupAlarm(String wakeUpAlarm);
 
+    @Query ("SELECT sleepAlarmOn FROM UserInfoTable LIMIT 1")
+    Boolean sleepAlarmOn();
+
+    @Query("UPDATE UserInfoTable SET sleepAlarmOn = :sleepAlarmOn")
+    void setSleepAlarmOn(Boolean sleepAlarmOn);
+
+    @Query ("SELECT wakeupAlarmOn FROM UserInfoTable LIMIT 1")
+    Boolean wakeupAlarmOn();
+
+    @Query("UPDATE UserInfoTable SET wakeupAlarmOn = :wakeupAlarmOn")
+    void setWakeupAlarmOn(Boolean wakeupAlarmOn);
+
+    @Query ("SELECT wakeupAlarmSensorOn FROM UserInfoTable LIMIT 1")
+    Boolean wakeupAlarmSensorOn();
+
+    @Query("UPDATE UserInfoTable SET wakeupAlarmSensorOn = :wakeupAlarmSensorOn")
+    void setWakeupAlarmSensorOn(Boolean wakeupAlarmSensorOn);
+
+    @Query ("SELECT sleepAlarmSensorOn FROM UserInfoTable LIMIT 1")
+    Boolean sleepAlarmSensorOn();
+
+    @Query("UPDATE UserInfoTable SET sleepAlarmSensorOn = :sleepAlarmSensorOn")
+    void setSleepAlarmSensorOn(Boolean sleepAlarmSensorOn);
+
+    @Query ("SELECT wakeupAlarmIsSnoozeON FROM UserInfoTable LIMIT 1")
+    Boolean wakeupAlarmIsSnoozeON();
+
+    @Query("UPDATE UserInfoTable SET wakeupAlarmIsSnoozeON = :wakeupAlarmIsSnoozeON")
+    void setWakeupAlarmIsSnoozeOn(Boolean wakeupAlarmIsSnoozeON);
+
+
+
+
     @Query ("SELECT exerciseAlarm FROM UserInfoTable LIMIT 1")
     String getExerciseReminderAlarm();
 

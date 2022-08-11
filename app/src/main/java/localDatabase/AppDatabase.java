@@ -23,7 +23,7 @@ import localDatabase.utils.TimeConverter;
         //if you changed something in the table (e.g. add a column in User.class, don't forget
         //update the version number (+1) here, or it will throw an error, also by default,
         // everytime the database schema gets changed, all previous data will be cleared and start from a new table
-        version = 25,
+        version = 27,
         exportSchema = false)
 @TypeConverters({DateConverter.class, TimeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
