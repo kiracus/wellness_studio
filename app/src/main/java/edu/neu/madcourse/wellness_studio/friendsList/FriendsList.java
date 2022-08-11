@@ -322,9 +322,9 @@ public class FriendsList extends AppCompatActivity {
                                     .child("friends")
                                     .child(userIdFriend).setValue("");
                             dbUserRef.child(userId)
-                                            .child("friends")
-                                            .child(userIdFriend)
-                                            .child("shareTo").setValue(true);
+                                    .child("friends")
+                                    .child(userIdFriend)
+                                    .child("shareTo").setValue(true);
                             dbUserRef.child(userId)
                                     .child("friends")
                                     .child(userIdFriend)
