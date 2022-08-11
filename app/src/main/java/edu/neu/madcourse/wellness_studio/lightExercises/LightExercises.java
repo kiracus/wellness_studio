@@ -1,7 +1,6 @@
 package edu.neu.madcourse.wellness_studio.lightExercises;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -12,7 +11,6 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,11 +19,6 @@ import java.util.concurrent.TimeUnit;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.AlarmClock;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -34,32 +27,25 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kofigyan.stateprogressbar.StateProgressBar;
 
-import java.sql.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
-import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.sleepGoal.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 import localDatabase.AppDatabase;
 import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
-import localDatabase.userInfo.User;
-import localDatabase.userInfo.UserDao;
 
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
     private String TAG = "LightExercises";

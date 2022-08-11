@@ -36,14 +36,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.sleepGoal.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.ChangeProfile;

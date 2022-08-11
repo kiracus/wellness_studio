@@ -57,131 +57,146 @@
             app:tint="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_img_name_container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/profile_header">
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="80dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/profile_img_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="20dp"
-            app:cardCornerRadius="50dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/imageButton_change_img"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                android:foreground="@drawable/image_overlay"
-                app:srcCompat="@drawable/default_avatar" />
-
-            <TextView
-                android:id="@+id/imageButton_text"
-                android:layout_width="80dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profile_img_name_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:shadowColor="@color/black"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="5"
-                android:text="click here to \nchange image" />
+                app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_img_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="20dp"
+                    app:cardCornerRadius="50dp">
+
+                    <ImageView
+                        android:id="@+id/imageButton_change_img"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white"
+                        android:foreground="@drawable/image_overlay"
+                        app:srcCompat="@drawable/default_avatar" />
+
+                    <TextView
+                        android:id="@+id/imageButton_text"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:shadowColor="@color/black"
+                        android:shadowDx="0"
+                        android:shadowDy="0"
+                        android:shadowRadius="5"
+                        android:text="click here to \nchange image" />
+
+                </androidx.cardview.widget.CardView>
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/profile_img_name_container"
-        android:layout_margin="20dp">
+            <LinearLayout
+                android:id="@+id/body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/profile_img_name_container"
+                android:layout_margin="20dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Username *"
-            android:textColor="@color/deep_blue"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Username *"
+                    android:textColor="@color/deep_blue"/>
 
-        <EditText
-            android:id="@+id/username_input_ET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Enter a new name here"/>
+                <EditText
+                    android:id="@+id/username_input_ET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Enter a new name here"/>
 
-        <TextView
-            android:id="@+id/username_hint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:textColor="@color/blue"
-            android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/username_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/blue"
+                    android:textSize="12sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
-            android:background="@color/deep_blue" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@color/deep_blue" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:textColor="@color/deep_blue"
-            android:textSize="20sp"
-            android:text="Register Online Account"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/deep_blue"
+                    android:textSize="20sp"
+                    android:text="Register Online Account"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="2dp"
-            android:textColor="@color/deep_blue"
-            android:textSize="16sp"
-            android:text="Share your goal with your friends! :)"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/deep_blue"
+                    android:textSize="16sp"
+                    android:text="Share your goal with your friends! :)"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email *"
-            android:textColor="@color/deep_blue"
-            android:layout_marginTop="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email *"
+                    android:textColor="@color/deep_blue"
+                    android:layout_marginTop="10dp"/>
 
-        <EditText
-            android:id="@+id/email_input_ET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"/>
+                <EditText
+                    android:id="@+id/email_input_ET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Password *"
-            android:textColor="@color/deep_blue"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Password *"
+                    android:textColor="@color/deep_blue"/>
 
-        <EditText
-            android:id="@+id/password_input_ET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"/>
+                <EditText
+                    android:id="@+id/password_input_ET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
 
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

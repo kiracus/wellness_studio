@@ -72,112 +72,129 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/light_exercies_during_exercises_title"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp"
-        android:text="@string/during_exercises_guide"
-        android:textColor="@color/deep_blue"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/header_title"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp">
 
-    <HorizontalScrollView
-        android:id="@+id/scrollViewForExerciseSets"
-        android:layout_width="800px"
-        android:layout_height="600px"
-        android:layout_marginTop="80dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/exerciseCompletecheckBox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.329"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/light_exercies_during_exercises_title"
-        app:layout_constraintVertical_bias="0.604"
-        >
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gifImageView1"
+            <TextView
+                android:id="@+id/light_exercies_during_exercises_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:loopCount="5" />
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="20dp"
+                android:text="@string/during_exercises_guide"
+                android:textColor="@color/deep_blue"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gifImageView2"
+            <HorizontalScrollView
+                android:id="@+id/scrollViewForExerciseSets"
+                android:layout_width="800px"
+                android:layout_height="600px"
+                android:layout_marginTop="80dp"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toTopOf="@+id/exerciseCompletecheckBox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.329"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/light_exercies_during_exercises_title"
+                app:layout_constraintVertical_bias="0.604"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/gifImageView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:loopCount="5" />
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/gifImageView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/gifImageView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/gifImageView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <CheckBox
+                android:id="@+id/exerciseCompletecheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complete"
+                app:layout_constraintBottom_toTopOf="@id/progress_bar_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollViewForExerciseSets"
+                app:layout_constraintVertical_bias="0.263"
+                />
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:id="@+id/progress_bar_container"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintTop_toBottomOf="@id/exerciseCompletecheckBox"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="vertical">
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gifImageView3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/progressTxtView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/progressTxtView"
+                    android:textColor="@color/deep_blue"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="40dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gifImageView4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <com.kofigyan.stateprogressbar.StateProgressBar
+                    android:id="@+id/light_exercises_state_progress_bar_during_exercise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_margin="10dp"
+                    app:layout_constraintVertical_bias="0.468"
+                    app:spb_animateToCurrentProgressState="true"
+                    app:spb_checkStateCompleted="true"
+                    app:spb_currentStateDescriptionColor="#0F9D58"
+                    app:spb_currentStateNumber="one"
+                    app:spb_maxStateNumber="four"
+                    app:spb_stateBackgroundColor="#BDBDBD"
+                    app:spb_stateDescriptionColor="#808080"
+                    app:spb_stateForegroundColor="#0F9D58"
+                    app:spb_stateNumberBackgroundColor="#808080"
+                    app:spb_stateNumberForegroundColor="#eeeeee" />
 
-        </LinearLayout>
-    </HorizontalScrollView>
+            </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/exerciseCompletecheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="464dp"
-        android:text="Complete"
-        app:layout_constraintBottom_toTopOf="@+id/progress_bar_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263"
-        />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progress_bar_container"
-        app:layout_constraintTop_toBottomOf="@+id/exerciseCompletecheckBox"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/progressTxtView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/progressTxtView"
-            android:textColor="@color/deep_blue"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
-            android:paddingBottom="5dp"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
-        <com.kofigyan.stateprogressbar.StateProgressBar
-            android:id="@+id/light_exercises_state_progress_bar_during_exercise"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_margin="10dp"
-            app:layout_constraintVertical_bias="0.468"
-            app:spb_animateToCurrentProgressState="true"
-            app:spb_checkStateCompleted="true"
-            app:spb_currentStateDescriptionColor="#0F9D58"
-            app:spb_currentStateNumber="one"
-            app:spb_maxStateNumber="four"
-            app:spb_stateBackgroundColor="#BDBDBD"
-            app:spb_stateDescriptionColor="#808080"
-            app:spb_stateForegroundColor="#0F9D58"
-            app:spb_stateNumberBackgroundColor="#808080"
-            app:spb_stateNumberForegroundColor="#eeeeee" />
 
-    </LinearLayout>
 
 
 

@@ -54,12 +54,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.util.Objects;
-
 
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.sleepGoal.WakeupSleepGoal;
 
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
