@@ -67,9 +67,6 @@
 
         <activity android:name=".sleepGoal.AlarmSetting" />
 
-        <activity android:name=".sleepGoal.AlarmSetting"></activity>
-
-
         <receiver android:name=".lightExercises.AlarmReceiver" />
         <receiver android:name=".lightExercises.AlarmReceiver" />
         <receiver android:name=".sleepGoal.AlarmBroadcastReceiver" />
