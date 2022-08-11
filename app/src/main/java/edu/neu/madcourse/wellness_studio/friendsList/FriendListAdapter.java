@@ -221,28 +221,32 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Fr
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot ds2 : snapshot.getChildren()) {
                                 if (!Objects.equals(friendId, "") && ds2.getKey().equals(user.userId)) {
-                                    if (ds2.child("friends").child(friendId).child("shareTo").getValue().equals(true)) {
-                                        dbUserRef.child(user.userId)
-                                                .child("friends")
-                                                .child(friendId)
-                                                .child("shareTo").setValue(false);
-                                        dbUserRef.child(friendId)
-                                                .child("friends")
-                                                .child(user.userId)
-                                                .child("shareFrom").setValue(false);
-                                        Utils.postToastLong("You have stopped sharing your exercise goal with this user.", context);
-                                        refresh();
-                                    } else {
-                                        dbUserRef.child(user.userId)
-                                                .child("friends")
-                                                .child(friendId)
-                                                .child("shareTo").setValue(true);
-                                        dbUserRef.child(friendId)
-                                                .child("friends")
-                                                .child(user.userId)
-                                                .child("shareFrom").setValue(true);
-                                        Utils.postToastLong("You started sharing your exercise goal with this user.", context);
-                                        refresh();
+                                    try {
+                                        if (ds2.child("friends").child(friendId).child("shareTo").getValue().equals(true)) {
+                                            dbUserRef.child(user.userId)
+                                                    .child("friends")
+                                                    .child(friendId)
+                                                    .child("shareTo").setValue(false);
+                                            dbUserRef.child(friendId)
+                                                    .child("friends")
+                                                    .child(user.userId)
+                                                    .child("shareFrom").setValue(false);
+                                            Utils.postToastLong("You have stopped sharing your exercise goal with this user.", context);
+                                            refresh();
+                                        } else {
+                                            dbUserRef.child(user.userId)
+                                                    .child("friends")
+                                                    .child(friendId)
+                                                    .child("shareTo").setValue(true);
+                                            dbUserRef.child(friendId)
+                                                    .child("friends")
+                                                    .child(user.userId)
+                                                    .child("shareFrom").setValue(true);
+                                            Utils.postToastLong("You started sharing your exercise goal with this user.", context);
+                                            refresh();
+                                        }
+                                    } catch (Exception e) {
+                                        Utils.postToastLong("Error updating share status. Please try again.", context);
                                     }
                                 }
                             }

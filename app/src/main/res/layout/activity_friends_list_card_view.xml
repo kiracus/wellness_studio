@@ -16,6 +16,7 @@
                 android:layout_height="match_parent"
                 android:clickable="false"
                 android:layout_weight="1"
+                android:layout_marginStart="10dp"
                 android:contentDescription="person icon"
                 android:scaleY=".8"
                 app:srcCompat="@drawable/ic_person_icon" />
@@ -53,7 +54,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:layout_marginStart="0dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:scaleX=".6"
