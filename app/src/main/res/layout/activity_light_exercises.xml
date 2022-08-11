@@ -134,14 +134,14 @@
 
                         <TextView
                             android:id="@+id/timeTextView"
-                            android:layout_width="0dp"
+                            android:layout_width="100dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="15dp"
-                            android:layout_marginStart="40dp"
+                            android:layout_marginStart="30dp"
                             android:text="00:00"
                             android:textColor="@color/black"
-                            android:textSize="40sp"
+                            android:textSize="38sp"
                             android:textStyle="bold" />
 
                         <View
