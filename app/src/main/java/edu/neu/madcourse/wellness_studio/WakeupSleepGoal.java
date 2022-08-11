@@ -50,6 +50,8 @@ import edu.neu.madcourse.wellness_studio.lightExercises.AlarmReceiver;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
+import localDatabase.AppDatabase;
+import localDatabase.userInfo.User;
 
 public class WakeupSleepGoal extends AppCompatActivity {
 
@@ -83,21 +85,17 @@ public class WakeupSleepGoal extends AppCompatActivity {
         createNotificationChannelSleep();
         createNotificationChannelWakeup();
 
+        AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
+
         profile = findViewById(R.id.imageView_profile);
 
         sleepAlarmTV = findViewById(R.id.sleep_alarmTime_TV);
-        if (sleepAlarmReopenUpdate == null) {
-            sleepAlarmTV.setText(sleepAlarmHour + ":" + sleepAlarmMin);
-        } else {
-            sleepAlarmTV.setText(sleepAlarmReopenUpdate);
-        }
+            sleepAlarmTV.setText(UserService.getSleepAlarm(db));
+
 
         wakeupAlarmTV = findViewById(R.id.wakeup_alarmTime_TV);
-        if (wakeupAlarmReopenUpdate == null) {
-            wakeupAlarmTV.setText("0"+ wakeupAlarmHour + ":" + sleepAlarmMin);
-        } else {
-            wakeupAlarmTV.setText(wakeupAlarmReopenUpdate);
-        }
+            wakeupAlarmTV.setText(UserService.getWakeupAlarm(db));
+
 
         sleepHoursTV = findViewById(R.id.hours_display);
         if (sleepHoursReopenUpdate == null) {
@@ -134,11 +132,14 @@ public class WakeupSleepGoal extends AppCompatActivity {
                                     sleepAlarmUpdate = "22:30";
                                 }
 
+                                UserService.setSleepAlarm(db, sleepAlarmUpdate);
+
                                 if (data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME) != null) {
                                     wakeupAlarmUpdate = data.getStringExtra(AlarmSetting.WAKEUP_ALARM_KEY_NAME);
                                 } else {
                                     wakeupAlarmUpdate = "08:30";
                                 }
+                                UserService.setWakeupAlarm(db, wakeupAlarmUpdate);
 
                                 Log.d("WakeupSleepGoal", "Sleep = " + sleepAlarmUpdate + "Wakeup = " + wakeupAlarmUpdate );
 
@@ -348,7 +349,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
         int time1 = removeColon(sleepAlarm);
         int time2 = removeColon(wakeupAlarm);
 
-
         int sleepHour = time1 / 100;
         int sleepMin = time1 % 100;
 
@@ -456,7 +456,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
     public void setSleepAlarm(int hour, int min) {
         Intent intent = new Intent(this, AlarmSleepReceiver.class);
-        long millis = convertHourAndMinToMilliSecondsSleep(hour, min);
+        long millis = convertHourAndMinToMilliSeconds(hour, min);
         sleepMillis = millis;
 
         alarmManagerSleep = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -468,7 +468,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
     private void setWakeupAlarm(int wakeupAlarmHour, int wakeupAlarmMin) {
         Intent intent = new Intent(this, AlarmWakeupReceiver.class);
-        long millis = convertHourAndMinToMilliSecondsWakeup(wakeupAlarmHour, wakeupAlarmMin);
+        long millis = convertHourAndMinToMilliSeconds(wakeupAlarmHour, wakeupAlarmMin);
         wakeupMillis = millis;
 
         alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -478,7 +478,7 @@ public class WakeupSleepGoal extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"Wakeup Alarm is on Time: " + wakeupAlarmHour + ":" + wakeupAlarmMin,Toast.LENGTH_SHORT).show();
     }
 
-    private long convertHourAndMinToMilliSecondsSleep(int hour, int min) {
+    private long convertHourAndMinToMilliSeconds(int hour, int min) {
 
         Calendar calendarSleep = Calendar.getInstance();
         calendarSleep.setTimeInMillis(System.currentTimeMillis());
@@ -491,29 +491,11 @@ public class WakeupSleepGoal extends AppCompatActivity {
         if (calendarSleep.getTimeInMillis() <= System.currentTimeMillis()) {
             calendarSleep.set(Calendar.DAY_OF_MONTH, calendarSleep.get(Calendar.DAY_OF_MONTH) + 1);
         }
-        Log.d("myApp","sleep calendar" + calendarSleep.getTime());
+        Log.d("myApp","calendar" + calendarSleep.getTime());
         long millis = calendarSleep.getTimeInMillis();
         return millis;
 
 
-    }
-
-    private long convertHourAndMinToMilliSecondsWakeup(int hour, int min) {
-
-        Calendar calendarWakeup = Calendar.getInstance();
-        calendarWakeup.setTimeInMillis(System.currentTimeMillis());
-        calendarWakeup.set(Calendar.HOUR_OF_DAY, hour);
-        calendarWakeup.set(Calendar.MINUTE, min);
-        calendarWakeup.set(Calendar.SECOND, 0);
-        calendarWakeup.set(Calendar.MILLISECOND, 0);
-
-        // if alarm time has already passed, increment day by 1
-        if (calendarWakeup.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendarWakeup.set(Calendar.DAY_OF_MONTH, calendarWakeup.get(Calendar.DAY_OF_MONTH) + 1);
-        }
-        Log.d("myApp","sleep calendar" + calendarWakeup.getTime());
-        long millis = calendarWakeup.getTimeInMillis();
-        return millis;
     }
 
     public void cancelSleepAlarm() {

@@ -64,7 +64,8 @@ import localDatabase.userInfo.UserDao;
 public class LightExercises extends AppCompatActivity implements View.OnClickListener{
     private String TAG = "LightExercises";
     AppDatabase db;
-    int hour, min = -1;
+    int hour = -1;
+    int min = -1;
     int currentStep = 0;
 
     TextView timeTextView;
@@ -107,7 +108,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         setting_reminder_lightExercises.setOnClickListener(this);
         setReminderSwitch(reminderSwitch);
 
-        // connect to db
+        // connect to db and load saved data
         LightExercise lightExercise = UserService.getCurrentLightExercise(db);
         ExerciseSet currentSet = lightExercise.currentSet;
         String exerciseAlarm = UserService.getExerciseReminderAlarm(db);
@@ -124,11 +125,12 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 scrollViewForFocusedArea.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("myApp", "savedCurrentSet" + currentSet);
+                        Log.d("myApp", "savedCurrentSet: " + currentSet);
                         scrollToCurrentSet(currentSet);
                     }
                 });
             }
+            //load progress on progress bar
             if (!lightExercise.getExerciseStatus().equals(ExerciseStatus.NOT_STARTED)) {
                 //load progress bar with completed steps
                 getStepProgressCompletion(lightExercise.getStepOneCompleted(), lightExercise.getStepTwoCompleted(), lightExercise.getStepThreeCompleted(), lightExercise.getStepFourCompleted());
@@ -136,12 +138,16 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                     setProgressBarProgress();
                 }
             }
+            //load alarm switch
             if (exerciseAlarmOn != null) {
                 reminderSwitch.setChecked(exerciseAlarmOn);
             }
+            //load alarm from db
             if (!exerciseAlarm.equals("--:--") && exerciseAlarmOn) {
                 convertMiliSecondsToHourAndMin(Long.parseLong(exerciseAlarm));
                 String time = String.format(Locale.getDefault(), "%02d:%02d", hour, min);
+                Log.d("test","hour: " + hour);
+                Log.d("test","min: " + min);
                 timeTextView.setText(time);
                 setAlarm();
             }
@@ -277,14 +283,22 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         int currentMin = Calendar.getInstance().getTime().getMinutes();
 
         long timeAlarmTriggeredInmillis = convertHourAndMinToMilliSeconds(hour,min) - convertHourAndMinToMilliSeconds(currentHour,currentMin);
+        Log.d(TAG,"currentHour: " + currentHour);
+        Log.d(TAG,"currentMin: " + currentMin);
+        Log.d(TAG,"alarmHour: " + hour);
+        Log.d(TAG,"alarmMin: " + min);
+        Log.d(TAG,"timeAlarmTriggeredInmillis: "  + timeAlarmTriggeredInmillis);
         //if alarm triggered time to current moment is negative, plus 24 hr and trigger it the tomorrow at this time
         if(timeAlarmTriggeredInmillis < 0) {
-            timeAlarmTriggeredInmillis = timeAlarmTriggeredInmillis + TimeUnit.HOURS.toMillis(24);
+            Log.d(TAG, "setted alarm has already pass current time today.");
+            timeAlarmTriggeredInmillis = TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS) -Math.abs(timeAlarmTriggeredInmillis);
+            Log.d(TAG,"timeAlarmTriggeredInmillis for next day: "  + timeAlarmTriggeredInmillis);
         }
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-        Log.d("myApp","timeAlarmTriggeredInmillis: " + timeAlarmTriggeredInmillis);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,timeAlarmTriggeredInmillis,AlarmManager.INTERVAL_DAY,pendingIntent);
+        //intervalAtMilis: is 1 day, which is 86400000 seconds
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAlarmTriggeredInmillis,86400000,pendingIntent);
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,timeAlarmTriggeredInmillis,AlarmManager.INTERVAL_DAY,pendingIntent);
         Utils.postToast("reminder is on", getApplicationContext());
         //save exerciseReminder into db
     }
@@ -334,13 +348,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
         appDatabase.lightExerciseDao().updateLightExercise(lightExercise);
     }
 
-//    public void loadLightExerciseInfo() {
-//        LightExercise lightExercise = getCurrentLightExercise();
-//        String date = lightExercise.getDate();
-//        ExerciseStatus exerciseStatus = lightExercise.getExerciseStatus();
-//        Log.d("Myapp","date: " + date + "exerciseStatus: " + exerciseStatus);
-//    }
-
     //receive step completion request
     public void getStepProgressCompletion(boolean step1Completion, boolean step2Completion,boolean step3Completion,boolean step4Completion) {
         if(step1Completion) {
@@ -359,9 +366,6 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
 
     private long convertHourAndMinToMilliSeconds(int hr, int minutes) {
         long millis = TimeUnit.HOURS.toMillis(hr) + TimeUnit.MINUTES.toMillis(minutes);
-        Log.d(TAG,"convertHourAndMinToMilliSeconds: " + millis);
-        Log.d(TAG,"convertHourAndMinToMilliSeconds, hr: " + hr);
-        Log.d(TAG,"convertHourAndMinToMilliSeconds, mins: " + minutes);
         return millis;
     }
 

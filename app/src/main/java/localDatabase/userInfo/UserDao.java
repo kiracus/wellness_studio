@@ -32,6 +32,12 @@ public interface UserDao {
     @Query ("SELECT wakeUpAlarm FROM UserInfoTable LIMIT 1")
     String getWakeupAlarm();
 
+    @Query ("UPDATE UserInfoTable SET sleepAlarm = :sleepAlarm")
+    void setSleepAlarm(String sleepAlarm);
+
+    @Query ("UPDATE UserInfoTable SET wakeUpAlarm = :wakeUpAlarm")
+    void setWakeupAlarm(String wakeUpAlarm);
+
     @Query ("SELECT exerciseAlarm FROM UserInfoTable LIMIT 1")
     String getExerciseReminderAlarm();
 
