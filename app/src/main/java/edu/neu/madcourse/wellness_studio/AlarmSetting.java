@@ -44,7 +44,7 @@ public class AlarmSetting extends AppCompatActivity {
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
     int sleepAlarmHour = 22, sleepAlarmMin = 30, wakeupAlarmHour = 8, wakeupAlarmMin = 30;
-    ImageButton saveButton;
+    ImageButton saveButton, cancelButton;
     BottomNavigationView bottomNavigationView;
     public static final String SLEEP_ALARM_KEY_NAME = "sleepAlarmUpdate";
     public static final String WAKEUP_ALARM_KEY_NAME = "wakeupAlarmUpdate";
@@ -54,7 +54,7 @@ public class AlarmSetting extends AppCompatActivity {
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     String sleepAlarmReopenUpdate, wakeupAlarmReopenUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
-    Switch  snoozeBtn, allowWakeupSensorUseBtn;
+    SwitchMaterial  snoozeBtn, allowWakeupSensorUseBtn;
     SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
     boolean isSave = false, isSnooze = false, isWakeupSensorUse = false, isSleepSensorUse = false;
@@ -71,6 +71,9 @@ public class AlarmSetting extends AppCompatActivity {
         AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
 
         saveButton = findViewById(R.id.change_save_btn);
+        cancelButton = findViewById(R.id.imageButton_cancel);
+
+        cancelButton.setOnClickListener(v -> goToSleepGoal());
         sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
 
         sleepAlarmChangeTV.setOnClickListener(new View.OnClickListener() {

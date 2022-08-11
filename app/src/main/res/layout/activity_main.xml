@@ -27,7 +27,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="65dp"
         android:layout_marginBottom="80dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -214,7 +214,7 @@
                             android:layout_marginEnd="20dp"
                             android:gravity="left"
                             android:text="something"
-                            android:textSize="18sp" />
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -276,8 +276,8 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp"
                             android:gravity="left"
-                            android:text="  sleep     -     wake up"
-                            android:textSize="18sp" />
+                            android:text="   sleep       -       wake up"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
