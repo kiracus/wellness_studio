@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -39,16 +40,13 @@
             android:name=".profile.Profile"
             android:exported="false" />
         <activity
-            android:name=".profile.Profile_With_Local_DB_Example"
-            android:exported="false" />
-        <activity
             android:name=".Greeting"
             android:exported="false" />
         <activity
             android:name=".leaderboard.Leaderboard"
             android:exported="false" />
         <activity
-            android:name=".WakeupSleepGoal"
+            android:name=".sleepGoal.WakeupSleepGoal"
             android:exported="false" />
         <activity
             android:name=".lightExercises.LightExercises"
@@ -66,21 +64,25 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <activity android:name=".AlarmSetting" />
+=======
+        <activity android:name=".sleepGoal.AlarmSetting"></activity>
+>>>>>>> 26c8f007a90453620d374f5a378082d4777055d4
 
         <receiver android:name=".lightExercises.AlarmReceiver" />
         <receiver android:name=".lightExercises.AlarmReceiver" />
-        <receiver android:name=".AlarmBroadcastReceiver" />
+        <receiver android:name=".sleepGoal.AlarmBroadcastReceiver" />
         
-        <activity android:name=".WakeupAlarmRingActivity"/>
+        <activity android:name=".sleepGoal.WakeupAlarmRingActivity"/>
 
         <receiver android:name=".lightExercises.AlarmReceiver"/>
 
         <receiver android:name=".lightExercises.AlarmReceiver" />
 
-        <receiver android:name=".AlarmWakeupReceiver"/>
-        <receiver android:name=".AlarmSleepReceiver"/>
-        <service android:name=".AlarmService" />
+        <receiver android:name=".sleepGoal.AlarmWakeupReceiver"/>
+        <receiver android:name=".sleepGoal.AlarmSleepReceiver"/>
+        <service android:name=".sleepGoal.AlarmService" />
 
     </application>
 

@@ -58,9 +58,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/header_title"
-        app:layout_constraintBottom_toTopOf="@id/bottom_buttons">
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="80dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -211,11 +211,10 @@
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"
 
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/wakeup_alarm_setting_cardView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/separate_line"
-                app:layout_constraintVertical_bias="0.024">
+                app:layout_constraintTop_toBottomOf="@+id/separate_line">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -237,7 +236,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp">
-
                         <TextView
                             android:id="@+id/sleep_sensor_allow_use"
                             android:layout_width="wrap_content"
@@ -245,154 +243,174 @@
                             android:text="@string/allow_sensor_use_TV"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
-
                         <View
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_weight="1"/>
-
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/sleep_reminder_allow_sensor_switch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:text="ON" />
+                            android:text="ON"
+                            android:theme="@style/mySwitch"/>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-
             </androidx.cardview.widget.CardView>
-
-            <!--    <View-->
-            <!--        android:id="@+id/separate_line_second"-->
-            <!--        android:layout_width="350dp"-->
-            <!--        android:layout_height="1dp"-->
-            <!--        android:background="@android:color/darker_gray"-->
-            <!--        android:textAlignment="center"-->
-            <!--        tools:ignore="MissingConstraints"-->
-            <!--        tools:layout_editor_absoluteX="30dp"-->
-            <!--        tools:layout_editor_absoluteY="381dp" />-->
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/wakeup_alarm_setting_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.491"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sensor_cardView"
-                app:layout_constraintVertical_bias="0.113">
+                app:layout_constraintTop_toBottomOf="@+id/sensor_cardView">
 
-                <TextView
-                    android:id="@+id/wakeup_alarm_setting_TV"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="WAKEUP ALARM SETTINGS"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp">
 
-                <TextView
-                    android:id="@+id/alarm_type_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="30dp"
-                    android:text="ALARM TYPE"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/wakeup_alarm_setting_TV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="WAKEUP ALARM SETTINGS"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/to_stop_alarm_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="TO STOP ALARM"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
+                        <TextView
+                            android:id="@+id/alarm_type_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="ALARM TYPE"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <Spinner
+                            android:id="@+id/alarm_type_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/snooze_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="90dp"
-                    android:text="SNOOZE"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
+                        <TextView
+                            android:id="@+id/to_stop_alarm_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="TO STOP ALARM"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <Spinner
+                            android:id="@+id/to_stop_alarm_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/allow_sensor_use_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="120dp"
-                    android:text="ALLOW SENSOR USE"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/snooze_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="SNOOZE"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/snooze_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:text="ON"
+                            android:theme="@style/mySwitch"/>
+                    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/notes_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="150dp"
-                    android:text="**Enable sensor use so we could find out when you get up or fall asleep"
-                    android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/allow_sensor_use_TV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="ALLOW SENSOR USE"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/sensor_use_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:text="ON"
+                            android:theme="@style/mySwitch"/>
+                    </LinearLayout>
 
-                <Spinner
-                    android:id="@+id/alarm_type_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="240dp"
-                    android:layout_marginTop="30dp"
-                    android:spinnerMode="dropdown" />
+                    <TextView
+                        android:id="@+id/notes_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="* Enable sensor use so we could find out when you get up or fall asleep"
+                        android:textColor="@color/black"
+                        android:textSize="10sp" />
 
-                <Spinner
-                    android:id="@+id/to_stop_alarm_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="240dp"
-                    android:layout_marginTop="60dp"
-                    android:spinnerMode="dropdown" />
+                </LinearLayout>
 
-                <Switch
-                    android:id="@+id/snooze_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="270dp"
-                    android:layout_marginTop="90dp"
-                    android:text="ON" />
 
-                <Switch
-                    android:id="@+id/sensor_use_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="270dp"
-                    android:layout_marginTop="120dp"
-                    android:text="ON" />
+
+
+
+
+
+
+
+
 
             </androidx.cardview.widget.CardView>
 
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     </ScrollView>
-
-
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

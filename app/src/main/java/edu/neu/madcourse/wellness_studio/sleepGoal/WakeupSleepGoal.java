@@ -1,4 +1,4 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.sleepGoal;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -28,11 +28,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +39,15 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
+import edu.neu.madcourse.wellness_studio.MainActivity;
+import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.AlarmReceiver;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import localDatabase.AppDatabase;
-import localDatabase.userInfo.User;
 
 public class WakeupSleepGoal extends AppCompatActivity {
 
@@ -420,8 +416,8 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         alarmManagerSleep = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntentSleep = PendingIntent.getBroadcast(this,0,intent,0);
-        Log.d("WakeupSleepGoal","sleep milis" + millis);
-        Log.d("WakeupSleepGoal","calendar" + calendarSleep.getTime());
+        Log.d(TAG,"sleep milis" + millis);
+        Log.d(TAG,"calendar" + calendarSleep.getTime());
         Toast.makeText(WakeupSleepGoal.this, "Sleep Alarm is On. Time: " + calendarSleep.getTime() , Toast.LENGTH_SHORT).show();
         alarmManagerSleep.setExact(AlarmManager.RTC_WAKEUP,calendarSleep.getTimeInMillis(),pendingIntentSleep);
         //everyday
@@ -448,8 +444,8 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         alarmManagerWakeup = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         pendingIntentWakeUp = PendingIntent.getBroadcast(this,1,intent,0);
-        Log.d("WakeupSleepGoal","wakeup milis" + millis);
-        Log.d("WakeupSleepGoal","calendar" + calendarWakeup.getTime());
+        Log.d(TAG,"wakeup milis" + millis);
+        Log.d(TAG,"calendar" + calendarWakeup.getTime());
         Toast.makeText(WakeupSleepGoal.this, "Wakeup Alarm is On. Time: " + calendarWakeup.getTime() , Toast.LENGTH_SHORT).show();
         alarmManagerWakeup.setExact(AlarmManager.RTC_WAKEUP,calendarWakeup.getTimeInMillis(),pendingIntentWakeUp);
         //everyday

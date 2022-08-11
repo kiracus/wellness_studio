@@ -1,22 +1,18 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.sleepGoal;
 
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -26,10 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import org.w3c.dom.Text;
 
-
-import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
+import edu.neu.madcourse.wellness_studio.MainActivity;
+import edu.neu.madcourse.wellness_studio.R;
 
 import java.util.Locale;
 
@@ -44,12 +39,13 @@ public class AlarmSetting extends AppCompatActivity {
     private final static String TAG = "alarmSetting";
 
 //    TimePicker sleepTimePicker, wakeupTimePicker;
+
     int sleepAlarmHour, sleepAlarmMin, wakeupAlarmHour, wakeupAlarmMin;
     ImageButton saveButton, cancelButton;
     BottomNavigationView bottomNavigationView;
     String sleepAlarmUpdate, wakeupAlarmUpdate;
     TextView sleepAlarmChangeTV, wakeupAlarmChangeTV;
-    Switch  snoozeBtn, allowWakeupSensorUseBtn;
+    SwitchMaterial  snoozeBtn, allowWakeupSensorUseBtn;
     SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
     boolean isSnooze, isWakeupSensorUse, isSleepSensorUse;
@@ -71,6 +67,9 @@ public class AlarmSetting extends AppCompatActivity {
         isSleepSensorUse = UserService.getSleepAlarmSensorOn(db);
 
         saveButton = findViewById(R.id.change_save_btn);
+        cancelButton = findViewById(R.id.imageButton_cancel);
+
+        cancelButton.setOnClickListener(v -> goToSleepGoal());
         sleepAlarmChangeTV = findViewById(R.id.sleep_alarm_change_time_TV);
 
         sleepAlarmChangeTV.setOnClickListener(new View.OnClickListener() {

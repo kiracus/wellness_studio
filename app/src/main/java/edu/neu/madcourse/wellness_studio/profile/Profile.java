@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,21 +35,18 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.neu.madcourse.wellness_studio.Greeting;
 import edu.neu.madcourse.wellness_studio.MainActivity;
 import edu.neu.madcourse.wellness_studio.R;
-import edu.neu.madcourse.wellness_studio.WakeupSleepGoal;
+import edu.neu.madcourse.wellness_studio.sleepGoal.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.customCalendar.CustomCalendar;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnDateSelectedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.OnNavigationButtonClickedListener;
 import edu.neu.madcourse.wellness_studio.customCalendar.Property;
-import edu.neu.madcourse.wellness_studio.friendsList.FriendsList;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
@@ -476,6 +472,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // if user is online, update online db
     private void updateOnlineCounts() {
+        Log.v(TAG, ">>>>> update online counts called");
         if (Objects.requireNonNull(UserService.getCurrentUser(db)).getHasLoggedInOnline()) {
             int currWeeklyCounts = UserService.getWeeklyFinishedCount(db);
             UserService.updateWeeklyCounts(db, currWeeklyCounts);
@@ -523,8 +520,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // check if a date is in current week, called before update online db counts
     private boolean isCurrentWeek(String date) {
+        //Log.v(TAG, "input date : " + date);
         String firstDayOfWeek = UserService.getFirstDayOfWeek();
-        String[] firstDayElems = Utils.getCurrentDate().split("-");
+        String[] firstDayElems = firstDayOfWeek.split("-");
         String[] elems = date.split("-");
         int firstDayInt = Integer.parseInt(firstDayElems[0]) * 10000 +
                 Integer.parseInt(firstDayElems[1]) * 100 +
@@ -532,6 +530,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         int dayInt = Integer.parseInt(elems[0]) * 10000 +
                 Integer.parseInt(elems[1]) * 100 +
                 Integer.parseInt(elems[2]);
+        //Log.v(TAG, (dayInt >= firstDayInt && !isFuture(date))+ "");
         return dayInt >= firstDayInt && !isFuture(date);  // should not happen because we blocked future call
     }
 

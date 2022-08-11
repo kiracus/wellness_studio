@@ -181,7 +181,7 @@ public class User {
     }
 
     public Boolean getWakeupAlarmSensorOn() {
-        return this.wakeupAlarmSensorOn;
+        return wakeupAlarmSensorOn;
     }
 
     public void setWakeupAlarmSensorOn(Boolean wakeupAlarmSensorOn) {
@@ -189,7 +189,7 @@ public class User {
     }
 
     public Boolean getWakeupAlarmIsSnoozeON() {
-        return this.wakeupAlarmIsSnoozeON;
+        return wakeupAlarmIsSnoozeON;
     }
 
     public void setWakeupAlarmIsSnoozeON(Boolean wakeupAlarmIsSnoozeON) {
