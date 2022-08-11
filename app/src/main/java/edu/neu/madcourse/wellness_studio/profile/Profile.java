@@ -472,6 +472,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // if user is online, update online db
     private void updateOnlineCounts() {
+        Log.v(TAG, ">>>>> update online counts called");
         if (Objects.requireNonNull(UserService.getCurrentUser(db)).getHasLoggedInOnline()) {
             int currWeeklyCounts = UserService.getWeeklyFinishedCount(db);
             UserService.updateWeeklyCounts(db, currWeeklyCounts);
@@ -519,8 +520,9 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // check if a date is in current week, called before update online db counts
     private boolean isCurrentWeek(String date) {
+        //Log.v(TAG, "input date : " + date);
         String firstDayOfWeek = UserService.getFirstDayOfWeek();
-        String[] firstDayElems = Utils.getCurrentDate().split("-");
+        String[] firstDayElems = firstDayOfWeek.split("-");
         String[] elems = date.split("-");
         int firstDayInt = Integer.parseInt(firstDayElems[0]) * 10000 +
                 Integer.parseInt(firstDayElems[1]) * 100 +
@@ -528,6 +530,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
         int dayInt = Integer.parseInt(elems[0]) * 10000 +
                 Integer.parseInt(elems[1]) * 100 +
                 Integer.parseInt(elems[2]);
+        //Log.v(TAG, (dayInt >= firstDayInt && !isFuture(date))+ "");
         return dayInt >= firstDayInt && !isFuture(date);  // should not happen because we blocked future call
     }
 
