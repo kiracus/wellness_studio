@@ -71,11 +71,15 @@ public class UserService {
         // TODO set other properties
         user.setHasOnlineAccount(false);
         user.setHasLoggedInOnline(false);
-        // user a default avatar in assets folder
+        user.setSleepAlarmOn(false);
+        user.setWakeupAlarmOn(false);
+        user.setSleepAlarmSensorOn(false);
+        user.setWakeupAlarmSensorOn(false);
+        user.setWakeupAlarmIsSnoozeON(false);
         // user.setProfileImg("some/address");
 
         createNewUser(db, user);
-        Log.v(TAG, showUserInfo(db));
+        //Log.v(TAG, showUserInfo(db));
     }
 
     public static void updateUserInfo(AppDatabase db, User user) {
@@ -322,11 +326,17 @@ public class UserService {
     }
 
     public static Boolean getSleepAlarmON(AppDatabase db) {
-        return db.userDao().sleepAlarmOn();
+        Boolean res =  db.userDao().sleepAlarmOn();
+        if (res == null) {
+            return false;
+        } else return res;
     }
 
     public static Boolean getWakeupAlarmON(AppDatabase db) {
-        return db.userDao().wakeupAlarmOn();
+        Boolean res = db.userDao().wakeupAlarmOn();
+        if (res == null) {
+            return false;
+        } else return res;
     }
 
 
