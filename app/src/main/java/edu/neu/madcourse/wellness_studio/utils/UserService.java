@@ -307,14 +307,71 @@ public class UserService {
     // ================================================
     // =============   sleep goal   ===============
 
-    public static void setSleepAlarm (AppDatabase db, String dateTime) {
+    public static void updateSleepAlarmOn(AppDatabase db, boolean value) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setSleepAlarmOn(value);
+            Log.v(TAG, "updating sleep alarm on: " + value);
+        }
+    }
+
+    public static void updateWakeupAlarmOn(AppDatabase db, boolean value) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setWakeupAlarmOn(value);
+            Log.v(TAG, "updating wakeup alarm on: " + value);
+        }
+    }
+
+    public static Boolean getSleepAlarmON(AppDatabase db) {
+        return db.userDao().sleepAlarmOn();
+    }
+
+    public static Boolean getWakeupAlarmON(AppDatabase db) {
+        return db.userDao().wakeupAlarmOn();
+    }
+
+
+    public static Boolean getWakeupAlarmSensorOn(AppDatabase db) {
+        return db.userDao().wakeupAlarmSensorOn();
+    }
+
+    public static Boolean getSleepAlarmSensorOn(AppDatabase db) {
+        return db.userDao().sleepAlarmSensorOn();
+    }
+
+    public static Boolean getWakeupAlarmIsSnoozeOn(AppDatabase db) {
+        return db.userDao().wakeupAlarmIsSnoozeON();
+    }
+
+    public static void updateSleepSensorOn(AppDatabase db, boolean value) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setSleepAlarmSensorOn(value);
+            Log.v(TAG, "updating sleep alarm sensor on: " + value);
+        }
+    }
+
+    public static void updateWakeupSensorOn(AppDatabase db, boolean value) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setWakeupAlarmSensorOn(value);
+            Log.v(TAG, "updating wakeup alarm sensor on: " + value);
+        }
+    }
+
+    public static void updateWakeupIsSnoozeOn(AppDatabase db, boolean value) {
+        if (checkIfUserExists(db)) {
+            db.userDao().setWakeupAlarmIsSnoozeOn(value);
+            Log.v(TAG, "updating wakeup alarm snooze on: " + value);
+        }
+    }
+
+
+    public static void updateSleepAlarm (AppDatabase db, String dateTime) {
         if (checkIfUserExists(db)) {
             db.userDao().setSleepAlarm(dateTime);
             Log.v(TAG, "updating sleep alarm: " + dateTime);
         }
     }
 
-    public static void setWakeupAlarm (AppDatabase db, String dateTime) {
+    public static void updateWakeupAlarm (AppDatabase db, String dateTime) {
         if (checkIfUserExists(db)) {
             db.userDao().setWakeupAlarm(dateTime);
             Log.v(TAG, "updating wakeup alarm: " + dateTime);

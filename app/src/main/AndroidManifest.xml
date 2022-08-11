@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-permission
+        android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -62,7 +64,11 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name=".sleepGoal.AlarmSetting" />
+
         <activity android:name=".sleepGoal.AlarmSetting"></activity>
+
 
         <receiver android:name=".lightExercises.AlarmReceiver" />
         <receiver android:name=".lightExercises.AlarmReceiver" />

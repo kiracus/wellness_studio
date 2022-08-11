@@ -22,7 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
 
+import edu.neu.madcourse.wellness_studio.utils.UserService;
+import localDatabase.AppDatabase;
+import localDatabase.userInfo.User;
+
 import edu.neu.madcourse.wellness_studio.R;
+
 
 public class WakeupAlarmRingActivity extends AppCompatActivity {
     Context context;
@@ -63,11 +68,14 @@ public class WakeupAlarmRingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wakeup_ring);
 
+        AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
+        Boolean isSnoozeOn = UserService.getWakeupAlarmIsSnoozeOn(db);
+        Boolean isWakeupSensorOn = UserService.getWakeupAlarmSensorOn(db);
         Button dismiss = findViewById(R.id.dismiss_alarm_button);
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (WakeupSleepGoal.isWakeupSensorUse.equals("OFF")) {
+                if (!isWakeupSensorOn) {
                     Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
                     getApplicationContext().stopService(intentService);
                     finish();
@@ -89,7 +97,7 @@ public class WakeupAlarmRingActivity extends AppCompatActivity {
         snooze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (WakeupSleepGoal.isSnooze.equals("OFF") ) {
+                if (!isSnoozeOn) {
                     Toast.makeText(WakeupAlarmRingActivity.this, "Sorry, you cannot snooze alarm this time, please turn on the snooze next time.", Toast.LENGTH_SHORT).show();
 
                     return;
