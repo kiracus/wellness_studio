@@ -37,9 +37,6 @@
             android:name=".profile.Profile"
             android:exported="false" />
         <activity
-            android:name=".profile.Profile_With_Local_DB_Example"
-            android:exported="false" />
-        <activity
             android:name=".Greeting"
             android:exported="false" />
         <activity
