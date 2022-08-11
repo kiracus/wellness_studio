@@ -30,6 +30,7 @@ import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises_DuringExercise;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
+import edu.neu.madcourse.wellness_studio.sleepGoal.WakeupSleepGoal;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import edu.neu.madcourse.wellness_studio.utils.Utils;
 import localDatabase.AppDatabase;

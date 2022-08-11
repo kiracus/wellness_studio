@@ -1,4 +1,4 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.sleepGoal;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -28,11 +28,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +39,15 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
+import edu.neu.madcourse.wellness_studio.MainActivity;
+import edu.neu.madcourse.wellness_studio.R;
 import edu.neu.madcourse.wellness_studio.leaderboard.Leaderboard;
 import edu.neu.madcourse.wellness_studio.lightExercises.AlarmReceiver;
 import edu.neu.madcourse.wellness_studio.lightExercises.LightExercises;
 import edu.neu.madcourse.wellness_studio.profile.Profile;
 import edu.neu.madcourse.wellness_studio.utils.UserService;
 import localDatabase.AppDatabase;
-import localDatabase.userInfo.User;
 
 public class WakeupSleepGoal extends AppCompatActivity {
 

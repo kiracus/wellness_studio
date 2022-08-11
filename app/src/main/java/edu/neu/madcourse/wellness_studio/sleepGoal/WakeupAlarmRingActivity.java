@@ -1,4 +1,4 @@
-package edu.neu.madcourse.wellness_studio;
+package edu.neu.madcourse.wellness_studio.sleepGoal;
 
 
 import android.app.AlarmManager;
@@ -21,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
+
+import edu.neu.madcourse.wellness_studio.R;
 
 public class WakeupAlarmRingActivity extends AppCompatActivity {
     Context context;
