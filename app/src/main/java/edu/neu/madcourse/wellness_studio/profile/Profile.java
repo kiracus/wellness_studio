@@ -318,11 +318,11 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 // Check if user is signed in (non-null) and update UI accordingly.
                 fUser = mAuth.getCurrentUser();
                 if(fUser != null){  // signed in,
-                    Log.v(TAG, "fuser: user is online");
+                    //Log.v(TAG, "fuser: user is online");
                     profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
                     UserService.setUserOnline(db);
                 } else {
-                    Log.v(TAG, "fuser: user is offline");
+                    //Log.v(TAG, "fuser: user is offline");
                     UserService.setUserOffline(db);
                 }
             }
@@ -441,7 +441,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                                             profileLoginBtn.setImageResource(R.drawable.ic_baseline_logout_24);
 
                                             if (user.userId == null) {
-                                                Log.v(TAG, "null uid, downloading info from db");
+                                                //Log.v(TAG, "null uid, downloading info from db");
                                                 loadUserInfoFromOnline(email, user);
                                             }
 
@@ -472,7 +472,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
 
     // if user is online, update online db
     private void updateOnlineCounts() {
-        Log.v(TAG, ">>>>> update online counts called");
+        //Log.v(TAG, ">>>>> update online counts called");
         if (Objects.requireNonNull(UserService.getCurrentUser(db)).getHasLoggedInOnline()) {
             int currWeeklyCounts = UserService.getWeeklyFinishedCount(db);
             UserService.updateWeeklyCounts(db, currWeeklyCounts);
@@ -548,7 +548,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
                 InputStream inputStream = getAssets().open("user_avatar.jpg");
                 Drawable drawable = Drawable.createFromStream(inputStream, null);
                 imageView.setImageDrawable(drawable);
-                Log.v(TAG, "load from assets.");
+                //Log.v(TAG, "load from assets.");
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.v(TAG, "can not load picture from assets");
@@ -559,7 +559,7 @@ public class Profile extends AppCompatActivity implements OnNavigationButtonClic
     // download userinfo from firebase realtime db
     // called after login if no local uid is saved in local
     private void loadUserInfoFromOnline(String email, User user) {
-        Log.v(TAG, "loading, using email: " + email);
+        //Log.v(TAG, "loading, using email: " + email);
 
         DatabaseReference dfb = FirebaseDatabase.getInstance().getReference();
         DatabaseReference updateLocal = dfb.child("users");

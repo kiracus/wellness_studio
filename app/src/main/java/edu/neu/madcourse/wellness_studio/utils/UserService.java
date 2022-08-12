@@ -2,14 +2,11 @@ package edu.neu.madcourse.wellness_studio.utils;
 
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.lights.Light;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
@@ -27,8 +24,6 @@ import localDatabase.enums.ExerciseSet;
 import localDatabase.enums.ExerciseStatus;
 import localDatabase.lightExercise.LightExercise;
 import localDatabase.userInfo.User;
-import localDatabase.utils.DateConverter;
-import localDatabase.wakeUpAndSleepGoal.SleepGoal;
 
 
 // provide all database related operation, will modify the local database
@@ -68,7 +63,7 @@ public class UserService {
     public static void createNewUser(AppDatabase db, String nickname) {
         User user = new User();
         user.setNickname(nickname);
-        // TODO set other properties
+
         user.setHasOnlineAccount(false);
         user.setHasLoggedInOnline(false);
         user.setSleepAlarmOn(false);
@@ -95,7 +90,7 @@ public class UserService {
         User user = getCurrentUser(db);
         assert user != null;
         user.setProfileImg(imgUri);
-        Log.v(TAG, "update user img uri: " + imgUri);
+        //Log.v(TAG, "update user img uri: " + imgUri);
         updateUserInfo(db, user);
     }
 
@@ -194,7 +189,7 @@ public class UserService {
 
     public static void updateExerciseStatus(AppDatabase db, ExerciseStatus status, String date) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "update status: " + status.toString());
+            //Log.v(TAG, "update status: " + status.toString());
             db.lightExerciseDao().setLightExerciseStatusByDate(status, date);
         }
     }
@@ -202,7 +197,8 @@ public class UserService {
     // update isFinished by date
     public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "updating status: " + isFinished.toString());
+            //Log.v(TAG, "updating status: " + isFinished.toString());
+            getLightExerciseByDate(db, date);  // will create if not exist
             db.lightExerciseDao().setExerciseGoalByDate(isFinished, date);
         }
     }
@@ -210,7 +206,7 @@ public class UserService {
     // update current set (for today)
     public static void updateCurrSet(AppDatabase db, ExerciseSet set) {
         if (checkIfLightExerciseExists(db)) {
-            Log.v(TAG, "updating currSet: " + set.toString());
+            //Log.v(TAG, "updating currSet: " + set.toString());
             db.lightExerciseDao().setCurrSet(set, Utils.getCurrentDate());
         }
     }
@@ -464,7 +460,7 @@ public class UserService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "updateWeeklyCounts onCancelled error: " + error);
+                //Log.d(TAG, "updateWeeklyCounts onCancelled error: " + error);
             }
         });
 
@@ -495,11 +491,11 @@ public class UserService {
                 // System.out.println(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.v(TAG, "in catch, when loading from storage");
+                //Log.v(TAG, "in catch, when loading from storage");
                 return false;
             }
         } else {
-            Log.v(TAG, "no dir, when loading from storage");
+            //Log.v(TAG, "no dir, when loading from storage");
             return false;
         }
 

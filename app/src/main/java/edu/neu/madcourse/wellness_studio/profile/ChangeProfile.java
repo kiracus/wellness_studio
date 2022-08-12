@@ -46,8 +46,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -196,15 +194,15 @@ public class ChangeProfile extends AppCompatActivity {
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(TAG, "you are clicking the change profile img button");
+                //Log.v(TAG, "you are clicking the change profile img button");
                 if (checkStoragePermission()) {
-                    Log.v(TAG, "has permission to access storage, ask user to select img");
+                    //Log.v(TAG, "has permission to access storage, ask user to select img");
                     // show prompt to select new img
                     Intent intent = new Intent(
                             Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, 3);  // call onActivityResult
                 } else {
-                    Log.v(TAG, "no permission to access storage, asking for it");
+                    //Log.v(TAG, "no permission to access storage, asking for it");
                     requestStoragePermission();
                 }
             }
@@ -233,15 +231,15 @@ public class ChangeProfile extends AppCompatActivity {
                     emailInput = emailInputET.getText().toString();
                     passwordInput = passwordInputET.getText().toString();
 
-                    Log.v(TAG, "[" + emailInput + "]");
-                    Log.v(TAG, passwordInput);
+                    //Log.v(TAG, "[" + emailInput + "]");
+                    //Log.v(TAG, passwordInput);
 
                     if (emailInput.matches("") && passwordInput.matches("")) {
                         // no input, ignore
-                        Log.v(TAG, "both empty");
+                        //Log.v(TAG, "both empty");
                     } else if (emailInput.matches("") || passwordInput.matches("")) {
                         // only one has input
-                        Log.v(TAG, "one empty");
+                        //Log.v(TAG, "one empty");
                         Utils.postToast(MISS_INFO_TOAST, ChangeProfile.this);
                     } else {  // both have input, check if valid
                         if (!Utils.checkValidEmail(emailInput) || !Utils.checkValidPassword(passwordInput)) {
@@ -412,8 +410,8 @@ public class ChangeProfile extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null) {
             Uri selectedImg = data.getData();
             profileImg.setImageURI(selectedImg);  // show selected img
-            Log.v(TAG, "have set new img");
-            Log.v(TAG, "is user online? " + UserService.getOnlineStatus(db));
+            //Log.v(TAG, "have set new img");
+            //Log.v(TAG, "is user online? " + UserService.getOnlineStatus(db));
 
             // if user is online, upload it and get an URL from online storage
             if (UserService.getOnlineStatus(db)) {
@@ -469,14 +467,14 @@ public class ChangeProfile extends AppCompatActivity {
                 + "/WellnessStudio/");
         boolean res = dir.mkdirs();
         if (!res) {
-            Log.v(TAG, "problem with storage permission, can not mkdir");
+            //Log.v(TAG, "problem with storage permission, can not mkdir");
         }
 
         // Create a name for the saved image
         File file = new File(dir, "user_avatar_temp.jpg");
         try {
             output = new FileOutputStream(file);
-            Log.v(TAG, "image saved to internal storage");
+            //Log.v(TAG, "image saved to internal storage");
             // Compress into png format image from 0% - 100%
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
             output.flush();
@@ -488,17 +486,17 @@ public class ChangeProfile extends AppCompatActivity {
     }
 
     private void renameTempFile() {
-        Log.v(TAG, "in renameTempFile");
+        //Log.v(TAG, "in renameTempFile");
         File filepath = Environment.getExternalStorageDirectory();
         File dir = new File(filepath.getAbsolutePath()
                 + "/WellnessStudio/");
         if(dir.exists()){
-            Log.v(TAG, "!!!!!! dir exists");
+            //Log.v(TAG, "!!!!!! dir exists");
             File from = new File(dir,"user_avatar_temp.jpg");
             File to = new File(dir,"user_avatar.jpg");
             if(from.exists()) {
                 Boolean res = from.renameTo(to);
-                Log.v(TAG, "renaming file temp to user_avatar: " + res);
+                //Log.v(TAG, "renaming file temp to user_avatar: " + res);
             }
 
 
@@ -507,7 +505,7 @@ public class ChangeProfile extends AppCompatActivity {
 
     // check if has permission to access storage (called when change profile is clicked
     private boolean checkStoragePermission() {
-        Log.v(TAG,"checking permission");
+        //Log.v(TAG,"checking permission");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             int read = ContextCompat.checkSelfPermission(
                     this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -531,7 +529,7 @@ public class ChangeProfile extends AppCompatActivity {
                     101);
         } else {
             try {
-                Log.v(TAG, "request storage permission: above R");
+                //Log.v(TAG, "request storage permission: above R");
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 Uri uri = Uri.fromParts("package", this.getPackageName(), null);
@@ -587,10 +585,10 @@ public class ChangeProfile extends AppCompatActivity {
             InputStream inputStream = getAssets().open("user_avatar.jpg");
             Drawable drawable = Drawable.createFromStream(inputStream, null);
             profileImg.setImageDrawable(drawable);
-            Log.v(TAG, "load from assets.");
+            //Log.v(TAG, "load from assets.");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.v(TAG, "can not load picture from assets");
+            //Log.v(TAG, "can not load picture from assets");
         }
     }
 
