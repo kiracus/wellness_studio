@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         // check if user already exists
         // if no, go to greeting screen, finish current activity
         if (!UserService.checkIfUserExists(db)) {
-            Log.v(TAG, "no user exists");
+            //Log.v(TAG, "no user exists");
             startActivity(new Intent(MainActivity.this, Greeting.class));
             finish();
             return;
@@ -85,17 +85,17 @@ public class MainActivity extends AppCompatActivity {
         nickname = user.getNickname();
 
         // test data
-        for (int i = 1; i<32; i++) {
-            if (i == 19 || i == 13) continue;
-            String date = "2022-07-" + to2CharString(i);
-            UserService.updateExerciseGoalStatus(db, true, date);
-        }
-
-        for (int i = 1; i<31; i++) {
-            if (i == 29 || i == 6 || i == 4) continue;
-            String date = "2022-06-" + to2CharString(i);
-            UserService.updateExerciseGoalStatus(db, true, date);
-        }
+//        for (int i = 1; i<32; i++) {
+//            if (i == 19 || i == 13) continue;
+//            String date = "2022-07-" + to2CharString(i);
+//            UserService.updateExerciseGoalStatus(db, true, date);
+//        }
+//
+//        for (int i = 1; i<31; i++) {
+//            if (i == 29 || i == 6 || i == 4) continue;
+//            String date = "2022-06-" + to2CharString(i);
+//            UserService.updateExerciseGoalStatus(db, true, date);
+//        }
 
         // get VI components
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     goToLeaderboard();
                     return true;
                 default:
-                    Log.v(TAG, "Invalid bottom navigation item clicked.");
+                    //Log.v(TAG, "Invalid bottom navigation item clicked.");
                     return false;
             }
         });
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
     // check if has permission to access storage (called when load profile picture
     private boolean checkStoragePermission() {
-        Log.v(TAG,"checking permission in main");
+        //Log.v(TAG,"checking permission in main");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             int read = ContextCompat.checkSelfPermission(
                     this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -241,15 +241,15 @@ public class MainActivity extends AppCompatActivity {
         boolean res = UserService.loadImageForProfile(imageView);
         // Log.v(TAG, "res in load ProfileImg in main: " + res);
         if (!res) {
-            Log.v(TAG, "load Image from storage returns false, try assets/");
+            //Log.v(TAG, "load Image from storage returns false, try assets/");
             try {
                 InputStream inputStream = getAssets().open("user_avatar.jpg");
                 Drawable drawable = Drawable.createFromStream(inputStream, null);
                 imageView.setImageDrawable(drawable);
-                Log.v(TAG, "load from assets.");
+                //Log.v(TAG, "load from assets.");
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.v(TAG, "can not load picture from assets");
+                //Log.v(TAG, "can not load picture from assets");
             }
         }
     }
@@ -260,19 +260,19 @@ public class MainActivity extends AppCompatActivity {
             InputStream inputStream = getAssets().open("user_avatar.jpg");
             Drawable drawable = Drawable.createFromStream(inputStream, null);
             imageView.setImageDrawable(drawable);
-            Log.v(TAG, "load from assets.");
+            //Log.v(TAG, "load from assets.");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.v(TAG, "can not load picture from assets");
+            //.v(TAG, "can not load picture from assets");
             return;
         }
     }
 
     // for inserting test data
     // transfer an integer to a 2-char string, add 0 before single digit number
-    private String to2CharString(int num) {
-        return num<10 ? "0"+num : ""+num;
-    }
+//    private String to2CharString(int num) {
+//        return num<10 ? "0"+num : ""+num;
+//    }
 
     // ========   helpers to start new activity  ===================
 
