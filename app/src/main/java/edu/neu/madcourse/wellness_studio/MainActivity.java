@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set bottom nav, currently at home so disable home item
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.getMenu().findItem(R.id.nav_home).setEnabled(false);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_home:
