@@ -99,23 +99,6 @@ public class WakeupSleepGoal extends AppCompatActivity {
         sleepAlarmSetting = findViewById(R.id.setting_dot);
         wakeupAlarmSetting = findViewById(R.id.wakeup_setting_dot);
 
-        if (!sleepAlarmUpdate.equals("--:--") && !wakeupAlarmUpdate.equals("--:--")) {
-            sleepHoursTV.setText((calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate)));
-            wakeupAlarmHour = getHour(wakeupAlarmUpdate);
-            wakeupAlarmMin = getMin(wakeupAlarmUpdate);
-            sleepAlarmHour = getHour(sleepAlarmUpdate);
-            sleepAlarmMin = getMin(sleepAlarmUpdate);
-            if (sleepAlarmOn) {
-                setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
-            }
-            if (wakeupAlarmOn) {
-                setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
-            }
-        } else {
-            sleepHoursTV.setText("0 hour, 0 min");
-        }
-
-
         sleepAlarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,12 +131,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (UserService.getSleepAlarm(db) != "--:--" && UserService.getWakeupAlarm(db) != "--:--") {
+                    if (!sleepAlarmUpdate.equals("--:--")) {
                         isSleepAlarmOn = true;
                         setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
                         UserService.updateSleepAlarmOn(db,isSleepAlarmOn);
                     } else {
                         Toast.makeText(WakeupSleepGoal.this, "Please set both sleep and wakeup alarm!", Toast.LENGTH_SHORT).show();
+                        sleepAlarmSwitch.setEnabled(false);
                     }
                 } else {
                     cancelSleepAlarm();
@@ -170,13 +154,13 @@ public class WakeupSleepGoal extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (UserService.getSleepAlarm(db) != "--:--" && UserService.getWakeupAlarm(db) != "--:--") {
+                    if (!wakeupAlarmUpdate.equals("--:--")) {
                         isWakeupAlarmOn = true;
                         UserService.updateWakeupAlarmOn(db, isWakeupAlarmOn);
                         setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
                     } else {
-                        UserService.updateWakeupAlarmOn(db, isWakeupAlarmOn);
                         Toast.makeText(WakeupSleepGoal.this, "Please set both sleep and wakeup alarm!" , Toast.LENGTH_SHORT).show();
+                        wakeupAlarmSwitch.setEnabled(false);
                     }
                 } else {
                     isWakeupAlarmOn = false;
@@ -211,8 +195,42 @@ public class WakeupSleepGoal extends AppCompatActivity {
 
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        mSensorManager.registerListener(listener, sensor, SensorManager. SENSOR_DELAY_NORMAL);
 
+        if (UserService.getSleepAlarmSensorOn(db)) {
+            mSensorManager.registerListener(listener, sensor, SensorManager. SENSOR_DELAY_NORMAL);
+        }
+
+
+        if (!sleepAlarmUpdate.equals("--:--")) {
+            sleepAlarmHour = getHour(sleepAlarmUpdate);
+            sleepAlarmMin = getMin(sleepAlarmUpdate);
+            sleepAlarmSwitch.setEnabled(true);
+            if (sleepAlarmOn) {
+                sleepAlarmSwitch.setChecked(true);
+                setSleepAlarm(sleepAlarmHour, sleepAlarmMin);
+            }
+
+        } else {
+            sleepHoursTV.setText("0 hour, 0 min");
+            sleepAlarmSwitch.setEnabled(false);
+        }
+
+        if (!wakeupAlarmUpdate.equals("--:--")) {
+            wakeupAlarmHour = getHour(wakeupAlarmUpdate);
+            wakeupAlarmMin = getMin(wakeupAlarmUpdate);
+            wakeupAlarmSwitch.setEnabled(true);
+            if (wakeupAlarmOn) {
+                wakeupAlarmSwitch.setChecked(true);
+                setWakeupAlarm(wakeupAlarmHour, wakeupAlarmMin);
+            }
+        } else {
+            sleepHoursTV.setText("0 hour, 0 min");
+            wakeupAlarmSwitch.setEnabled(false);
+        }
+
+        if (!sleepAlarmUpdate.equals("--:--") && !wakeupAlarmUpdate.equals("--:--")) {
+            sleepHoursTV.setText((calculateDiffTime(sleepAlarmUpdate, wakeupAlarmUpdate)));
+        }
     }
 
     private SensorEventListener listener = new SensorEventListener() {

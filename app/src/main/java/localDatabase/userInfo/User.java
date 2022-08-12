@@ -195,4 +195,5 @@ public class User {
     public void setWakeupAlarmIsSnoozeON(Boolean wakeupAlarmIsSnoozeON) {
         this.wakeupAlarmIsSnoozeON = wakeupAlarmIsSnoozeON;
     }
+
 }

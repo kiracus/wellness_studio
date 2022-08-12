@@ -76,6 +76,7 @@ public class UserService {
         user.setSleepAlarmSensorOn(false);
         user.setWakeupAlarmSensorOn(false);
         user.setWakeupAlarmIsSnoozeON(false);
+
         // user.setProfileImg("some/address");
 
         createNewUser(db, user);
@@ -404,6 +405,7 @@ public class UserService {
         } else
             return res;
     }
+
 
 
     // ================================================
