@@ -123,7 +123,7 @@ public class WakeupAlarmRingActivity extends AppCompatActivity {
 
                 long millis = calendar.getTimeInMillis();
 
-                Log.d("WakeupAlarmRingActivity", "snooze hour" + wakeupAlarmHour + "snooze min" + wakeupAlarmMin);
+                Log.d("WakeupAlarmRingActivity", "snooze calendar" + calendar.getTime());
 
                 alarmManagerWakeup.setExact(AlarmManager.RTC_WAKEUP, millis, alarmPendingIntent);
 
