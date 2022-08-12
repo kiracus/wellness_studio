@@ -69,8 +69,6 @@ public interface UserDao {
     void setWakeupAlarmIsSnoozeOn(Boolean wakeupAlarmIsSnoozeON);
 
 
-
-
     @Query ("SELECT exerciseAlarm FROM UserInfoTable LIMIT 1")
     String getExerciseReminderAlarm();
 

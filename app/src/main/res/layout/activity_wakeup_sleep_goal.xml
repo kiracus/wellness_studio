@@ -143,7 +143,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginEnd="20dp"
                             android:layout_gravity="center"
-
                             tools:ignore="UseSwitchCompatOrMaterialXml"
                             android:theme="@style/mySwitch"/>
 
