@@ -48,7 +48,7 @@ public class AlarmSetting extends AppCompatActivity {
     SwitchMaterial  snoozeBtn, allowWakeupSensorUseBtn;
     SwitchMaterial allowSleepSensorUseBtn;
     Spinner alarmTypeSpinner, stopAlarmSpinner;
-    boolean isSnooze, isWakeupSensorUse, isSleepSensorUse;
+    boolean isSnooze, isSleepSensorUse, isWakeupSensorUse;
 
 
 
@@ -62,9 +62,12 @@ public class AlarmSetting extends AppCompatActivity {
         AppDatabase db = AppDatabase.getDbInstance(this.getApplicationContext());
         wakeupAlarmUpdate = UserService.getWakeupAlarm(db);
         sleepAlarmUpdate = UserService.getSleepAlarm(db);
-        isSnooze = UserService.getWakeupAlarmIsSnoozeOn(db);
-        isWakeupSensorUse = UserService.getWakeupAlarmSensorOn(db);
-        isSleepSensorUse = UserService.getSleepAlarmSensorOn(db);
+        Boolean useSnooze = UserService.getWakeupAlarmIsSnoozeOn(db);
+        isSnooze = useSnooze;
+        Boolean useWakeupSensorUse = UserService.getWakeupAlarmSensorOn(db);
+        isWakeupSensorUse = useWakeupSensorUse;
+        Boolean useSleepSensorUse = UserService.getSleepAlarmSensorOn(db);
+        isSleepSensorUse = useSleepSensorUse;
 
         saveButton = findViewById(R.id.change_save_btn);
         cancelButton = findViewById(R.id.imageButton_cancel);
@@ -78,7 +81,7 @@ public class AlarmSetting extends AppCompatActivity {
                 popSleepTimePicker(v);
             }
         });
-        sleepAlarmChangeTV.setText(UserService.getSleepAlarm(db));
+        sleepAlarmChangeTV.setText(sleepAlarmUpdate);
 
         wakeupAlarmChangeTV = findViewById(R.id.wakeup_alarm_change_time_TV);
         wakeupAlarmChangeTV.setOnClickListener(new View.OnClickListener() {
@@ -87,13 +90,21 @@ public class AlarmSetting extends AppCompatActivity {
                 popWakeTimePicker(v);
             }
         });
-        wakeupAlarmChangeTV.setText(UserService.getWakeupAlarm(db));
+        wakeupAlarmChangeTV.setText(wakeupAlarmUpdate);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserService.updateWakeupAlarm(db,wakeupAlarmUpdate);
-                UserService.updateSleepAlarm(db, sleepAlarmUpdate);
+                if (!wakeupAlarmUpdate.equals("--:--")) {
+                    UserService.updateWakeupAlarm(db,wakeupAlarmUpdate);
+                    UserService.updateWakeupAlarmOn(db,true);
+                }
+                if (!sleepAlarmUpdate.equals("--:--")) {
+                    UserService.updateSleepAlarm(db, sleepAlarmUpdate);
+                    UserService.updateSleepAlarmOn(db, true);
+                }
+
+
                 UserService.updateSleepSensorOn(db, isSleepSensorUse);
                 UserService.updateWakeupSensorOn(db, isWakeupSensorUse);
                 UserService.updateWakeupIsSnoozeOn(db, isSnooze);
@@ -157,7 +168,7 @@ public class AlarmSetting extends AppCompatActivity {
 
         //snooze
         snoozeBtn = findViewById(R.id.snooze_switch);
-        snoozeBtn.setChecked(isSnooze);
+        snoozeBtn.setChecked(useSnooze);
         snoozeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -171,7 +182,7 @@ public class AlarmSetting extends AppCompatActivity {
 
         //wakeup sensor
         allowWakeupSensorUseBtn = findViewById(R.id.sensor_use_switch);
-        allowWakeupSensorUseBtn.setChecked(isWakeupSensorUse);
+        allowWakeupSensorUseBtn.setChecked(useWakeupSensorUse);
         allowWakeupSensorUseBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -186,7 +197,7 @@ public class AlarmSetting extends AppCompatActivity {
 
         //sleep sensor
         allowSleepSensorUseBtn = findViewById(R.id.sleep_reminder_allow_sensor_switch);
-        allowSleepSensorUseBtn.setChecked(isSleepSensorUse);
+        allowSleepSensorUseBtn.setChecked(useSleepSensorUse);
         allowSleepSensorUseBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

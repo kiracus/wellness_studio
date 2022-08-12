@@ -252,7 +252,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:text="ON"
+
                             android:theme="@style/mySwitch"/>
 
                     </LinearLayout>
@@ -357,7 +357,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:text="ON"
                             android:theme="@style/mySwitch"/>
                     </LinearLayout>
 
@@ -381,7 +380,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:text="ON"
                             android:theme="@style/mySwitch"/>
                     </LinearLayout>
 
