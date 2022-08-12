@@ -377,6 +377,10 @@ public class Leaderboard extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bottomNavigationView.setSelectedItemId(R.id.nav_leaderboard);
+
+        // if user is not online, disable friendlist button
+        friendsList.setEnabled(user.getHasLoggedInOnline());
+
         loadProfileImg(profileIV);
     }
 
