@@ -138,7 +138,7 @@ public class LightExercises extends AppCompatActivity implements View.OnClickLis
                 reminderSwitch.setChecked(exerciseAlarmOn);
             }
             //load alarm from db
-            if (!exerciseAlarm.equals("--:--") && exerciseAlarmOn) {
+            if (exerciseAlarmOn != null && !exerciseAlarm.equals("--:--") && exerciseAlarmOn) {
                 convertMiliSecondsToHourAndMin(Long.parseLong(exerciseAlarm));
                 String time = String.format(Locale.getDefault(), "%02d:%02d", hour, min);
                 Log.d("test","hour: " + hour);
