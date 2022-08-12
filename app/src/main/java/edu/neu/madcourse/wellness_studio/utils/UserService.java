@@ -203,6 +203,7 @@ public class UserService {
     public static void updateExerciseGoalStatus(AppDatabase db, Boolean isFinished, String date) {
         if (checkIfLightExerciseExists(db)) {
             Log.v(TAG, "updating status: " + isFinished.toString());
+            getLightExerciseByDate(db, date);  // will create if not exist
             db.lightExerciseDao().setExerciseGoalByDate(isFinished, date);
         }
     }

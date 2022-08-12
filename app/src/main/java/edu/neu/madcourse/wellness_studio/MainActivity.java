@@ -84,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
         assert user != null;  // should not happen though because we'll return if user is null
         nickname = user.getNickname();
 
+        // test data
+        for (int i = 1; i<32; i++) {
+            if (i == 19 || i == 13) continue;
+            String date = "2022-07-" + to2CharString(i);
+            UserService.updateExerciseGoalStatus(db, true, date);
+        }
+
+        for (int i = 1; i<31; i++) {
+            if (i == 29 || i == 6 || i == 4) continue;
+            String date = "2022-06-" + to2CharString(i);
+            UserService.updateExerciseGoalStatus(db, true, date);
+        }
+
         // get VI components
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -253,6 +266,12 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG, "can not load picture from assets");
             return;
         }
+    }
+
+    // for inserting test data
+    // transfer an integer to a 2-char string, add 0 before single digit number
+    private String to2CharString(int num) {
+        return num<10 ? "0"+num : ""+num;
     }
 
     // ========   helpers to start new activity  ===================
